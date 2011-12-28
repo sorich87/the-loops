@@ -120,8 +120,8 @@ class TL_Admin {
 	<tr valign="top">
 		<th scope="row"><label for="loop_shortcode_expose"><?php _e( 'Expose a shortcode' ); ?></label></th>
 		<td>
-			<input type="checkbox" id="loop_shortcode_expose" name="loop[shortcode][expose]" value="1"<?php checked( 1, ! empty( $content['shortcode']['expose'] ) ? $content['shortcode']['expose'] : 0, true ); ?> />
-			<span class="description"><?php _e( 'Add a shortcode that you can add to a post content' ); ?></span>
+			<code><?php echo '[the-loop id="' . $post->ID . '"]'; ?></code>
+			<span class="description"><?php _e( 'Copy/paste this shortcode in the post or page where you want to display the loop' ); ?></span>
 		</td>
 	</tr>
 	<tr valign="top">
@@ -154,10 +154,9 @@ class TL_Admin {
 <h4><?php _e( 'Widget' ); ?></h4>
 <table class="form-table">
 	<tr valign="top">
-		<th scope="row"><label for="loop_widget_expose"><?php _e( 'Expose a widget' ); ?></label></th>
+		<th scope="row"><?php _e( 'Expose a widget' ); ?></th>
 		<td>
-			<input type="checkbox" id="loop_widget_expose" name="loop[widget][expose]" value="1"<?php checked( 1, ! empty( $content['widget']['expose'] ) ? $content['widget']['expose'] : 0, true ); ?> />
-			<span class="description"><?php printf( __( 'Add a widget that you can <a href="%s">assign to a sidebar</a>' ), site_url( 'wp-admin/widgets.php' ) ) ?></span>
+			<span class="description"><?php printf( __( '<a href="%s">Go to the widgets management screen</a> and assign The Loops Widget to a sidebar' ), site_url( 'wp-admin/widgets.php' ) ) ?></span>
 		</td>
 	</tr>
 	<tr valign="top">
