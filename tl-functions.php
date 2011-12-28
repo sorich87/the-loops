@@ -27,14 +27,18 @@ function tl_WP_Query( $id, $type, $query = '' ) {
 		return;
 
 	$content = get_post_meta( $id, 'tl_loop_content', true );
+	$posts_per_page = $content[$type]['posts_per_page'];
 
 	$args = array(
-		'post_type'     => $content['post_type'],
-		'orderby'       => $content['orderby'],
-		'order'         => $content['order'],
-		'category_name' => $content['category'],
+		'post_type'      => $content['post_type'],
+		'orderby'        => $content['orderby'],
+		'order'          => $content['order'],
+		'posts_per_page' => $posts_per_page,
+		'category_name'  => $content['category'],
 		//'tag' => str_replace( array( ' , ', ', ', ' ,' ), ',', $content['post_tag'] )
 	);
+
+	$taxs = get_taxonomies( array( 'public' => true ), 'names' );
 
 	$args = wp_parse_args( $query, $args );
 

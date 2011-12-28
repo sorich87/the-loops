@@ -43,14 +43,14 @@ class TL_Admin {
 			'post_type' => 'post', 'orderby' => 'title', 'order' => 'ASC',
 			'not_found' => '<p>' . __( 'Nothing found!' ) . '</p>',
 			'shortcode' => array(
-			    'id'                  => 0,
-			    'posts_per_shortcode' => get_option( 'posts_per_shortcode' ),
-			    'format'              => 'full'
+			    'id'             => 0,
+			    'posts_per_page' => get_option( 'posts_per_page' ),
+			    'format'         => 'full'
 			),
 			'widget' => array(
-			    'expose'           => 0,
-			    'posts_per_widget' => get_option( 'posts_per_page' ),
-			    'format'           => 'titles'
+			    'expose'         => 0,
+			    'posts_per_page' => get_option( 'posts_per_page' ),
+			    'format'         => 'titles'
 			)
 		);
 
@@ -127,7 +127,7 @@ class TL_Admin {
 	<tr valign="top">
 		<th scope="row"><label for="loop_posts_per_shortcode"><?php _e( 'Show' ); ?></label></th>
 		<td>
-			<input type="text" id="loop_posts_per_shortcode" name="loop[shortcode][posts_per_shortcode]" value="<?php echo $content['shortcode']['posts_per_shortcode']; ?>" size="3" />
+			<input type="text" id="loop_posts_per_shortcode" name="loop[shortcode][posts_per_page]" value="<?php echo $content['shortcode']['posts_per_page']; ?>" size="3" />
 			<span><?php _e( 'items on the page' ); ?></span>
 		</td>
 	</tr>
@@ -162,7 +162,7 @@ class TL_Admin {
 	<tr valign="top">
 	<th scope="row"><label for="loop_posts_per_widget"><?php _e( 'Show' ); ?></label></th>
 		<td>
-			<input type="text" id="loop_posts_per_widget" name="loop[widget][posts_per_widget]" size="3" value="<?php echo $content['widget']['posts_per_widget']; ?>" />
+			<input type="text" id="loop_posts_per_widget" name="loop[widget][posts_per_page]" size="3" value="<?php echo $content['widget']['posts_per_page']; ?>" />
 			<span><?php _e( 'items in the widget' ); ?></span>
 		</td>
 	</tr>

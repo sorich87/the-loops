@@ -8,19 +8,19 @@ function tl_shortcode( $atts ) {
 		'id' => 0,
 	), $atts ) );
 
-	$tl_query = tl_WP_Query( $id, 'shortcode' );
-
 	$post_id = get_the_ID();
+
+	// Exclude current post/page where the shortcode will be displayed
+	$args = array(
+		'post__not_in' => array( $post_id )
+	);
+	$tl_query = tl_WP_Query( $id, 'shortcode', $args );
 
 	ob_start();
 
 	if ( $tl_query->have_posts() ) :
 		while( $tl_query->have_posts() ) :
 			$tl_query->the_post();
-
-			// Skip the current page
-			if ( get_the_ID() == $post_id )
-				continue;
 
 			tl_display( $id, 'shortcode' );
 		endwhile;
