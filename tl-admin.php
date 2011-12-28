@@ -102,7 +102,7 @@ class TL_Admin {
 		<th scope="row"><label for="loop_<?php echo $tax->name; ?>"><?php printf( __( 'Limit to %s' ), $tax->labels->name ); ?></label></th>
 		<td>
 			<input type="text" id="loop_<?php echo $tax->name; ?>" name="loop[<?php echo $tax->name; ?>]" value="<?php echo isset( $content[$tax->name] ) ? $content[$tax->name] : ''; ?>" class="regular-text" autocomplete="off" />
-			<span class="description"><?php _e( 'Comma-separated list' ); ?></span>
+			<span class="description"><?php _e( 'Comma-separated list of slugs' ); ?></span>
 		</td>
 	</tr>
 	<?php endforeach; ?>

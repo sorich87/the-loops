@@ -33,12 +33,32 @@ function tl_WP_Query( $id, $type, $query = '' ) {
 		'post_type'      => $content['post_type'],
 		'orderby'        => $content['orderby'],
 		'order'          => $content['order'],
-		'posts_per_page' => $posts_per_page,
-		'category_name'  => $content['category'],
-		//'tag' => str_replace( array( ' , ', ', ', ' ,' ), ',', $content['post_tag'] )
+		'posts_per_page' => $posts_per_page
 	);
 
 	$taxs = get_taxonomies( array( 'public' => true ), 'names' );
+	if ( $taxs ) {
+		$tax_query = array();
+		foreach ( $taxs as $tax ) {
+			if ( empty( $content[$tax] ) )
+				continue;
+
+			$terms = str_replace( array( ' , ', ', ', ' ,' ), ',', $content[$tax] );
+			$terms = explode( ',', $terms );
+
+			$tax_query[] = array(
+				'taxonomy' => $tax,
+				'field'    => 'slug',
+				'terms'    => $terms,
+				'operator' => 'IN'
+			);
+		}
+
+		if ( $tax_query ) {
+			$tax_query['relation'] = 'AND';
+			$args['tax_query'] = $tax_query;
+		}
+	}
 
 	$args = wp_parse_args( $query, $args );
 
