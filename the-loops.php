@@ -77,6 +77,8 @@ class The_Loops {
 	 * @since 0.1
 	 */
 	private function includes() {
+		if ( is_admin() )
+			require( $this->plugin_dir . 'tl-admin.php' );
 	}
 
 	/**
