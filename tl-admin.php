@@ -41,10 +41,11 @@ class TL_Admin {
 
 		$defaults = array(
 			'post_type' => 'post', 'orderby' => 'title', 'order' => 'ASC',
-			'page' => array(
-			    'id'             => 0,
-			    'posts_per_page' => get_option( 'posts_per_page' ),
-			    'format'         => 'full'
+			'not_found' => '<p>' . __( 'Nothing found!' ) . '</p>',
+			'shortcode' => array(
+			    'id'                  => 0,
+			    'posts_per_shortcode' => get_option( 'posts_per_shortcode' ),
+			    'format'              => 'full'
 			),
 			'widget' => array(
 			    'expose'           => 0,
@@ -105,40 +106,47 @@ class TL_Admin {
 		</td>
 	</tr>
 	<?php endforeach; ?>
+	<tr valign="top">
+		<th scope="row"><label for="loop_not_found"><?php _e( 'Not found text' ); ?></label></th>
+		<td>
+			<input type="text" id="loop_not_found" name="loop[not_found]" value="<?php echo isset( $content['not_found'] ) ? $content['not_found'] : ''; ?>" class="regular-text" />
+			<span class="description"><?php _e( 'Text to display when nothing found' ); ?></span>
+		</td>
+	</tr>
 </table>
 
 <h4><?php _e( 'Shortcode' ); ?></h4>
 <table class="form-table">
 	<tr valign="top">
-		<th scope="row"><label for="loop_widget_expose"><?php _e( 'Expose a widget' ); ?></label></th>
+		<th scope="row"><label for="loop_shortcode_expose"><?php _e( 'Expose a shortcode' ); ?></label></th>
 		<td>
-			<input type="checkbox" id="loop_widget_expose" name="loop[widget][expose]" value="1"<?php checked( 1, ! empty( $content['widget']['expose'] ) ? $content['widget']['expose'] : 0, true ); ?> />
-			<span class="description"><?php printf( __( 'Add a widget that you can <a href="%s">assign to a sidebar</a>' ), site_url( 'wp-admin/widgets.php' ) ) ?></span>
+			<input type="checkbox" id="loop_shortcode_expose" name="loop[shortcode][expose]" value="1"<?php checked( 1, ! empty( $content['shortcode']['expose'] ) ? $content['shortcode']['expose'] : 0, true ); ?> />
+			<span class="description"><?php _e( 'Add a shortcode that you can add to a post content' ); ?></span>
 		</td>
 	</tr>
 	<tr valign="top">
-		<th scope="row"><label for="loop_page_format"><?php _e( 'As a' ); ?></label></th>
+		<th scope="row"><label for="loop_posts_per_shortcode"><?php _e( 'Show' ); ?></label></th>
 		<td>
-			<select id="loop_page_format" name="loop[page][format]">
+			<input type="text" id="loop_posts_per_shortcode" name="loop[shortcode][posts_per_shortcode]" value="<?php echo $content['shortcode']['posts_per_shortcode']; ?>" size="3" />
+			<span><?php _e( 'items on the page' ); ?></span>
+		</td>
+	</tr>
+	<tr valign="top">
+		<th scope="row"><label for="loop_shortcode_format"><?php _e( 'As a' ); ?></label></th>
+		<td>
+			<select id="loop_shortcode_format" name="loop[shortcode][format]">
 				<?php
 				$format_params = array(
-					'full'    => __( 'List of full posts' ),
-					'teasers' => __( 'List of teasers '),
-					'titles'  => __( 'List of titles' ),
+					'full'     => __( 'List of full posts' ),
+					'excerpts' => __( 'List of excerpts '),
+					'titles'   => __( 'List of titles' ),
 				);
 				foreach ( $format_params as $key => $label ) {
-					$selected = selected( $key, $content['page']['format'] );
+					$selected = selected( $key, $content['shortcode']['format'] );
 					echo "<option value='$key'$selected>{$label}</option>";
 				}
 				?>
 			</select>
-		</td>
-	</tr>
-	<tr valign="top">
-	<th scope="row"><label for="loop_posts_per_page"><?php _e( 'Show' ); ?></label></th>
-		<td>
-			<input type="text" id="loop_posts_per_page" name="loop[page][posts_per_page]" value="<?php echo $content['page']['posts_per_page']; ?>" size="3" />
-			<span><?php _e( 'items on the page' ); ?></span>
 		</td>
 	</tr>
 </table>
@@ -165,9 +173,9 @@ class TL_Admin {
 			<select id="loop_widget_format" name="loop[widget][format]">
 				<?php
 				$format_params = array(
-					'full'    => __( 'List of full posts' ),
-					'teasers' => __( 'List of teasers '),
-					'titles'  => __( 'List of titles' ),
+					'full'     => __( 'List of full posts' ),
+					'excerpts' => __( 'List of excerpts '),
+					'titles'   => __( 'List of titles' ),
 				);
 				foreach ( $format_params as $key => $label ) {
 					$selected = selected( $key, $content['widget']['format'] );

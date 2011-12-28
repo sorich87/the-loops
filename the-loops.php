@@ -67,7 +67,7 @@ class The_Loops {
 		$this->file       = __FILE__;
 		$this->basename   = plugin_basename( $this->file );
 		$this->plugin_dir = plugin_dir_path( $this->file );
-		$this->plugin_url = plugin_dir_url ( $this->file );
+		$this->plugin_url = plugin_dir_url( $this->file );
 	}
 
 	/**
