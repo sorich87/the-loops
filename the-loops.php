@@ -77,6 +77,11 @@ class The_Loops {
 	 * @since 0.1
 	 */
 	private function includes() {
+		require( $this->plugin_dir . 'tl-functions.php' );
+		require( $this->plugin_dir . 'tl-templates.php' );
+		require( $this->plugin_dir . 'tl-shortcode.php' );
+		require( $this->plugin_dir . 'tl-widget.php' );
+
 		if ( is_admin() )
 			require( $this->plugin_dir . 'tl-admin.php' );
 	}
