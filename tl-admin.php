@@ -12,29 +12,78 @@ if ( ! defined( 'ABSPATH' ) )
 	exit;
 
 if ( ! class_exists( 'TL_Admin' ) ) :
-/**
- * Loads admin area
- * 
- * @package The Loops
- * @since 0.1
- */
 class TL_Admin {
 
 	/**
 	 * Admin loader
 	 *
+	 * @package The Loops
 	 * @since 0.1
 	 */
 	function __construct() {
 		add_action( 'add_meta_boxes', array( $this, 'add_meta_boxes' ) );
+		add_action( 'admin_menu', array( $this, 'remove_publish_meta_box' ) );
 		add_action( 'save_post', array( $this, 'save_loop' ), 10, 2 );
+		add_action( 'dbx_post_sidebar', array( $this, 'loop_save_button' ) );
 		add_filter( 'post_updated_messages', array( $this, 'loop_updated_messages' ) );
+		add_filter( 'screen_layout_columns', array( $this, 'loop_screen_layout_columns' ), 10, 2 );
 	}
 
+	/**
+	 * Add custom save button to the loop edit screen
+	 *
+	 * @package The Loops
+	 * @since 0.1
+	 */
+	public function loop_save_button() {
+		$current_screen = get_current_screen();
+		if ( 'tl_loop' != $current_screen->id )
+			return;
+
+		submit_button( __( 'Save Loop' ), 'primary', 'publish', false, array( 'tabindex' => '5', 'accesskey' => 'p' ) );
+	}
+
+	/**
+	 * Hide the screen options from the loop edit screen
+	 *
+	 * @package The Loops
+	 * @since 0.1
+	 */
+	public function loop_screen_layout_columns( $columns, $screen_id ) {
+		if ( 'tl_loop' == $screen_id )
+			$columns = 0;
+
+		add_screen_option( 'layout_columns', array( 'max' => 1 ) );
+
+		return $columns;
+	}
+
+	/**
+	 * Add loop content metabox
+	 *
+	 * @package The Loops
+	 * @since 0.1
+	 */
 	public function add_meta_boxes() {
 		add_meta_box( 'pp_contentdiv', __( 'Content' ), array( $this, 'meta_box_content' ), 'tl_loop', 'normal', 'high' );
 	}
 
+	/**
+	 * Remove publish metabox from the loop edit screen
+	 *
+	 * @package The Loops
+	 * @since 0.1
+	 */
+	public function remove_publish_meta_box() {
+		remove_meta_box( 'submitdiv', 'tl_loop', 'side' );
+	}
+
+	/**
+	 * Display metabox for setting the content of the loop
+	 *
+	 * @package The Loops
+	 * @since 0.1
+	 */
 	public function meta_box_content() {
 		global $post, $post_ID;
 
@@ -191,6 +240,9 @@ class TL_Admin {
 
 	/**
 	 * Save loop details
+	 *
+	 * @package The Loops
+	 * @since 0.1
 	 */
 	public function save_loop( $post_id, $post ) {
 		if ( 'tl_loop' !== $post->post_type )
