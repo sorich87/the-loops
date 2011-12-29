@@ -4,6 +4,7 @@
  * Admin class
  *
  * @package The Loops
+ * @since 0.1
  */
 
 // Exit if accessed directly
@@ -236,6 +237,7 @@ endif;
 /**
  * Setup admin
  *
+ * @package The Loops
  * @since 0.1
  */
 function tl_admin() {
