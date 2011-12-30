@@ -2,7 +2,7 @@
 /**
  * The Loops plugin
  *
- * The Loops is a plugin that allows you to query the WordPress database for content and display that content in a page without having to write any php code.
+ * The Loops allows you to query the WordPress database for content and display it in a page without having to write php code.
  *
  * @package The Loops
  */
@@ -10,7 +10,7 @@
 /**
  * Plugin Name: The Loops
  * Plugin URI: http://pubpoet.com/plugins/
- * Description: The Loops is a plugin that allows you to query the WordPress database for content and display that content in a page without having to write any php code.
+ * Description: The Loops allows you to query the WordPress database for content and display it in a page without having to write php code.
  * Author: PubPoet
  * Author URI: http://pubpoet.com/
  * Version: 0.1
@@ -108,7 +108,7 @@ class The_Loops {
 			'add_new_item' => __( 'Add New Loop' ),
 			'edit_item' => __( 'Edit Loop' ),
 			'new_item' => __( 'New Loop' ),
-			'all_items' => __( 'All Loops' ),
+			'all_items' => __( 'Loops' ),
 			'view_item' => __( 'View Loop' ),
 			'search_items' => __( 'Search Loops' ),
 			'not_found' =>  __( 'No loops found' ),
@@ -120,8 +120,7 @@ class The_Loops {
 		$args = array(
 			'labels' => $labels,
 			'show_ui' => true,
-			'menu_position' => 60,
-			'menu_icon' => null,
+			'show_in_menu' => 'themes.php',
 			'supports' => array( 'title' )
 		);
 

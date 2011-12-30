@@ -97,6 +97,8 @@ function tl_display_loop( $loop_id, $type, $args = null ) {
 
 	ob_start();
 
+	echo '<div class="tl-loop">';
+
 	if ( $tl_query->have_posts() ) :
 		while( $tl_query->have_posts() ) :
 			$tl_query->the_post();
@@ -107,6 +109,8 @@ function tl_display_loop( $loop_id, $type, $args = null ) {
 	else:
 		tl_not_found( $loop_id );
 	endif;
+
+	echo '</div>';
 
 	$content = ob_get_contents();
 	ob_end_clean();
