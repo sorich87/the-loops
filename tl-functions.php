@@ -128,37 +128,20 @@ function tl_display_loop( $loop_id, $type, $args = null ) {
  */
 function tl_display_post( $loop_id, $type ) {
 	$content = get_post_meta( $loop_id, 'tl_loop_content', true );
-	$format = $content[$type]['format'];
+	$loop_template_name = $content[$type]['template'];
 
-	if ( 'widget' == $type )
-		$heading_tag = 'h4';
-	else
-		$heading_tag = 'h2';
+	$loop_templates = tl_get_loop_templates();
+	$loop_template_file = $loop_templates[$loop_template_name];
 
 	ob_start();
 
-	switch ( $format ) {
-		case 'titles':
-?>
-	<p><a href="<?php the_permalink(); ?>" title="<?php printf( esc_attr__( 'Permalink to %s', 'twentyeleven' ), the_title_attribute( 'echo=0' ) ); ?>" rel="bookmark"><?php the_title(); ?></a></p>
-<?php
-		break;
-	case 'excerpts' :
-?>
-	<<?php echo $heading_tag; ?>><a href="<?php the_permalink(); ?>" title="<?php printf( esc_attr__( 'Permalink to %s', 'twentyeleven' ), the_title_attribute( 'echo=0' ) ); ?>" rel="bookmark"><?php the_title(); ?></a></<?php echo $heading_tag; ?>>
-	<?php the_excerpt(); ?>
-<?php
-			break;
-		case 'full' :
-		default :
-?>
-	<<?php echo $heading_tag; ?>><a href="<?php the_permalink(); ?>" title="<?php printf( esc_attr__( 'Permalink to %s', 'twentyeleven' ), the_title_attribute( 'echo=0' ) ); ?>" rel="bookmark"><?php the_title(); ?></a></<?php echo $heading_tag; ?>>
-	<?php the_content(); ?>
-<?php
-			break;
-	}
+	global $tl_loop_context;
+	$tl_loop_context = $type;
+
+	tl_locate_template( $loop_template_file, true );
 
 	$content = ob_get_contents();
+	$loop_context = null;
 	ob_end_clean();
 
 	return $content;
@@ -199,4 +182,116 @@ function tl_shortcode( $atts ) {
 	return tl_display_loop( $id, 'shortcode', $args );
 }
 add_shortcode( 'the-loop', 'tl_shortcode' );
+
+/**
+ * Get the default Loop Templates
+ *
+ * @package The Loops
+ * @since 0.2
+ */
+function tl_get_default_loop_templates() {
+	global $tl;
+	$templates_files = scandir( $tl->templates_dir );
+
+	foreach ( $templates_files as $template ) {
+		if ( ! is_file( $tl->templates_dir . $template ) )
+			continue;
+
+		// don't allow template files in subdirectories
+		if ( false !== strpos( $template, '/' ) )
+			continue;
+
+		$data = get_file_data( $tl->templates_dir. $template, array( 'name' => 'The Loops Template' ) );
+
+		if ( ! empty( $data['name'] ) )
+			$loop_templates[trim( $data['name'] )] = $template;
+	}
+
+	return $loop_templates;
+}
+
+/**
+ * Get the Loop Templates available in the current theme or the default ones
+ *
+ * @package The Loops
+ * @since 0.2
+ */
+function tl_get_loop_templates() {
+	$themes = get_themes();
+	$theme = get_current_theme();
+	$templates = $themes[$theme]['Template Files'];
+	$loop_templates = tl_get_default_loop_templates();
+
+	if ( is_array( $templates ) ) {
+		$base = array( trailingslashit(get_template_directory()), trailingslashit(get_stylesheet_directory()) );
+
+		foreach ( $templates as $template ) {
+			$basename = str_replace( $base, '', $template );
+
+			// don't allow template files in subdirectories
+			if ( false !== strpos( $basename, '/' ) )
+				continue;
+
+			if ( 'functions.php' == $basename )
+				continue;
+
+			$data = get_file_data( $template, array( 'name' => 'The Loops Template' ) );
+
+			if ( !empty( $data['name'] ) )
+				$loop_templates[trim( $data['name'] )] = $basename;
+		}
+	}
+
+	return $loop_templates;
+}
+
+/**
+ * Retrieve the name of the highest priority template file that exists.
+ *
+ * Searches in the plugin templates dir, then STYLESHEETPATH and TEMPLATEPATH.
+ *
+ * @package The Loops
+ * @since 0.2
+ *
+ * @param string|array $template_names Template file(s) to search for, in order.
+ * @param bool $load If true the template file will be loaded if it is found.
+ * @param bool $require_once Whether to require_once or require. Default true. Has no effect if $load is false.
+ * @return string The template filename if one is located.
+ */
+function tl_locate_template( $template_names, $load = false, $require_once = true ) {
+	global $tl;
+
+	$located = '';
+	foreach ( (array) $template_names as $template_name ) {
+		if ( ! $template_name )
+			continue;
+
+		if ( file_exists($tl->templates_dir . $template_name) ) {
+			$located = $tl->templates_dir . $template_name;
+			break;
+		} else if ( file_exists(STYLESHEETPATH . '/' . $template_name) ) {
+			$located = STYLESHEETPATH . '/' . $template_name;
+			break;
+		} else if ( file_exists(TEMPLATEPATH . '/' . $template_name) ) {
+			$located = TEMPLATEPATH . '/' . $template_name;
+			break;
+		}
+	}
+
+	if ( $load && '' != $located )
+		load_template( $located, $require_once );
+
+	return $located;
+}
+
+/**
+ * Return loop context. 'widget' or 'shortcode'
+ *
+ * @package The Loops
+ * @since 0.2
+ */
+function tl_loop_context() {
+	global $tl_loop_context;
+	return $tl_loop_context;
+}
 

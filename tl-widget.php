@@ -58,6 +58,12 @@ class TL_Widget extends WP_Widget {
 	}
 }
 
+/**
+ * Register widget
+ *
+ * @package The Loops
+ * @since 0.1
+ */
 function tl_widget_init() {
 	register_widget('TL_Widget');
 }

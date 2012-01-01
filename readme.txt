@@ -28,9 +28,9 @@ parent ID, number of comments, page order or randomly
 * Display the loops anywhere with a shortcode
 * Display the loops in a widget
 
-** This plugin is in its earlier stages but stable and can be used in a
+**This plugin is in its earlier stages but stable and can be used in a
 production environnement. Please be indulgent if it does not have some
-features you need. **
+features you need.**
 
 For feature request and bug reports, [please use the
 forums](http://wordpress.org/tags/the-loop?forum_id=10#postform).

@@ -95,18 +95,20 @@ class TL_Admin {
 			'shortcode' => array(
 			    'id'             => 0,
 			    'posts_per_page' => get_option( 'posts_per_page' ),
-			    'format'         => 'full'
+			    'template'       => 'List of full posts'
 			),
 			'widget' => array(
 			    'expose'         => 0,
 			    'posts_per_page' => get_option( 'posts_per_page' ),
-			    'format'         => 'titles'
+			    'template'       => 'List of titles'
 			)
 		);
 
 		$content = get_post_meta( $post_ID, 'tl_loop_content', true );
 
 		$content = wp_parse_args( $content, $defaults );
+
+		$loop_templates = tl_get_loop_templates();
 ?>
 <table class="form-table">
 	<tr valign="top">
@@ -182,18 +184,13 @@ class TL_Admin {
 		</td>
 	</tr>
 	<tr valign="top">
-		<th scope="row"><label for="loop_shortcode_format"><?php _e( 'As a' ); ?></label></th>
+		<th scope="row"><label for="loop_shortcode_template"><?php _e( 'Template' ); ?></label></th>
 		<td>
-			<select id="loop_shortcode_format" name="loop[shortcode][format]">
+			<select id="loop_shortcode_template" name="loop[shortcode][template]">
 				<?php
-				$format_params = array(
-					'full'     => __( 'List of full posts' ),
-					'excerpts' => __( 'List of excerpts '),
-					'titles'   => __( 'List of titles' ),
-				);
-				foreach ( $format_params as $key => $label ) {
-					$selected = selected( $key, $content['shortcode']['format'] );
-					echo "<option value='$key'$selected>{$label}</option>";
+				foreach ( $loop_templates as $name => $file ) {
+					$selected = selected( $name, $content['shortcode']['template'] );
+					echo "<option value='$name'$selected>{$name}</option>";
 				}
 				?>
 			</select>
@@ -217,18 +214,13 @@ class TL_Admin {
 		</td>
 	</tr>
 	<tr valign="top">
-	<th scope="row"><label for="loop_widget_format"><?php _e( 'As a' ); ?></label></th>
+	<th scope="row"><label for="loop_widget_template"><?php _e( 'Template' ); ?></label></th>
 		<td>
-			<select id="loop_widget_format" name="loop[widget][format]">
+			<select id="loop_widget_template" name="loop[widget][template]">
 				<?php
-				$format_params = array(
-					'full'     => __( 'List of full posts' ),
-					'excerpts' => __( 'List of excerpts '),
-					'titles'   => __( 'List of titles' ),
-				);
-				foreach ( $format_params as $key => $label ) {
-					$selected = selected( $key, $content['widget']['format'] );
-					echo "<option value='$key'$selected>{$label}</option>";
+				foreach ( $loop_templates as $name => $file ) {
+					$selected = selected( $name, $content['widget']['template'] );
+					echo "<option value='$name'$selected>{$name}</option>";
 				}
 				?>
 			</select>

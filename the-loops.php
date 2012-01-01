@@ -64,10 +64,11 @@ class The_Loops {
 	 * @since 0.1
 	 */
 	private function setup_globals() {
-		$this->file       = __FILE__;
-		$this->basename   = plugin_basename( $this->file );
-		$this->plugin_dir = plugin_dir_path( $this->file );
-		$this->plugin_url = plugin_dir_url( $this->file );
+		$this->file          = __FILE__;
+		$this->basename      = plugin_basename( $this->file );
+		$this->plugin_dir    = plugin_dir_path( $this->file );
+		$this->plugin_url    = plugin_dir_url( $this->file );
+		$this->templates_dir = $this->plugin_dir . 'tl-templates/';
 	}
 
 	/**
