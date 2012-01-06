@@ -27,6 +27,7 @@ function tl_WP_Query( $loop_id, $type, $query = '' ) {
 		return;
 
 	$content = get_post_meta( $loop_id, 'tl_loop_content', true );
+
 	$posts_per_page = $content[$type]['posts_per_page'];
 
 	$args = array(
@@ -36,6 +37,20 @@ function tl_WP_Query( $loop_id, $type, $query = '' ) {
 		'posts_per_page' => $posts_per_page
 	);
 
+	$authors_logins = _tl_csv_to_array( $content['authors'] );
+	if ( $authors_logins ) {
+		$authors_ids = array();
+
+		foreach ( $authors_logins as $author_login ) {
+			$authors_ids[] = get_user_by( 'login', $author_login )->ID;
+		}
+
+		if ( $authors_ids )
+			$authors_ids = implode( ',', $authors_ids );
+
+		$args['author'] = $authors_ids;
+	}
+
 	$taxs = get_taxonomies( array( 'public' => true ), 'names' );
 	if ( $taxs ) {
 		$tax_query = array();
@@ -43,8 +58,7 @@ function tl_WP_Query( $loop_id, $type, $query = '' ) {
 			if ( empty( $content[$tax] ) )
 				continue;
 
-			$terms = str_replace( array( ' , ', ', ', ' ,' ), ',', $content[$tax] );
-			$terms = explode( ',', $terms );
+			$terms = _tl_csv_to_array( $content[$tax] );
 
 			$tax_query[] = array(
 				'taxonomy' => $tax,
@@ -63,6 +77,22 @@ function tl_WP_Query( $loop_id, $type, $query = '' ) {
 	$args = wp_parse_args( $query, $args );
 
 	return new WP_Query( $args );
+}
+
+/**
+ * Convert a string of comma-separated values to an array
+ *
+ * @package The_Loops
+ * @since 0.2
+ * @params string $string String of comma-separated values
+ * @return array Values
+ */
+function _tl_csv_to_array( $string ) {
+	if ( ! $string )
+		return;
+
+	$string = str_replace( array( ' , ', ', ', ' ,' ), ',', $string );
+	return explode( ',', $string );
 }
 
 /**

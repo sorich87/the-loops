@@ -6,7 +6,6 @@
  *
  * @package The Loops
  */
-
 /**
  * Plugin Name: The Loops
  * Plugin URI: http://pubpoet.com/plugins/
