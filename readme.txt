@@ -3,7 +3,7 @@ Contributors: sorich87
 Tags: loop, loops, The Loop, shortcode, widget, post, posts, page, pages
 Requires at least: 3.3
 Tested up to: 3.4
-Stable tag: 0.2-dev
+Stable tag: 0.2
 
 Like Drupal Views but for WordPress, The Loops allows you to query the
 database for content and display it in a page without having to write
@@ -19,10 +19,14 @@ to write any PHP code or SQL queries.
 With this plugin, you can display the queried content in a page or post
 (using shortcodes) or a widget.
 
+**Works with any theme and any 'custom post types' plugin!**
+
 = Features =
 
+* Custom templates
 * Query by post type
 * Query by categories, tags or custom taxonomies
+* Query by author
 * Sort by ID, author, title, publication date, last modified date,
 parent ID, number of comments, page order or randomly
 * Display the loops anywhere with a shortcode
@@ -85,16 +89,29 @@ Click on the 'Loops' link in the 'Appearance' menu, click 'Add New' to
 add a new loop. Use the shortcode provided or go to the widgets screen
 to add the loop to a sidebar.
 
+= How to add custom templates? =
+
+Copy a default template file from the directory 'tl-templates' in the
+plugin directory to your theme directory. Then feel free to modify it to
+your liking!
+
 == Screenshots ==
 
 1. Loop edit screen
 
 == Changelog ==
 
+= 0.2 =
+* Custom templates.
+* Query by author.
+
 = 0.1 =
 * First release.
 
 == Upgrade Notice ==
+
+= 0.2 =
+New features: custom templates & query by author.
 
 = 0.1 =
 First release.
