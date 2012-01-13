@@ -169,7 +169,7 @@ class TL_Admin {
 	<tr valign="top">
 		<th scope="row"><label for="loop_not_found"><?php _e( 'Not found text' ); ?></label></th>
 		<td>
-			<input type="text" id="loop_not_found" name="loop[not_found]" value="<?php echo isset( $content['not_found'] ) ? $content['not_found'] : ''; ?>" class="regular-text" />
+			<input type="text" id="loop_not_found" name="loop[not_found]" value="<?php echo isset( $content['not_found'] ) ? str_replace('"', '&quot;', $content['not_found'] ) : ''; ?>" class="regular-text" />
 			<span class="description"><?php _e( 'Text to display when nothing found' ); ?></span>
 		</td>
 	</tr>

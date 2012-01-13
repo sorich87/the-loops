@@ -288,7 +288,7 @@ function tl_get_loop_templates() {
  * @param bool $require_once Whether to require_once or require. Default true. Has no effect if $load is false.
  * @return string The template filename if one is located.
  */
-function tl_locate_template( $template_names, $load = false, $require_once = true ) {
+function tl_locate_template( $template_names, $load = false, $require_once = false ) {
 	global $tl;
 
 	$located = '';
