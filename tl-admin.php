@@ -161,7 +161,7 @@ class TL_Admin {
 	<tr valign="top">
 		<th scope="row"><label for="loop_<?php echo $tax->name; ?>"><?php printf( __( 'Limit to %s' ), $tax->labels->name ); ?></label></th>
 		<td>
-			<input type="text" id="loop_<?php echo $tax->name; ?>" name="loop[<?php echo $tax->name; ?>]" value="<?php echo esc_attr( $content[$tax->name] ); ?>" class="regular-text" />
+			<input type="text" id="loop_<?php echo $tax->name; ?>" name="loop[<?php echo $tax->name; ?>]" value="<?php echo isset( $content[$tax->name] ) ? esc_attr( $content[$tax->name] ) : ''; ?>" class="regular-text" />
 			<span class="description"><?php _e( 'Comma-separated list of slugs' ); ?></span>
 		</td>
 	</tr>
