@@ -51,9 +51,7 @@ class TL_Admin {
 	 */
 	public function loop_screen_layout_columns( $columns, $screen_id ) {
 		if ( 'tl_loop' == $screen_id )
-			$columns = 0;
-
-		add_screen_option( 'layout_columns', array( 'max' => 1 ) );
+			add_screen_option( 'layout_columns', array( 'max' => 1, 'default' => 1 ) );
 
 		return $columns;
 	}
