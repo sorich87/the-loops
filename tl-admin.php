@@ -133,7 +133,7 @@ class TL_Admin {
 				$orderby_params = array(
 					'ID' => __( 'ID' ), 'author' => __( 'Author' ), 'title' => __( 'Title' ),
 					'date' => __( 'Publication date' ), 'modified' => __( 'Last modified date' ), 'parent' => __( 'Parent ID' ),
-					'rand' => __( 'Random order' ), 'comment_count' => __( 'Number of comments' ), 'menu_order' => __( 'Page Order' )
+					'rand' => __( 'Random order' ), 'comment_count' => __( 'Number of comments' ), 'menu_order' => __( 'Page order' )
 				);
 				foreach ( $orderby_params as $key => $label ) {
 					$selected = selected( $key, $content['orderby'] );
