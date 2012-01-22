@@ -121,7 +121,7 @@ class TL_Admin {
 				$ptypes = get_post_types( array( 'public' => true ), 'objects' );
 				foreach ( $ptypes as $ptype_name => $ptype_obj ) {
 					$selected = selected( $ptype_name, $content['post_type'], false );
-					echo "<option value='$ptype_name'$selected>{$ptype_obj->label}</option>";
+					echo "<option value='" . esc_attr( $ptype_name ) . "'$selected>{$ptype_obj->label}</option>";
 				}
 				?>
 			</select>
@@ -139,7 +139,7 @@ class TL_Admin {
 				);
 				foreach ( $orderby_params as $key => $label ) {
 					$selected = selected( $key, $content['orderby'] );
-					echo "<option value='$key'$selected>{$label}</option>";
+					echo "<option value='" . esc_attr( $key ) . "'$selected>{$label}</option>";
 				}
 				?>
 			</select>
@@ -152,7 +152,7 @@ class TL_Admin {
 	<tr valign="top">
 		<th scope="row"><label for="loop_authors"><?php _e( 'Authors' ); ?></label></th>
 		<td>
-			<input type="text" id="loop_authors" name="loop[authors]" value="<?php echo isset( $content['authors'] ) ? $content['authors'] : ''; ?>" class="regular-text" />
+			<input type="text" id="loop_authors" name="loop[authors]" value="<?php echo esc_attr( $content['authors'] ); ?>" class="regular-text" />
 			<span class="description"><?php _e( 'Comma-separated list of authors usernames' ); ?></span>
 		</td>
 	</tr>
@@ -161,7 +161,7 @@ class TL_Admin {
 	<tr valign="top">
 		<th scope="row"><label for="loop_<?php echo $tax->name; ?>"><?php printf( __( 'Limit to %s' ), $tax->labels->name ); ?></label></th>
 		<td>
-			<input type="text" id="loop_<?php echo $tax->name; ?>" name="loop[<?php echo $tax->name; ?>]" value="<?php echo isset( $content[$tax->name] ) ? $content[$tax->name] : ''; ?>" class="regular-text" />
+			<input type="text" id="loop_<?php echo $tax->name; ?>" name="loop[<?php echo $tax->name; ?>]" value="<?php echo esc_attr( $content[$tax->name] ); ?>" class="regular-text" />
 			<span class="description"><?php _e( 'Comma-separated list of slugs' ); ?></span>
 		</td>
 	</tr>
@@ -169,7 +169,7 @@ class TL_Admin {
 	<tr valign="top">
 		<th scope="row"><label for="loop_not_found"><?php _e( 'Not found text' ); ?></label></th>
 		<td>
-			<input type="text" id="loop_not_found" name="loop[not_found]" value="<?php echo isset( $content['not_found'] ) ? str_replace('"', '&quot;', $content['not_found'] ) : ''; ?>" class="regular-text" />
+			<input type="text" id="loop_not_found" name="loop[not_found]" value="<?php echo esc_attr( $content['not_found'] ); ?>" class="regular-text" />
 			<span class="description"><?php _e( 'Text to display when nothing found' ); ?></span>
 		</td>
 	</tr>
@@ -187,7 +187,7 @@ class TL_Admin {
 	<tr valign="top">
 		<th scope="row"><label for="loop_posts_per_shortcode"><?php _e( 'Show' ); ?></label></th>
 		<td>
-			<input type="text" id="loop_posts_per_shortcode" name="loop[shortcode][posts_per_page]" value="<?php echo $content['shortcode']['posts_per_page']; ?>" size="3" />
+			<input type="text" id="loop_posts_per_shortcode" name="loop[shortcode][posts_per_page]" value="<?php echo esc_attr( $content['shortcode']['posts_per_page'] ); ?>" size="3" />
 			<span><?php _e( 'items on the page' ); ?></span>
 		</td>
 	</tr>
@@ -198,7 +198,7 @@ class TL_Admin {
 				<?php
 				foreach ( $loop_templates as $name => $file ) {
 					$selected = selected( $name, $content['shortcode']['template'] );
-					echo "<option value='$name'$selected>{$name}</option>";
+					echo "<option value='" . esc_attr( $name ) . "'$selected>{$name}</option>";
 				}
 				?>
 			</select>
@@ -217,7 +217,7 @@ class TL_Admin {
 	<tr valign="top">
 	<th scope="row"><label for="loop_posts_per_widget"><?php _e( 'Show' ); ?></label></th>
 		<td>
-			<input type="text" id="loop_posts_per_widget" name="loop[widget][posts_per_page]" size="3" value="<?php echo $content['widget']['posts_per_page']; ?>" />
+			<input type="text" id="loop_posts_per_widget" name="loop[widget][posts_per_page]" size="3" value="<?php echo esc_attr( $content['widget']['posts_per_page'] ); ?>" />
 			<span><?php _e( 'items in the widget' ); ?></span>
 		</td>
 	</tr>
@@ -228,7 +228,7 @@ class TL_Admin {
 				<?php
 				foreach ( $loop_templates as $name => $file ) {
 					$selected = selected( $name, $content['widget']['template'] );
-					echo "<option value='$name'$selected>{$name}</option>";
+					echo "<option value='". esc_attr( $name ) ."'$selected>{$name}</option>";
 				}
 				?>
 			</select>
