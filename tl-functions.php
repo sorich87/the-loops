@@ -17,12 +17,15 @@ if ( ! defined( 'ABSPATH' ) )
  * @package The Loops
  * @since 0.1
  *
- * @param int $loop_id Loop ID.
+ * @param int $id Loop ID.
  * @param string $type Type of display (shortcode or widget).
  * @param string|array $query URL query string or array.
  * @return WP_Query
  */
-function tl_WP_Query( $loop_id, $type, $query = '' ) {
+function tl_WP_Query( $id, $type, $query = '' ) {
+	global $the_loops, $loop_id;
+
+	$loop_id = $id;
 	if ( empty ( $loop_id ) )
 		return;
 
@@ -76,7 +79,11 @@ function tl_WP_Query( $loop_id, $type, $query = '' ) {
 
 	$args = wp_parse_args( $query, $args );
 
-	return new WP_Query( $args );
+	add_filter( 'posts_where', array( $the_loops, 'filter_where' ) );
+	$query = new WP_Query( $args );
+	remove_filter( 'posts_where', array( $the_loops, 'filter_where' ) );
+
+	return $query;
 }
 
 /**
@@ -220,18 +227,18 @@ add_shortcode( 'the-loop', 'tl_shortcode' );
  * @since 0.2
  */
 function tl_get_default_loop_templates() {
-	global $tl;
-	$templates_files = scandir( $tl->templates_dir );
+	global $the_loops;
+	$templates_files = scandir( $the_loops->templates_dir );
 
 	foreach ( $templates_files as $template ) {
-		if ( ! is_file( $tl->templates_dir . $template ) )
+		if ( ! is_file( $the_loops->templates_dir . $template ) )
 			continue;
 
 		// don't allow template files in subdirectories
 		if ( false !== strpos( $template, '/' ) )
 			continue;
 
-		$data = get_file_data( $tl->templates_dir. $template, array( 'name' => 'The Loops Template' ) );
+		$data = get_file_data( $the_loops->templates_dir. $template, array( 'name' => 'The Loops Template' ) );
 
 		if ( ! empty( $data['name'] ) )
 			$loop_templates[trim( $data['name'] )] = $template;
@@ -289,15 +296,15 @@ function tl_get_loop_templates() {
  * @return string The template filename if one is located.
  */
 function tl_locate_template( $template_names, $load = false, $require_once = false ) {
-	global $tl;
+	global $the_loops;
 
 	$located = '';
 	foreach ( (array) $template_names as $template_name ) {
 		if ( ! $template_name )
 			continue;
 
-		if ( file_exists($tl->templates_dir . $template_name) ) {
-			$located = $tl->templates_dir . $template_name;
+		if ( file_exists($the_loops->templates_dir . $template_name) ) {
+			$located = $the_loops->templates_dir . $template_name;
 			break;
 		} else if ( file_exists(STYLESHEETPATH . '/' . $template_name) ) {
 			$located = STYLESHEETPATH . '/' . $template_name;

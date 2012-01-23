@@ -126,9 +126,38 @@ class The_Loops {
 
 		register_post_type( 'tl_loop', $args );
 	}
+
+	/**
+	 * Filter WP_Query where clause
+	 *
+	 * @package The_Loops
+	 * @since 0.2
+	 */
+	public function filter_where( $where ) {
+		global $loop_id;
+
+		$content = get_post_meta( $loop_id, 'tl_loop_content', true );
+
+		$min_date = ! empty( $content['date']['min'] ) ? strtotime( $content['date']['min'] ) : null;
+		$max_date = ! empty( $content['date']['max'] ) ? strtotime( $content['date']['max'] ) : null;
+
+		if ( $max_date )
+			$max_date = $max_date + 60 * 60 * 24;
+
+		$min_date = $min_date ? date( 'Y-m-d', $min_date ) : null;
+		$max_date = $max_date ? date( 'Y-m-d', $max_date ) : null;
+
+		if ( $min_date )
+			$where .= " AND post_date >= '$min_date'";
+
+		if ( $max_date )
+			$where .= " AND post_date < '$max_date'";
+
+		return $where;
+	}
 }
 
-$GLOBALS['tl'] = new The_Loops();
+$GLOBALS['the_loops'] = new The_Loops();
 
 endif;
 

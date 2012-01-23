@@ -25,6 +25,7 @@ class TL_Admin {
 		add_action( 'admin_menu', array( $this, 'remove_publish_meta_box' ) );
 		add_action( 'save_post', array( $this, 'save_loop' ), 10, 2 );
 		add_action( 'dbx_post_sidebar', array( $this, 'loop_save_button' ) );
+		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
 		add_filter( 'post_updated_messages', array( $this, 'loop_updated_messages' ) );
 		add_filter( 'screen_layout_columns', array( $this, 'loop_screen_layout_columns' ), 10, 2 );
 	}
@@ -41,6 +42,32 @@ class TL_Admin {
 			return;
 
 		submit_button( __( 'Save Loop' ), 'primary', 'publish', false, array( 'tabindex' => '5', 'accesskey' => 'p' ) );
+	}
+
+	/**
+	 * Enqueue script and style
+	 *
+	 * @package The_Loops
+	 * @since 0.1
+	 */
+	public function enqueue_scripts() {
+		global $the_loops;
+
+		$current_screen = get_current_screen();
+		if ( 'tl_loop' != $current_screen->id )
+			return;
+
+		wp_enqueue_script( 'jquery-ui-datepicker' );
+
+		wp_enqueue_script( 'the-loops', $the_loops->plugin_url . 'js/script.js', array('jquery-ui-datepicker'), '0.1' );
+
+		if ( 'classic' == get_user_option( 'admin_color') )
+			wp_enqueue_style ( 'jquery-ui-css', $the_loops->plugin_url .'css/jquery-ui-classic.css' );
+		else
+			wp_enqueue_style ( 'jquery-ui-css', $the_loops->plugin_url .'css/jquery-ui-fresh.css' );
+
+		wp_enqueue_style( 'the-loops', $the_loops->plugin_url . 'css/style.css', null, '0.1' );
+
 	}
 
 	/**
@@ -91,6 +118,10 @@ class TL_Admin {
 			'post_type' => 'post', 'orderby' => 'title', 'order' => 'ASC',
 			'not_found' => '<p>' . __( 'Nothing found!' ) . '</p>',
 			'authors' => '',
+			'date' => array(
+				'min' => '',
+				'max' => '',
+			),
 			'shortcode' => array(
 			    'id'             => 0,
 			    'posts_per_page' => get_option( 'posts_per_page' ),
@@ -145,6 +176,16 @@ class TL_Admin {
 				<option value="DESC"<?php selected( 'DESC', $content['order'], true ); ?>><?php _e( 'DESC' ); ?></option>
 				<option value="ASC"<?php selected( 'ASC', $content['order'], true ); ?>><?php _e( 'ASC' ); ?></option>
 			</select>
+		</td>
+	</tr>
+	<tr valign="top">
+		<th scope="row"><label for="loop-min-date"><?php _e( 'Date range' ); ?></label></th>
+		<td>
+			from
+			<input type="text" class="loop-date" id="loop-min-date" name="loop[date][min]" value="<?php echo esc_attr( $content['date']['min'] ); ?>" class="regular-text" />
+			to
+			<input type="text" class="loop-date" id="loop-max-date" name="loop[date][max]" value="<?php echo esc_attr( $content['date']['max'] ); ?>" class="regular-text" />
+			<span class="description"><?php _e( 'If these fields are left empty, infinite values will be used' ); ?></span>
 		</td>
 	</tr>
 	<tr valign="top">
@@ -294,8 +335,8 @@ function tl_admin() {
 	if ( ! is_admin() )
 		return;
 
-	global $tl;
-	$tl->admin = new TL_Admin();
+	global $the_loops;
+	$the_loops->admin = new TL_Admin();
 }
 add_action ( 'init', 'tl_admin' );
 
