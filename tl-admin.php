@@ -28,7 +28,24 @@ class TL_Admin {
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
 		add_filter( 'post_updated_messages', array( $this, 'loop_updated_messages' ) );
 		add_filter( 'screen_layout_columns', array( $this, 'loop_screen_layout_columns' ), 10, 2 );
+		add_filter( 'script_loader_src', array( $this, 'disable_autosave' ), 10, 2 );
 	}
+
+	/**
+	 * Disable autosave on the loop edit screen by removing the src for the autosave script tag
+	 *
+	 * @package The_Loops
+	 * @since 0.3
+	 */
+	public function disable_autosave( $src, $handle ) {
+		global $typenow;
+
+		if( 'autosave' != $handle || 'tl_loop' != $typenow )
+			return $src;
+
+		return '';
+	}
+
 
 	/**
 	 * Add custom save button to the loop edit screen
