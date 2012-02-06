@@ -4,7 +4,7 @@
  *
  * The Loops allows you to query the WordPress database for content and display it in a page without having to write php code.
  *
- * @package The Loops
+ * @package The_Loops
  */
 /**
  * Plugin Name: The Loops
@@ -39,7 +39,7 @@ if ( ! class_exists( 'The_Loops' ) ) :
 /**
  * Main plugin class
  *
- * @package The Loops
+ * @package The_Loops
  * @since 0.1
  */
 class The_Loops {
@@ -47,7 +47,7 @@ class The_Loops {
 	/**
 	 * Class contructor
 	 *
-	 * @package The Loops
+	 * @package The_Loops
 	 * @since 0.1
 	 */
 	public function __construct() {
@@ -59,7 +59,7 @@ class The_Loops {
 	/**
 	 * Global variables
 	 *
-	 * @package The Loops
+	 * @package The_Loops
 	 * @since 0.1
 	 */
 	private function setup_globals() {
@@ -73,7 +73,7 @@ class The_Loops {
 	/**
 	 * Required files
 	 *
-	 * @package The Loops
+	 * @package The_Loops
 	 * @since 0.1
 	 */
 	private function includes() {
@@ -87,7 +87,7 @@ class The_Loops {
 	/**
 	 * Setup the plugin main functions
 	 *
-	 * @package The Loops
+	 * @package The_Loops
 	 * @since 0.1
 	 */
 	private function setup_hooks() {
@@ -97,7 +97,7 @@ class The_Loops {
 	/**
 	 * Register loop post type
 	 *
-	 * @package The Loops
+	 * @package The_Loops
 	 * @since 0.1
 	 */
 	public function register_post_type() {
@@ -131,7 +131,7 @@ class The_Loops {
 	 * Filter WP_Query where clause
 	 *
 	 * @package The_Loops
-	 * @since 0.2
+	 * @since 0.3
 	 */
 	public function filter_where( $where ) {
 		global $loop_id;

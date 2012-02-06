@@ -3,7 +3,7 @@
 /**
  * Widget class
  *
- * @package The Loops
+ * @package The_Loops
  * @since 0.1
  */
 class TL_Widget extends WP_Widget {
@@ -61,7 +61,7 @@ class TL_Widget extends WP_Widget {
 /**
  * Register widget
  *
- * @package The Loops
+ * @package The_Loops
  * @since 0.1
  */
 function tl_widget_init() {

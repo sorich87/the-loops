@@ -3,7 +3,7 @@
 /**
  * Admin class
  *
- * @package The Loops
+ * @package The_Loops
  * @since 0.1
  */
 
@@ -17,7 +17,7 @@ class TL_Admin {
 	/**
 	 * Admin loader
 	 *
-	 * @package The Loops
+	 * @package The_Loops
 	 * @since 0.1
 	 */
 	function __construct() {
@@ -50,7 +50,7 @@ class TL_Admin {
 	/**
 	 * Add custom save button to the loop edit screen
 	 *
-	 * @package The Loops
+	 * @package The_Loops
 	 * @since 0.1
 	 */
 	public function loop_save_button() {
@@ -90,7 +90,7 @@ class TL_Admin {
 	/**
 	 * Hide the screen options from the loop edit screen
 	 *
-	 * @package The Loops
+	 * @package The_Loops
 	 * @since 0.1
 	 */
 	public function loop_screen_layout_columns( $columns, $screen_id ) {
@@ -103,7 +103,7 @@ class TL_Admin {
 	/**
 	 * Add loop content metabox
 	 *
-	 * @package The Loops
+	 * @package The_Loops
 	 * @since 0.1
 	 */
 	public function add_meta_boxes() {
@@ -113,7 +113,7 @@ class TL_Admin {
 	/**
 	 * Remove publish metabox from the loop edit screen
 	 *
-	 * @package The Loops
+	 * @package The_Loops
 	 * @since 0.1
 	 */
 	public function remove_publish_meta_box() {
@@ -123,7 +123,7 @@ class TL_Admin {
 	/**
 	 * Display metabox for setting the content of the loop
 	 *
-	 * @package The Loops
+	 * @package The_Loops
 	 * @since 0.1
 	 */
 	public function meta_box_content() {
@@ -297,7 +297,7 @@ class TL_Admin {
 	/**
 	 * Save loop details
 	 *
-	 * @package The Loops
+	 * @package The_Loops
 	 * @since 0.1
 	 */
 	public function save_loop( $post_id, $post ) {
@@ -321,7 +321,7 @@ class TL_Admin {
 	/**
 	 * Messages displayed when a loop is updated.
 	 *
-	 * @package The Loops
+	 * @package The_Loops
 	 * @since 0.1
 	 */
 	public function loop_updated_messages( $messages ) {
@@ -345,7 +345,7 @@ endif;
 /**
  * Setup admin
  *
- * @package The Loops
+ * @package The_Loops
  * @since 0.1
  */
 function tl_admin() {

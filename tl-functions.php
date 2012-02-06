@@ -3,7 +3,7 @@
 /**
  * Helper functions
  * 
- * @package The Loops
+ * @package The_Loops
  * @since 0.1
  */
 
@@ -14,7 +14,7 @@ if ( ! defined( 'ABSPATH' ) )
 /**
  * Returns a WP_Query based on a loop details.
  *
- * @package The Loops
+ * @package The_Loops
  * @since 0.1
  *
  * @param int $id Loop ID.
@@ -105,7 +105,7 @@ function _tl_csv_to_array( $string ) {
 /**
  * Wrapper function for get_posts to get the loops.
  *
- * @package The Loops
+ * @package The_Loops
  * @since 0.1
  */
 function tl_get_loops( $args = array() ) {
@@ -122,7 +122,7 @@ function tl_get_loops( $args = array() ) {
 /**
  * Display a loop
  *
- * @package The Loops
+ * @package The_Loops
  * @since 0.1
  *
  * @param int $loop_id Loop ID.
@@ -158,7 +158,7 @@ function tl_display_loop( $loop_id, $type, $args = null ) {
 /**
  * Display one post in the loop
  *
- * @package The Loops
+ * @package The_Loops
  * @since 0.1
  *
  * @param int $loop_id Loop ID.
@@ -187,7 +187,7 @@ function tl_display_post( $loop_id, $type ) {
 /**
  * Display not found text
  *
- * @package The Loops
+ * @package The_Loops
  * @since 0.1
  *
  * @param int $loop_id Loop ID.
@@ -201,7 +201,7 @@ function tl_not_found( $loop_id ) {
 /**
  * Add the loops shortcode which will render a loop from an id provided as attribute
  *
- * @package The Loops
+ * @package The_Loops
  * @since 0.1
  */
 function tl_shortcode( $atts ) {
@@ -223,7 +223,7 @@ add_shortcode( 'the-loop', 'tl_shortcode' );
 /**
  * Get the default Loop Templates
  *
- * @package The Loops
+ * @package The_Loops
  * @since 0.2
  */
 function tl_get_default_loop_templates() {
@@ -250,7 +250,7 @@ function tl_get_default_loop_templates() {
 /**
  * Get the Loop Templates available in the current theme or the default ones
  *
- * @package The Loops
+ * @package The_Loops
  * @since 0.2
  */
 function tl_get_loop_templates() {
@@ -287,7 +287,7 @@ function tl_get_loop_templates() {
  *
  * Searches in the plugin templates dir, then STYLESHEETPATH and TEMPLATEPATH.
  *
- * @package The Loops
+ * @package The_Loops
  * @since 0.2
  *
  * @param string|array $template_names Template file(s) to search for, in order.
@@ -324,7 +324,7 @@ function tl_locate_template( $template_names, $load = false, $require_once = fal
 /**
  * Return loop context. 'widget' or 'shortcode'
  *
- * @package The Loops
+ * @package The_Loops
  * @since 0.2
  */
 function tl_loop_context() {
