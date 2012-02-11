@@ -1,15 +1,1 @@
-
-jQuery(function($) {
-	var dates = $("#loop-min-date, #loop-max-date").datepicker({
-		changeMonth: true,
-		onSelect: function( selectedDate ) {
-			var option = this.id == "loop-min-date" ? "minDate" : "maxDate",
-				instance = $( this ).data("datepicker"),
-				date = $.datepicker.parseDate(
-					instance.settings.dateFormat ||
-					$.datepicker._defaults.dateFormat,
-					selectedDate, instance.settings);
-			dates.not(this).datepicker("option", option, date);
-		}
-	});
-});
+jQuery(function(a){var b=a("#loop-min-date, #loop-max-date").datepicker({changeMonth:!0,onSelect:function(c){var d=this.id=="loop-min-date"?"minDate":"maxDate",e=a(this).data("datepicker"),f=a.datepicker.parseDate(e.settings.dateFormat||a.datepicker._defaults.dateFormat,c,e.settings);b.not(this).datepicker("option",d,f)}})});

@@ -70,20 +70,21 @@ class TL_Admin {
 	public function enqueue_scripts() {
 		global $the_loops;
 
-		$current_screen = get_current_screen();
-		if ( 'tl_loop' != $current_screen->id )
+		if ( 'tl_loop' != get_current_screen()->id )
 			return;
+
+		$suffix = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '.dev' : '';
 
 		wp_enqueue_script( 'jquery-ui-datepicker' );
 
-		wp_enqueue_script( 'the-loops', $the_loops->plugin_url . 'js/script.js', array('jquery-ui-datepicker'), '0.1' );
+		wp_enqueue_script( 'the-loops', "{$the_loops->plugin_url}js/script$suffix.js", array( 'jquery-ui-datepicker' ), '20120211' );
 
 		if ( 'classic' == get_user_option( 'admin_color') )
-			wp_enqueue_style ( 'jquery-ui-css', $the_loops->plugin_url .'css/jquery-ui-classic.css' );
+			wp_enqueue_style ( 'jquery-ui-css', "{$the_loops->plugin_url}css/jquery-ui-classic$suffix.css", null, '20120211' );
 		else
-			wp_enqueue_style ( 'jquery-ui-css', $the_loops->plugin_url .'css/jquery-ui-fresh.css' );
+			wp_enqueue_style ( 'jquery-ui-css', "{$the_loops->plugin_url}css/jquery-ui-fresh$suffix.css", null, '20120211' );
 
-		wp_enqueue_style( 'the-loops', $the_loops->plugin_url . 'css/style.css', null, '0.1' );
+		wp_enqueue_style( 'the-loops', "{$the_loops->plugin_url}css/style$suffix.css", null, '20120211' );
 
 	}
 
