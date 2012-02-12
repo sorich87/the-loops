@@ -25,6 +25,7 @@ class TL_Admin {
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
 		add_action( 'admin_menu', array( $this, 'remove_publish_meta_box' ) );
 		add_action( 'dbx_post_sidebar', array( $this, 'loop_save_button' ) );
+		add_filter( 'get_user_option_closedpostboxes_tl_loop', array( $this, 'closed_meta_boxes' ) );
 		add_filter( 'post_updated_messages', array( $this, 'loop_updated_messages' ) );
 		add_action( 'save_post', array( $this, 'save_loop' ), 10, 2 );
 		add_filter( 'screen_layout_columns', array( $this, 'loop_screen_layout_columns' ), 10, 2 );
@@ -105,9 +106,22 @@ class TL_Admin {
 	 * @since 0.1
 	 */
 	public function add_meta_boxes() {
-		add_meta_box( 'pp_generaldiv', __( 'General' ), array( $this, 'meta_box_general' ), 'tl_loop', 'normal' );
-		add_meta_box( 'pp_shortcodediv', __( 'Shortcode' ), array( $this, 'meta_box_shortcode' ), 'tl_loop', 'normal' );
-		add_meta_box( 'pp_widget', __( 'Widget' ), array( $this, 'meta_box_widget' ), 'tl_loop', 'normal' );
+		add_meta_box( 'tl_generaldiv', __( 'General' ), array( $this, 'meta_box_general' ), 'tl_loop', 'normal' );
+		add_meta_box( 'tl_shortcodediv', __( 'Shortcode' ), array( $this, 'meta_box_shortcode' ), 'tl_loop', 'normal' );
+		add_meta_box( 'tl_widgetdiv', __( 'Widget' ), array( $this, 'meta_box_widget' ), 'tl_loop', 'normal' );
+	}
+
+	/**
+	 * Define default closed metaboxes
+	 *
+	 * @package The_Loops
+	 * @since 0.3
+	 */
+	public function closed_meta_boxes( $closed ) {
+		if ( false === $closed && 'tl_loop' == get_current_screen()->id )
+			$closed = array( 'tl_widgetdiv' );
+
+		return $closed;
 	}
 
 	/**
@@ -124,7 +138,7 @@ class TL_Admin {
 	 * Display metabox for setting the content of the loop
 	 *
 	 * @package The_Loops
-	 * @since 0.1
+	 * @since 0.3
 	 */
 	public function meta_box_general() {
 		global $post, $post_ID;
@@ -225,7 +239,7 @@ class TL_Admin {
 	 * Display metabox for setting the loop shortcode
 	 *
 	 * @package The_Loops
-	 * @since 0.1
+	 * @since 0.3
 	 */
 	public function meta_box_shortcode() {
 		global $post_ID;
@@ -280,7 +294,7 @@ class TL_Admin {
 	 * Display metabox for setting the loop widget
 	 *
 	 * @package The_Loops
-	 * @since 0.1
+	 * @since 0.3
 	 */
 	public function meta_box_widget() {
 		global $post_ID;
