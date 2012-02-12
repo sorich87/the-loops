@@ -105,7 +105,9 @@ class TL_Admin {
 	 * @since 0.1
 	 */
 	public function add_meta_boxes() {
-		add_meta_box( 'pp_contentdiv', __( 'Content' ), array( $this, 'meta_box_content' ), 'tl_loop', 'normal', 'high' );
+		add_meta_box( 'pp_generaldiv', __( 'General' ), array( $this, 'meta_box_general' ), 'tl_loop', 'normal' );
+		add_meta_box( 'pp_shortcodediv', __( 'Shortcode' ), array( $this, 'meta_box_shortcode' ), 'tl_loop', 'normal' );
+		add_meta_box( 'pp_widget', __( 'Widget' ), array( $this, 'meta_box_widget' ), 'tl_loop', 'normal' );
 	}
 
 	/**
@@ -124,10 +126,12 @@ class TL_Admin {
 	 * @package The_Loops
 	 * @since 0.1
 	 */
-	public function meta_box_content() {
+	public function meta_box_general() {
 		global $post, $post_ID;
 
 		wp_nonce_field( 'tl_edit_loop', '_tlnonce' );
+
+		$content = get_post_meta( $post_ID, 'tl_loop_content', true );
 
 		$defaults = array(
 			'post_type' => 'post', 'orderby' => 'title', 'order' => 'ASC',
@@ -136,24 +140,9 @@ class TL_Admin {
 			'date' => array(
 				'min' => '',
 				'max' => '',
-			),
-			'shortcode' => array(
-			    'id'             => 0,
-			    'posts_per_page' => get_option( 'posts_per_page' ),
-			    'template'       => 'List of full posts'
-			),
-			'widget' => array(
-			    'expose'         => 0,
-			    'posts_per_page' => get_option( 'posts_per_page' ),
-			    'template'       => 'List of titles'
 			)
 		);
-
-		$content = get_post_meta( $post_ID, 'tl_loop_content', true );
-
 		$content = wp_parse_args( $content, $defaults );
-
-		$loop_templates = tl_get_loop_templates();
 ?>
 <table class="form-table">
 	<tr valign="top">
@@ -228,16 +217,33 @@ class TL_Admin {
 		</td>
 	</tr>
 </table>
+<?php
+	}
 
-<h4><?php _e( 'Shortcode' ); ?></h4>
+
+	/**
+	 * Display metabox for setting the loop shortcode
+	 *
+	 * @package The_Loops
+	 * @since 0.1
+	 */
+	public function meta_box_shortcode() {
+		global $post_ID;
+
+		$content = get_post_meta( $post_ID, 'tl_loop_content', true );
+
+		$defaults = array(
+			'shortcode' => array(
+			    'id'             => 0,
+			    'posts_per_page' => get_option( 'posts_per_page' ),
+			    'template'       => 'List of full posts'
+			)
+		);
+		$content = wp_parse_args( $content, $defaults );
+
+		$loop_templates = tl_get_loop_templates();
+?>
 <table class="form-table">
-	<tr valign="top">
-		<th scope="row"><label for="loop_shortcode_expose"><?php _e( 'Expose a shortcode' ); ?></label></th>
-		<td>
-			<code><?php echo '[the-loop id="' . $post->ID . '"]'; ?></code>
-			<span class="description"><?php _e( 'Copy/paste this shortcode in the post or page where you want to display the loop' ); ?></span>
-		</td>
-	</tr>
 	<tr valign="top">
 		<th scope="row"><label for="loop_posts_per_shortcode"><?php _e( 'Show' ); ?></label></th>
 		<td>
@@ -258,16 +264,41 @@ class TL_Admin {
 			</select>
 		</td>
 	</tr>
-</table>
-
-<h4><?php _e( 'Widget' ); ?></h4>
-<table class="form-table">
 	<tr valign="top">
-		<th scope="row"><?php _e( 'Expose a widget' ); ?></th>
+		<th scope="row"><?php _e( 'Shortcode' ); ?></th>
 		<td>
-			<span class="description"><?php printf( __( '<a href="%s">Go to the widgets management screen</a> and assign The Loops Widget to a sidebar' ), site_url( 'wp-admin/widgets.php' ) ) ?></span>
+			<code><?php echo '[the-loop id="' . $post_ID . '"]'; ?></code>
+			<span class="description"><?php _e( 'Copy/paste this shortcode in the post or page where you want to display the loop' ); ?></span>
 		</td>
 	</tr>
+</table>
+<?php
+	}
+
+
+	/**
+	 * Display metabox for setting the loop widget
+	 *
+	 * @package The_Loops
+	 * @since 0.1
+	 */
+	public function meta_box_widget() {
+		global $post_ID;
+
+		$content = get_post_meta( $post_ID, 'tl_loop_content', true );
+
+		$defaults = array(
+			'widget' => array(
+			    'expose'         => 0,
+			    'posts_per_page' => get_option( 'posts_per_page' ),
+			    'template'       => 'List of titles'
+			)
+		);
+		$content = wp_parse_args( $content, $defaults );
+
+		$loop_templates = tl_get_loop_templates();
+?>
+<table class="form-table">
 	<tr valign="top">
 	<th scope="row"><label for="loop_posts_per_widget"><?php _e( 'Show' ); ?></label></th>
 		<td>
@@ -286,6 +317,12 @@ class TL_Admin {
 				}
 				?>
 			</select>
+		</td>
+	</tr>
+	<tr valign="top">
+		<th scope="row"><?php _e( 'Usage' ); ?></th>
+		<td>
+			<span class="description"><?php printf( __( '<a href="%s">Go to the widgets management screen</a> and assign The Loops Widget to a sidebar' ), site_url( 'wp-admin/widgets.php' ) ) ?></span>
 		</td>
 	</tr>
 </table>
