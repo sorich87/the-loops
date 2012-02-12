@@ -42,10 +42,24 @@ function tl_WP_Query( $id, $type, $query = '' ) {
 	// author
 	$authors_logins = _tl_csv_to_array( $content['authors'] );
 	if ( $authors_logins ) {
+		$replacements = 1;
+
 		$authors_ids = array();
 
 		foreach ( $authors_logins as $author_login ) {
-			$authors_ids[] = get_user_by( 'login', $author_login )->ID;
+			$exclude_author = false;
+
+			if ( strpos( $author_login, '-' ) === 0 ) {
+				$exclude_author = true;
+				$author_login = str_replace( '-', '', $author_login, $replacements );
+			}
+
+			$author_id = get_user_by( 'login', $author_login )->ID;
+
+			if ( $exclude_author )
+				$authors_ids[] = "-$author_id";
+			else
+				$authors_ids[] = $author_id;
 		}
 
 		if ( $authors_ids )

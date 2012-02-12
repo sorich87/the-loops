@@ -219,7 +219,7 @@ class TL_Admin {
 		<th scope="row"><label for="loop_authors"><?php _e( 'Authors' ); ?></label></th>
 		<td>
 			<input type="text" id="loop_authors" name="loop[authors]" value="<?php echo esc_attr( $content['authors'] ); ?>" class="regular-text" />
-			<span class="description"><?php _e( 'Comma-separated list of authors usernames' ); ?></span>
+			<span class="description"><?php _e( "Comma-separated list of authors usernames. Exclude an author by prefixing the username with a '-' (minus) sign." ); ?></span>
 		</td>
 	</tr>
 	<tr valign="top">
