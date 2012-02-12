@@ -285,7 +285,7 @@ class TL_Admin {
 				<?php $exclude = isset( $content['taxonomies'][$key]['exclude'] ) ? $content['taxonomies'][$key]['exclude'] : '0'; ?>
 				<?php $checked = checked( $exclude, '1', false ); ?>
 				<input<?php echo $checked; ?> type="checkbox" id="loop_taxonomies_<?php echo $key; ?>_exclude" name="loop[taxonomies][<?php echo $key; ?>][exclude]" value="1" />
-				<span class="description"><?php _e( 'Check if you want to hide the terms above instead of showing them' ); ?></span>
+				<span class="description"><?php _e( 'Hide the terms above instead of showing them' ); ?></span>
 			</td>
 		</tr>
 		<tr valign="top">
@@ -294,7 +294,7 @@ class TL_Admin {
 				<?php $include_children = isset( $content['taxonomies'][$key]['include_children'] ) ? $content['taxonomies'][$key]['include_children'] : '1'; ?>
 				<?php $checked = checked( $include_children, '1', false ); ?>
 				<input<?php echo $checked; ?> type="checkbox" id="loop_taxonomies_<?php echo $key; ?>_include_children" name="loop[taxonomies][<?php echo $key; ?>][include_children]" value="1" />
-				<span class="description"><?php _e( 'Check if you want to include children terms (for hierarchical taxonomies)' ); ?></span>
+				<span class="description"><?php _e( 'Include children terms (for hierarchical taxonomies)' ); ?></span>
 			</td>
 		</tr>
 	</table>
