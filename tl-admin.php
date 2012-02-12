@@ -256,11 +256,10 @@ class TL_Admin {
 	<table class="form-table tl-taxonomy-parameter">
 		<tr valign="top">
 			<th scope="row">
-				<a href="#" class="tl-delete-taxonomy">remove</a>
 				<label for="loop_taxonomies_<?php echo $key; ?>_taxonomy"><?php _e( 'Taxonomy' ); ?></label>
 			</th>
 			<td>
-				<select id="loop_taxonomies_<?php echo $key; ?>" name="loop[taxonomies][<?php echo $key; ?>][taxonomy]">
+				<select id="loop_taxonomies_<?php echo $key; ?>_taxonomy" name="loop[taxonomies][<?php echo $key; ?>][taxonomy]">
 					<?php
 					foreach ( $taxs as $tax ) {
 						$selected = selected( $content['taxonomies'][$key]['taxonomy'], $tax->name );
@@ -268,6 +267,7 @@ class TL_Admin {
 					}
 					?>
 				</select>
+				<a href="#" class="tl-delete-taxonomy">remove</a>
 			</td>
 		</tr>
 		<tr valign="top">
@@ -303,17 +303,17 @@ class TL_Admin {
 <table class="form-table tl-taxonomy-parameter tl-taxonomy-parameter-template hidden">
 		<tr valign="top">
 			<th scope="row">
-				<a href="#" class="tl-delete-taxonomy">remove</a>
 				<label for="loop_taxonomies_{key}_taxonomy"><?php _e( 'Taxonomy' ); ?></label>
 			</th>
 			<td>
-				<select id="loop_taxonomies_{key}" name="loop[taxonomies][{key}][taxonomy]">
+				<select id="loop_taxonomies_{key}_taxonomy" name="loop[taxonomies][{key}][taxonomy]">
 					<?php
 					foreach ( $taxs as $tax ) {
 						echo "<option value='{$tax->name}'>{$tax->labels->name}</option>";
 					}
 					?>
 				</select>
+				<a href="#" class="tl-delete-taxonomy">remove</a>
 			</td>
 		</tr>
 		<tr valign="top">
