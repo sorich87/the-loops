@@ -100,8 +100,8 @@ function _tl_csv_to_array( $string ) {
 	if ( ! $string )
 		return;
 
-	$string = str_replace( array( ' , ', ', ', ' ,' ), ',', $string );
-	return explode( ',', $string );
+	$array = explode( ',', $string );
+	return array_map( 'trim', $array );
 }
 
 /**
