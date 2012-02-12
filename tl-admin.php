@@ -22,11 +22,11 @@ class TL_Admin {
 	 */
 	function __construct() {
 		add_action( 'add_meta_boxes', array( $this, 'add_meta_boxes' ) );
-		add_action( 'admin_menu', array( $this, 'remove_publish_meta_box' ) );
-		add_action( 'save_post', array( $this, 'save_loop' ), 10, 2 );
-		add_action( 'dbx_post_sidebar', array( $this, 'loop_save_button' ) );
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
+		add_action( 'admin_menu', array( $this, 'remove_publish_meta_box' ) );
+		add_action( 'dbx_post_sidebar', array( $this, 'loop_save_button' ) );
 		add_filter( 'post_updated_messages', array( $this, 'loop_updated_messages' ) );
+		add_action( 'save_post', array( $this, 'save_loop' ), 10, 2 );
 		add_filter( 'screen_layout_columns', array( $this, 'loop_screen_layout_columns' ), 10, 2 );
 		add_filter( 'script_loader_src', array( $this, 'disable_autosave' ), 10, 2 );
 	}
@@ -38,12 +38,10 @@ class TL_Admin {
 	 * @since 0.3
 	 */
 	public function disable_autosave( $src, $handle ) {
-		global $typenow;
+		if( 'autosave' == $handle && 'tl_loop' == get_current_screen()->id )
+			return '';
 
-		if( 'autosave' != $handle || 'tl_loop' != $typenow )
-			return $src;
-
-		return '';
+		return $src;
 	}
 
 
@@ -54,8 +52,7 @@ class TL_Admin {
 	 * @since 0.1
 	 */
 	public function loop_save_button() {
-		$current_screen = get_current_screen();
-		if ( 'tl_loop' != $current_screen->id )
+		if ( 'tl_loop' != get_current_screen()->id )
 			return;
 
 		submit_button( __( 'Save Loop' ), 'primary', 'publish', false, array( 'tabindex' => '5', 'accesskey' => 'p' ) );
