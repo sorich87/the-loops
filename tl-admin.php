@@ -214,16 +214,6 @@ class TL_Admin {
 			<span class="description"><?php _e( 'Comma-separated list of authors usernames' ); ?></span>
 		</td>
 	</tr>
-	<?php $taxs = get_taxonomies( array( 'public' => true ), 'objects' ); ?>
-	<?php foreach ( $taxs as $tax ) : ?>
-	<tr valign="top">
-		<th scope="row"><label for="loop_<?php echo $tax->name; ?>"><?php printf( __( 'Limit to %s' ), $tax->labels->name ); ?></label></th>
-		<td>
-			<input type="text" id="loop_<?php echo $tax->name; ?>" name="loop[<?php echo $tax->name; ?>]" value="<?php echo isset( $content[$tax->name] ) ? esc_attr( $content[$tax->name] ) : ''; ?>" class="regular-text" />
-			<span class="description"><?php _e( 'Comma-separated list of slugs' ); ?></span>
-		</td>
-	</tr>
-	<?php endforeach; ?>
 	<tr valign="top">
 		<th scope="row"><label for="loop_not_found"><?php _e( 'Not found text' ); ?></label></th>
 		<td>
