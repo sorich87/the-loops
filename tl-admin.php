@@ -20,16 +20,16 @@ class TL_Admin {
 	 * @package The_Loops
 	 * @since 0.1
 	 */
-	function __construct() {
-		add_action( 'add_meta_boxes', array( $this, 'add_meta_boxes' ) );
-		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
-		add_action( 'admin_menu', array( $this, 'remove_publish_meta_box' ) );
-		add_action( 'dbx_post_sidebar', array( $this, 'loop_save_button' ) );
-		add_filter( 'get_user_option_closedpostboxes_tl_loop', array( $this, 'closed_meta_boxes' ) );
-		add_filter( 'post_updated_messages', array( $this, 'loop_updated_messages' ) );
-		add_action( 'save_post', array( $this, 'save_loop' ), 10, 2 );
-		add_filter( 'screen_layout_columns', array( $this, 'loop_screen_layout_columns' ), 10, 2 );
-		add_filter( 'script_loader_src', array( $this, 'disable_autosave' ), 10, 2 );
+	public static function init() {
+		add_action( 'add_meta_boxes', array( __CLASS__, 'add_meta_boxes' ) );
+		add_action( 'admin_enqueue_scripts', array( __CLASS__, 'enqueue_scripts' ) );
+		add_action( 'admin_menu', array( __CLASS__, 'remove_publish_meta_box' ) );
+		add_action( 'dbx_post_sidebar', array( __CLASS__, 'loop_save_button' ) );
+		add_filter( 'get_user_option_closedpostboxes_tl_loop', array( __CLASS__, 'closed_meta_boxes' ) );
+		add_filter( 'post_updated_messages', array( __CLASS__, 'loop_updated_messages' ) );
+		add_action( 'save_post', array( __CLASS__, 'save_loop' ), 10, 2 );
+		add_filter( 'screen_layout_columns', array( __CLASS__, 'loop_screen_layout_columns' ), 10, 2 );
+		add_filter( 'script_loader_src', array( __CLASS__, 'disable_autosave' ), 10, 2 );
 	}
 
 	/**
@@ -38,7 +38,7 @@ class TL_Admin {
 	 * @package The_Loops
 	 * @since 0.3
 	 */
-	public function disable_autosave( $src, $handle ) {
+	public static function disable_autosave( $src, $handle ) {
 		if( 'autosave' == $handle && 'tl_loop' == get_current_screen()->id )
 			return '';
 
@@ -52,7 +52,7 @@ class TL_Admin {
 	 * @package The_Loops
 	 * @since 0.1
 	 */
-	public function loop_save_button() {
+	public static function loop_save_button() {
 		if ( 'tl_loop' != get_current_screen()->id )
 			return;
 
@@ -65,7 +65,7 @@ class TL_Admin {
 	 * @package The_Loops
 	 * @since 0.1
 	 */
-	public function enqueue_scripts() {
+	public static function enqueue_scripts() {
 		global $the_loops;
 
 		if ( 'tl_loop' != get_current_screen()->id )
@@ -92,7 +92,7 @@ class TL_Admin {
 	 * @package The_Loops
 	 * @since 0.1
 	 */
-	public function loop_screen_layout_columns( $columns, $screen_id ) {
+	public static function loop_screen_layout_columns( $columns, $screen_id ) {
 		if ( 'tl_loop' == $screen_id )
 			add_screen_option( 'layout_columns', array( 'max' => 1, 'default' => 1 ) );
 
@@ -105,10 +105,10 @@ class TL_Admin {
 	 * @package The_Loops
 	 * @since 0.1
 	 */
-	public function add_meta_boxes() {
-		add_meta_box( 'tl_generaldiv', __( 'General' ), array( $this, 'meta_box_general' ), 'tl_loop', 'normal' );
-		add_meta_box( 'tl_shortcodediv', __( 'Shortcode' ), array( $this, 'meta_box_shortcode' ), 'tl_loop', 'normal' );
-		add_meta_box( 'tl_widgetdiv', __( 'Widget' ), array( $this, 'meta_box_widget' ), 'tl_loop', 'normal' );
+	public static function add_meta_boxes() {
+		add_meta_box( 'tl_generaldiv', __( 'General' ), array( __CLASS__, 'meta_box_general' ), 'tl_loop', 'normal' );
+		add_meta_box( 'tl_shortcodediv', __( 'Shortcode' ), array( __CLASS__, 'meta_box_shortcode' ), 'tl_loop', 'normal' );
+		add_meta_box( 'tl_widgetdiv', __( 'Widget' ), array( __CLASS__, 'meta_box_widget' ), 'tl_loop', 'normal' );
 	}
 
 	/**
@@ -117,7 +117,7 @@ class TL_Admin {
 	 * @package The_Loops
 	 * @since 0.3
 	 */
-	public function closed_meta_boxes( $closed ) {
+	public static function closed_meta_boxes( $closed ) {
 		if ( false === $closed && 'tl_loop' == get_current_screen()->id )
 			$closed = array( 'tl_widgetdiv' );
 
@@ -130,7 +130,7 @@ class TL_Admin {
 	 * @package The_Loops
 	 * @since 0.1
 	 */
-	public function remove_publish_meta_box() {
+	public static function remove_publish_meta_box() {
 		remove_meta_box( 'submitdiv', 'tl_loop', 'side' );
 	}
 
@@ -140,7 +140,7 @@ class TL_Admin {
 	 * @package The_Loops
 	 * @since 0.3
 	 */
-	public function meta_box_general() {
+	public static function meta_box_general() {
 		global $post, $post_ID;
 
 		wp_nonce_field( 'tl_edit_loop', '_tlnonce' );
@@ -241,7 +241,7 @@ class TL_Admin {
 	 * @package The_Loops
 	 * @since 0.3
 	 */
-	public function meta_box_shortcode() {
+	public static function meta_box_shortcode() {
 		global $post_ID;
 
 		$content = get_post_meta( $post_ID, 'tl_loop_content', true );
@@ -296,7 +296,7 @@ class TL_Admin {
 	 * @package The_Loops
 	 * @since 0.3
 	 */
-	public function meta_box_widget() {
+	public static function meta_box_widget() {
 		global $post_ID;
 
 		$content = get_post_meta( $post_ID, 'tl_loop_content', true );
@@ -349,7 +349,7 @@ class TL_Admin {
 	 * @package The_Loops
 	 * @since 0.1
 	 */
-	public function save_loop( $post_id, $post ) {
+	public static function save_loop( $post_id, $post ) {
 		if ( 'tl_loop' !== $post->post_type )
 			return;
 
@@ -373,7 +373,7 @@ class TL_Admin {
 	 * @package The_Loops
 	 * @since 0.1
 	 */
-	public function loop_updated_messages( $messages ) {
+	public static function loop_updated_messages( $messages ) {
 		global $post, $post_ID;
 
 		$messages['tl_loop'] = array(
@@ -398,11 +398,7 @@ endif;
  * @since 0.1
  */
 function tl_admin() {
-	if ( ! is_admin() )
-		return;
-
-	global $the_loops;
-	$the_loops->admin = new TL_Admin();
+	TL_Admin::init();
 }
 add_action ( 'init', 'tl_admin' );
 
