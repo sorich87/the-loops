@@ -31,15 +31,15 @@ function tl_WP_Query( $id, $type, $query = '' ) {
 
 	$content = get_post_meta( $loop_id, 'tl_loop_content', true );
 
-	$posts_per_page = $content[$type]['posts_per_page'];
-
+	// post type and pagination
 	$args = array(
 		'post_type'      => $content['post_type'],
 		'orderby'        => $content['orderby'],
 		'order'          => $content['order'],
-		'posts_per_page' => $posts_per_page
+		'posts_per_page' => $content[$type]['posts_per_page']
 	);
 
+	// author
 	$authors_logins = _tl_csv_to_array( $content['authors'] );
 	if ( $authors_logins ) {
 		$authors_ids = array();
@@ -54,20 +54,22 @@ function tl_WP_Query( $id, $type, $query = '' ) {
 		$args['author'] = $authors_ids;
 	}
 
-	$taxs = get_taxonomies( array( 'public' => true ), 'names' );
-	if ( $taxs ) {
+	// taxonomy
+	if ( ! empty( $content['taxonomies'] ) ) {
 		$tax_query = array();
-		foreach ( $taxs as $tax ) {
-			if ( empty( $content[$tax] ) )
+
+		foreach ( $content['taxonomies'] as $taxonomy ) {
+			if ( empty( $taxonomy['terms'] ) )
 				continue;
 
-			$terms = _tl_csv_to_array( $content[$tax] );
+			$terms = _tl_csv_to_array( $taxonomy['terms'] );
 
 			$tax_query[] = array(
-				'taxonomy' => $tax,
-				'field'    => 'slug',
-				'terms'    => $terms,
-				'operator' => 'IN'
+				'taxonomy'         => $taxonomy['taxonomy'],
+				'field'            => 'slug',
+				'terms'            => $terms,
+				'include_children' => empty( $taxonomy['include_children'] ) ? false : true,
+				'operator'         => empty( $taxonomy['exclude'] ) ? 'IN' : 'NOT IN'
 			);
 		}
 

@@ -75,7 +75,7 @@ class TL_Admin {
 
 		wp_enqueue_script( 'jquery-ui-datepicker' );
 
-		wp_enqueue_script( 'the-loops', "{$the_loops->plugin_url}js/script$suffix.js", array( 'jquery-ui-datepicker' ), '20120211' );
+		wp_enqueue_script( 'the-loops', "{$the_loops->plugin_url}js/script$suffix.js", array( 'jquery-ui-datepicker' ), '20120212' );
 
 		if ( 'classic' == get_user_option( 'admin_color') )
 			wp_enqueue_style ( 'jquery-ui-css', "{$the_loops->plugin_url}css/jquery-ui-classic$suffix.css", null, '20120211' );
@@ -107,6 +107,7 @@ class TL_Admin {
 	 */
 	public static function add_meta_boxes() {
 		add_meta_box( 'tl_generaldiv', __( 'General' ), array( __CLASS__, 'meta_box_general' ), 'tl_loop', 'normal' );
+		add_meta_box( 'tl_taxonomydiv', __( 'Taxonomy Parameters' ), array( __CLASS__, 'meta_box_taxonomy' ), 'tl_loop', 'normal' );
 		add_meta_box( 'tl_shortcodediv', __( 'Shortcode' ), array( __CLASS__, 'meta_box_shortcode' ), 'tl_loop', 'normal' );
 		add_meta_box( 'tl_widgetdiv', __( 'Widget' ), array( __CLASS__, 'meta_box_widget' ), 'tl_loop', 'normal' );
 	}
@@ -118,8 +119,8 @@ class TL_Admin {
 	 * @since 0.3
 	 */
 	public static function closed_meta_boxes( $closed ) {
-		if ( false === $closed && 'tl_loop' == get_current_screen()->id )
-			$closed = array( 'tl_widgetdiv' );
+		if ( false === $closed )
+			$closed = array( 'tl_taxonomydiv', 'tl_widgetdiv' );
 
 		return $closed;
 	}
@@ -141,7 +142,7 @@ class TL_Admin {
 	 * @since 0.3
 	 */
 	public static function meta_box_general() {
-		global $post, $post_ID;
+		global $post_ID;
 
 		wp_nonce_field( 'tl_edit_loop', '_tlnonce' );
 
@@ -234,6 +235,106 @@ class TL_Admin {
 <?php
 	}
 
+	/**
+	 * Display metabox for setting the loop taxonomy parameters
+	 *
+	 * @package The_Loops
+	 * @since 0.3
+	 */
+	public static function meta_box_taxonomy() {
+		global $post_ID;
+
+		$content = get_post_meta( $post_ID, 'tl_loop_content', true );
+
+		$defaults = array(
+			'taxonomies' => array()
+		);
+		$content = wp_parse_args( $content, $defaults );
+		extract( $content );
+
+		$taxs = get_taxonomies( array( 'public' => true ), 'objects' );
+?>
+<?php foreach ( $taxonomies as $key => $taxonomy ) : ?>
+	<table class="form-table tl-taxonomy-parameter">
+		<tr valign="top">
+			<th scope="row">
+				<a href="#" class="tl-delete-taxonomy">remove</a>
+				<label for="loop_taxonomies_<?php echo $key; ?>_taxonomy"><?php _e( 'Taxonomy' ); ?></label>
+			</th>
+			<td>
+				<select id="loop_taxonomies_<?php echo $key; ?>" name="loop[taxonomies][<?php echo $key; ?>][taxonomy]">
+					<?php
+					foreach ( $taxs as $tax ) {
+						$selected = selected( $content['taxonomies'][$key]['taxonomy'], $tax->name );
+						echo "<option value='{$tax->name}'$selected>{$tax->labels->name}</option>";
+					}
+					?>
+				</select>
+			</td>
+		</tr>
+		<tr valign="top">
+			<th scope="row"><label for="loop_taxonomies_<?php echo $key; ?>_terms"><?php _e( 'Terms' ); ?></label></th>
+			<td>
+				<input value="<?php echo esc_attr( $content['taxonomies'][$key]['terms'] ); ?>" type="text" id="loop_taxonomies_<?php echo $key; ?>_terms" name="loop[taxonomies][<?php echo $key; ?>][terms]" class="regular-text" />
+				<span class="description"><?php _e( 'Comma-separated list of slugs' ); ?></span>
+			</td>
+		</tr>
+		<tr valign="top">
+			<th scope="row"><label for="loop_taxonomies_<?php echo $key; ?>_exclude"><?php _e( 'Exclude' ); ?></label></th>
+			<td>
+				<?php $exclude = isset( $content['taxonomies'][$key]['exclude'] ) ? $content['taxonomies'][$key]['exclude'] : '0'; ?>
+				<?php $checked = checked( $exclude, '1', false ); ?>
+				<input<?php echo $checked; ?> type="checkbox" id="loop_taxonomies_<?php echo $key; ?>_exclude" name="loop[taxonomies][<?php echo $key; ?>][exclude]" value="1" />
+				<span class="description"><?php _e( 'Check if you want to hide the terms above instead of showing them' ); ?></span>
+			</td>
+		</tr>
+		<tr valign="top">
+			<th scope="row"><label for="loop_taxonomies_<?php echo $key; ?>_include_children"><?php _e( 'Include children' ); ?></label></th>
+			<td>
+				<?php $include_children = isset( $content['taxonomies'][$key]['include_children'] ) ? $content['taxonomies'][$key]['include_children'] : '1'; ?>
+				<?php $checked = checked( $include_children, '1', false ); ?>
+				<input<?php echo $checked; ?> type="checkbox" id="loop_taxonomies_<?php echo $key; ?>_include_children" name="loop[taxonomies][<?php echo $key; ?>][include_children]" value="1" />
+				<span class="description"><?php _e( 'Check if you want to include children terms (for hierarchical taxonomies)' ); ?></span>
+			</td>
+		</tr>
+	</table>
+<?php endforeach; ?>
+
+<p><a id="tl-add-taxonomy-parameter" class="button" href="#"><?php _e( 'New' ); ?></a></p>
+
+<table class="form-table tl-taxonomy-parameter tl-taxonomy-parameter-template hidden">
+		<tr valign="top">
+			<th scope="row">
+				<a href="#" class="tl-delete-taxonomy">remove</a>
+				<label for="loop_taxonomies_{key}_taxonomy"><?php _e( 'Taxonomy' ); ?></label>
+			</th>
+			<td>
+				<select id="loop_taxonomies_{key}" name="loop[taxonomies][{key}][taxonomy]">
+					<?php
+					foreach ( $taxs as $tax ) {
+						echo "<option value='{$tax->name}'>{$tax->labels->name}</option>";
+					}
+					?>
+				</select>
+			</td>
+		</tr>
+		<tr valign="top">
+			<th scope="row"><label for="loop_taxonomies_{key}_terms"><?php _e( 'Terms' ); ?></label></th>
+			<td>
+				<input value="" type="text" id="loop_taxonomies_{key}_terms" name="loop[taxonomies][{key}][terms]" class="regular-text" />
+				<span class="description"><?php _e( 'Comma-separated list of slugs' ); ?></span>
+			</td>
+		</tr>
+		<tr valign="top">
+			<th scope="row"><label for="loop_taxonomies_{key}_exclude"><?php _e( 'Exclude' ); ?></label></th>
+			<td>
+				<input type="checkbox" id="loop_taxonomies_{key}_exclude" name="loop[taxonomies][{key}][exclude]" value="1" />
+				<span class="description"><?php _e( 'Check if you want to hide the terms above instead of showing them' ); ?></span>
+			</td>
+		</tr>
+</table>
+<?php
+	}
 
 	/**
 	 * Display metabox for setting the loop shortcode
@@ -363,6 +464,8 @@ class TL_Admin {
 			return;
 
 		$data = stripslashes_deep( $_POST['loop'] );
+
+		array_pop( $data['taxonomies'] );
 
 		update_post_meta( $post_id, 'tl_loop_content', $data );
 	}
