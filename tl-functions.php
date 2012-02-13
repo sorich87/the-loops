@@ -18,11 +18,10 @@ if ( ! defined( 'ABSPATH' ) )
  * @since 0.1
  *
  * @param int $id Loop ID.
- * @param string $type Type of display (shortcode or widget).
  * @param string|array $query URL query string or array.
  * @return WP_Query
  */
-function tl_WP_Query( $id, $type, $query = '' ) {
+function tl_query( $id, $query = '' ) {
 	global $the_loops, $loop_id;
 
 	$loop_id = $id;
@@ -39,7 +38,7 @@ function tl_WP_Query( $id, $type, $query = '' ) {
 	);
 
 	// pagination
-	$posts_per_page = (int) $content[$type]['posts_per_page'];
+	$posts_per_page = (int) $content['posts_per_page'];
 	if ( empty( $posts_per_page ) ) {
 		$args['nopaging'] = true;
 	} else {
@@ -182,13 +181,13 @@ function tl_get_loops( $args = array() ) {
  * @since 0.1
  *
  * @param int $loop_id Loop ID.
- * @param string $type Display type. 'shortcode' or 'widget'
+ * @param string $template Name of the template to use
  * @param array|string Custom query args
  */
-function tl_display_loop( $loop_id, $type, $args = null ) {
-	global $wp_query;
+function tl_display_loop( $loop_id, $template, $args = null ) {
+	global $wp_query, $tl_loop_context;
 
-	$tl_query = tl_WP_Query( $loop_id, $type, $args );
+	$tl_query = tl_query( $loop_id, $args );
 
 	$tmp_query = clone $wp_query;
 	$wp_query  = clone $tl_query;
@@ -203,13 +202,13 @@ function tl_display_loop( $loop_id, $type, $args = null ) {
 		while( have_posts() ) :
 			the_post();
 
-			echo tl_display_post( $loop_id, $type );
+			echo tl_display_post( $loop_id, $template );
 		endwhile;
 	else:
 		tl_not_found( $loop_id );
 	endif;
 
-	if ( ! empty( $content['pagination'] ) ) {
+	if ( 'widget' != $tl_loop_context && ! empty( $content['pagination'] ) ) {
 		switch ( $content['pagination'] ) {
 			case 'numeric' :
 				$pagination = paginate_links( array(
@@ -246,23 +245,19 @@ function tl_display_loop( $loop_id, $type, $args = null ) {
  * @since 0.1
  *
  * @param int $loop_id Loop ID.
+ * @param string $loop_template Name of the template to use
  */
-function tl_display_post( $loop_id, $type ) {
+function tl_display_post( $loop_id, $loop_template ) {
 	$content = get_post_meta( $loop_id, 'tl_loop_content', true );
-	$loop_template_name = $content[$type]['template'];
 
 	$loop_templates = tl_get_loop_templates();
-	$loop_template_file = $loop_templates[$loop_template_name];
+	$loop_template_file = $loop_templates[$loop_template];
 
 	ob_start();
-
-	global $tl_loop_context;
-	$tl_loop_context = $type;
 
 	tl_locate_template( $loop_template_file, true );
 
 	$content = ob_get_contents();
-	$loop_context = null;
 	ob_end_clean();
 
 	return $content;
@@ -289,6 +284,10 @@ function tl_not_found( $loop_id ) {
  * @since 0.1
  */
 function tl_shortcode( $atts ) {
+	global $tl_loop_context;
+
+	$tl_loop_context = 'shortcode';
+
 	extract( shortcode_atts( array(
 		'id' => 0,
 	), $atts ) );
@@ -299,8 +298,13 @@ function tl_shortcode( $atts ) {
 	$args = array(
 		'post__not_in' => array( $post_id )
 	);
+	$details = get_post_meta( $id, 'tl_loop_content', true );
 
-	return tl_display_loop( $id, 'shortcode', $args );
+	$content = tl_display_loop( $id, $details['template'], $args );
+
+	$tl_loop_context = null;
+
+	return $content;
 }
 add_shortcode( 'the-loop', 'tl_shortcode' );
 

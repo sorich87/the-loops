@@ -12,6 +12,8 @@ class TL_Widget extends WP_Widget {
 	}
 
 	function widget( $args, $instance ) {
+		global $tl_loop_context;
+
 		extract( $args );
 
 		$instance['title'] = apply_filters( 'widget_title', empty( $instance['title'] ) ? '' : $instance['title'], $instance, $this->id_base );
@@ -21,22 +23,36 @@ class TL_Widget extends WP_Widget {
 		if ( $instance['title'] )
 			echo $before_title . $instance['title'] . $after_title;
 
-		echo tl_display_loop( $instance['loop_id'], 'widget', null );
+		$args = array( 'posts_per_page' => $instance['posts_per_page'] );
+
+		$tl_loop_context = 'widget';
+		echo tl_display_loop( $instance['loop_id'], $instance['template'], $args );
+		$tl_loop_context = null;
 
 		echo $after_widget;
 	}
 
 	function update( $new_instance, $old_instance ) {
 		$instance = $old_instance;
-		$instance['title']   = strip_tags($new_instance['title']);
-		$instance['loop_id'] = absint($new_instance['loop_id']);
+		$instance['loop_id']        = absint( $new_instance['loop_id'] );
+		$instance['posts_per_page'] = absint( $new_instance['posts_per_page'] );
+		$instance['template']       = $new_instance['template'];
+		$instance['title']          = strip_tags( $new_instance['title'] );
 		return $instance;
 	}
 
 	function form( $instance ) {
-		$instance = wp_parse_args( (array) $instance, array( 'title' => '', 'loop_id' => 0 ) );
-		$title   = esc_attr($instance['title']);
-		$loop_id = $instance['loop_id'];
+		$defaults = array(
+			'loop_id'        => 0,
+			'posts_per_page' => get_option( 'posts_per_page' ) / 2,
+			'template'       => 'List of titles',
+			'title'          => ''
+		);
+		$instance = wp_parse_args( (array) $instance, $defaults );
+		$loop_id        = $instance['loop_id'];
+		$posts_per_page = $instance['posts_per_page'];
+		$template       = esc_attr( $instance['template'] );
+		$title          = esc_attr( $instance['title'] );
 		?>
 		<p>
 			<label for="<?php echo $this->get_field_id('title'); ?>"><?php _e('Title:'); ?></label>
@@ -52,6 +68,22 @@ class TL_Widget extends WP_Widget {
 				echo "<option value='$loop->ID'$selected>$loop->post_title</option>";
 			}
 			?>
+			</select>
+		</p>
+		<p>
+			<label for="<?php echo $this->get_field_id('posts_per_page'); ?>"><?php _e( 'Number of items:' ); ?></label>
+			<input id="<?php echo $this->get_field_id('posts_per_page'); ?>" name="<?php echo $this->get_field_name('posts_per_page'); ?>" type="text" value="<?php echo $posts_per_page; ?>" size="3" />
+		</p>
+		<p>
+			<label for="<?php echo $this->get_field_id('template'); ?>"><?php _e( 'Template:' ); ?></label>
+			<select id="<?php echo $this->get_field_id('template'); ?>" name="<?php echo $this->get_field_name('template'); ?>" class="widefat">
+				<?php
+				$loop_templates = tl_get_loop_templates();
+				foreach ( $loop_templates as $name => $file ) {
+					$selected = selected( $name, $template, false );
+					echo "<option value='". esc_attr( $name ) ."'$selected>{$name}</option>";
+				}
+				?>
 			</select>
 		</p>
 		<?php
