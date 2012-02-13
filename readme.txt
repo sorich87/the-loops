@@ -19,13 +19,18 @@ to write any PHP code or SQL queries.
 With this plugin, you can display the queried content in a page or post
 (using shortcodes) or a widget.
 
-**Works with any theme and any 'custom post types' plugin!**
+[Check out my other free
+plugins.](http://wordpress.org/extend/plugins/profile/sorich87)
 
 = Features =
 
+* Works with any theme without modification
+* Works with any 'custom post types' plugin
 * Custom templates
 * Query by post type
 * Query by categories, tags or custom taxonomies
+* Query by custom fields
+* Query by date
 * Query by author
 * Sort by ID, author, title, publication date, last modified date,
 parent ID, number of comments, page order or randomly
@@ -35,6 +40,12 @@ parent ID, number of comments, page order or randomly
 **This plugin is in its earlier stages but stable and can be used in a
 production environnement. Please be indulgent if it does not have some
 features you need.**
+
+= Contributors =
+[Contributors are listed
+here](https://github.com/sorich87/the-loops/contributors)
+
+= Notes =
 
 For feature request and bug reports, [please use the
 forums](http://wordpress.org/tags/the-loop?forum_id=10#postform).
@@ -65,7 +76,8 @@ For an automatic installation through WordPress:
 Or use a nifty tool by WordPress lead developer Mark Jaquith:
 
 1. Visit [this
-link](http://coveredwebservices.com/wp-plugin-install/?plugin=the-loops) and follow the instructions.
+link](http://coveredwebservices.com/wp-plugin-install/?plugin=the-loops)
+and follow the instructions.
 
 
 For a manual installation via FTP:
