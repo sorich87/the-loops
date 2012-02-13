@@ -160,7 +160,7 @@ class TL_Admin {
 		$content = get_post_meta( $post_ID, 'tl_loop_content', true );
 
 		$defaults = array(
-			'post_type' => 'post', 'orderby' => 'title', 'order' => 'ASC',
+			'post_type' => array( 'post' ), 'orderby' => 'title', 'order' => 'ASC',
 			'not_found' => '<p>' . __( 'Nothing found!' ) . '</p>',
 			'authors' => '',
 			'date' => array(
