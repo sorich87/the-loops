@@ -265,7 +265,7 @@ class TL_Admin {
 				<select id="loop_taxonomies_<?php echo $key; ?>_taxonomy" name="loop[taxonomies][<?php echo $key; ?>][taxonomy]">
 					<?php
 					foreach ( $taxs as $tax ) {
-						$selected = selected( $content['taxonomies'][$key]['taxonomy'], $tax->name );
+						$selected = selected( $taxonomy['taxonomy'], $tax->name );
 						echo "<option value='{$tax->name}'$selected>{$tax->labels->name}</option>";
 					}
 					?>
@@ -276,14 +276,14 @@ class TL_Admin {
 		<tr valign="top">
 			<th scope="row"><label for="loop_taxonomies_<?php echo $key; ?>_terms"><?php _e( 'Terms' ); ?></label></th>
 			<td>
-				<input value="<?php echo esc_attr( $content['taxonomies'][$key]['terms'] ); ?>" type="text" id="loop_taxonomies_<?php echo $key; ?>_terms" name="loop[taxonomies][<?php echo $key; ?>][terms]" class="regular-text" />
+				<input value="<?php echo esc_attr( $taxonomy['terms'] ); ?>" type="text" id="loop_taxonomies_<?php echo $key; ?>_terms" name="loop[taxonomies][<?php echo $key; ?>][terms]" class="regular-text" />
 				<span class="description"><?php _e( 'Comma-separated list of slugs' ); ?></span>
 			</td>
 		</tr>
 		<tr valign="top">
 			<th scope="row"><label for="loop_taxonomies_<?php echo $key; ?>_exclude"><?php _e( 'Exclude' ); ?></label></th>
 			<td>
-				<?php $exclude = isset( $content['taxonomies'][$key]['exclude'] ) ? $content['taxonomies'][$key]['exclude'] : '0'; ?>
+				<?php $exclude = isset( $taxonomy['exclude'] ) ? $taxonomy['exclude'] : '0'; ?>
 				<?php $checked = checked( $exclude, '1', false ); ?>
 				<input<?php echo $checked; ?> type="checkbox" id="loop_taxonomies_<?php echo $key; ?>_exclude" name="loop[taxonomies][<?php echo $key; ?>][exclude]" value="1" />
 				<span class="description"><?php _e( 'Hide the terms above instead of showing them' ); ?></span>
@@ -292,7 +292,7 @@ class TL_Admin {
 		<tr valign="top">
 			<th scope="row"><label for="loop_taxonomies_<?php echo $key; ?>_include_children"><?php _e( 'Include children' ); ?></label></th>
 			<td>
-				<?php $include_children = isset( $content['taxonomies'][$key]['include_children'] ) ? $content['taxonomies'][$key]['include_children'] : '1'; ?>
+				<?php $include_children = isset( $taxonomy['include_children'] ) ? $taxonomy['include_children'] : '0'; ?>
 				<?php $checked = checked( $include_children, '1', false ); ?>
 				<input<?php echo $checked; ?> type="checkbox" id="loop_taxonomies_<?php echo $key; ?>_include_children" name="loop[taxonomies][<?php echo $key; ?>][include_children]" value="1" />
 				<span class="description"><?php _e( 'Include children terms (for hierarchical taxonomies)' ); ?></span>
@@ -331,6 +331,13 @@ class TL_Admin {
 			<td>
 				<input type="checkbox" id="loop_taxonomies_{key}_exclude" name="loop[taxonomies][{key}][exclude]" value="1" />
 				<span class="description"><?php _e( 'Check if you want to hide the terms above instead of showing them' ); ?></span>
+			</td>
+		</tr>
+		<tr valign="top">
+			<th scope="row"><label for="loop_taxonomies_{key}_include_children"><?php _e( 'Include children' ); ?></label></th>
+			<td>
+				<input type="checkbox" id="loop_taxonomies_{key}_include_children" name="loop[taxonomies][{key}][include_children]" checked="checked" value="1" />
+				<span class="description"><?php _e( 'Include children terms (for hierarchical taxonomies)' ); ?></span>
 			</td>
 		</tr>
 </table>
