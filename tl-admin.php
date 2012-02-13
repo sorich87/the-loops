@@ -496,6 +496,7 @@ class TL_Admin {
 		<td>
 			<input type="text" id="loop_posts_per_shortcode" name="loop[shortcode][posts_per_page]" value="<?php echo esc_attr( $content['shortcode']['posts_per_page'] ); ?>" size="3" />
 			<span><?php _e( 'items on the page' ); ?></span>
+			<span class="description"><?php _e( 'If this is left empty, all the items will be displayed' ); ?></span>
 		</td>
 	</tr>
 	<tr valign="top">
@@ -551,6 +552,7 @@ class TL_Admin {
 		<td>
 			<input type="text" id="loop_posts_per_widget" name="loop[widget][posts_per_page]" size="3" value="<?php echo esc_attr( $content['widget']['posts_per_page'] ); ?>" />
 			<span><?php _e( 'items in the widget' ); ?></span>
+			<span class="description"><?php _e( 'If this is left empty, all the items will be displayed' ); ?></span>
 		</td>
 	</tr>
 	<tr valign="top">

@@ -31,13 +31,20 @@ function tl_WP_Query( $id, $type, $query = '' ) {
 
 	$content = get_post_meta( $loop_id, 'tl_loop_content', true );
 
-	// post type and pagination
+	// post type and order
 	$args = array(
-		'post_type'      => $content['post_type'],
-		'orderby'        => $content['orderby'],
-		'order'          => $content['order'],
-		'posts_per_page' => $content[$type]['posts_per_page']
+		'post_type' => $content['post_type'],
+		'orderby'   => $content['orderby'],
+		'order'     => $content['order']
 	);
+
+	// pagination
+	$posts_per_page = (int) $content[$type]['posts_per_page'];
+	if ( empty( $posts_per_page ) ) {
+		$args['nopaging'] = true;
+	} else {
+		$args['posts_per_page'] = $posts_per_page;
+	}
 
 	// author
 	$authors_logins = _tl_csv_to_array( $content['authors'] );
