@@ -31,10 +31,12 @@ class TL_Admin {
 		add_action( 'admin_init', array( __CLASS__, 'upgrade_to_0_3' ) );
 		add_action( 'admin_menu', array( __CLASS__, 'remove_publish_meta_box' ) );
 		add_action( 'dbx_post_sidebar', array( __CLASS__, 'loop_save_button' ) );
+		add_action( 'save_post', array( __CLASS__, 'save_loop' ), 10, 2 );
+
+		add_filter( 'bulk_actions-edit-tl_loop', array( __CLASS__, 'remove_bulk_edit' ) );
 		add_filter( 'get_user_option_closedpostboxes_tl_loop', array( __CLASS__, 'closed_meta_boxes' ) );
 		add_filter( 'post_row_actions', array( __CLASS__, 'remove_quick_edit' ), 10, 2 );
 		add_filter( 'post_updated_messages', array( __CLASS__, 'loop_updated_messages' ) );
-		add_action( 'save_post', array( __CLASS__, 'save_loop' ), 10, 2 );
 		add_filter( 'screen_layout_columns', array( __CLASS__, 'loop_screen_layout_columns' ), 10, 2 );
 		add_filter( 'script_loader_src', array( __CLASS__, 'disable_autosave' ), 10, 2 );
 
@@ -595,6 +597,19 @@ class TL_Admin {
 	public static function remove_quick_edit( $actions, $post ) {
 		if( 'tl_loop' == $post->post_type )
 			unset( $actions['inline hide-if-no-js'] );
+
+		return $actions;
+	}
+
+	/**
+	 * Remove bulk edit
+	 *
+	 * @package The_Loops
+	 * @since 0.3
+	 */
+	public static function remove_bulk_edit( $actions ) {
+		if ( isset( $actions['edit'] ) )
+			unset( $actions['edit'] );
 
 		return $actions;
 	}
