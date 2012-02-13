@@ -174,12 +174,11 @@ class TL_Admin {
 	<tr valign="top">
 	<th scope="row"><label for="loop_post_type"><?php _e( 'Display' ); ?></label></th>
 		<td>
-			<select id="loop_post_type" name="loop[post_type]">
-			<option value="any"<?php selected( 'any', $content['post_type'] ); ?>><?php _e( 'Everything' ); ?></option>
+			<select id="loop_post_type" name="loop[post_type][]" multiple="multiple">
 				<?php
 				$ptypes = get_post_types( array( 'public' => true ), 'objects' );
 				foreach ( $ptypes as $ptype_name => $ptype_obj ) {
-					$selected = selected( $ptype_name, $content['post_type'], false );
+					$selected = in_array( $ptype_name, $content['post_type'] ) ? ' selected="selected"' : '';
 					echo "<option value='" . esc_attr( $ptype_name ) . "'$selected>{$ptype_obj->label}</option>";
 				}
 				?>

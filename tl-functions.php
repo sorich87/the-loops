@@ -33,7 +33,7 @@ function tl_WP_Query( $id, $type, $query = '' ) {
 
 	// post type and order
 	$args = array(
-		'post_type' => $content['post_type'],
+		'post_type' => (array) $content['post_type'],
 		'orderby'   => $content['orderby'],
 		'order'     => $content['order']
 	);
