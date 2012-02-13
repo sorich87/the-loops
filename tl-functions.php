@@ -93,6 +93,33 @@ function tl_WP_Query( $id, $type, $query = '' ) {
 		}
 	}
 
+	// custom field
+	if ( ! empty( $content['custom_fields'] ) ) {
+		$meta_query = array();
+
+		foreach ( $content['custom_fields'] as $custom_field ) {
+			if ( empty( $custom_field['key'] ) )
+				continue;
+
+			$values = _tl_csv_to_array( $custom_field['values'], "\t" );
+
+			if ( in_array( $custom_field['compare'], array( 'LIKE', 'NOT LIKE' ) ) )
+				$values = $values[0];
+
+			$meta_query[] = array(
+				'key'     => trim( $custom_field['key'] ),
+				'value'   => $values,
+				'compare' => $custom_field['compare'],
+				'type'    => $custom_field['type']
+			);
+		}
+
+		if ( $meta_query ) {
+			$meta_query['relation'] = 'AND';
+			$args['meta_query'] = $meta_query;
+		}
+	}
+
 	$args = wp_parse_args( $query, $args );
 
 	add_filter( 'posts_where', array( $the_loops, 'filter_where' ) );
@@ -110,11 +137,11 @@ function tl_WP_Query( $id, $type, $query = '' ) {
  * @params string $string String of comma-separated values
  * @return array Values
  */
-function _tl_csv_to_array( $string ) {
+function _tl_csv_to_array( $string, $delimiter = ',' ) {
 	if ( ! $string )
 		return;
 
-	$array = explode( ',', $string );
+	$array = explode( $delimiter, $string );
 	return array_map( 'trim', $array );
 }
 

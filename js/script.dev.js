@@ -1,5 +1,6 @@
 
 jQuery(function($) {
+	// date range picker
 	var dates = $("#loop-min-date, #loop-max-date").datepicker({
 		changeMonth: true,
 		onSelect: function( selectedDate ) {
@@ -13,24 +14,37 @@ jQuery(function($) {
 		}
 	});
 
-	$("#tl-add-taxonomy-parameter").click(function(e) {
+	// parameter table addition
+	$(".tl-add-parameter").click(function(e) {
 		e.preventDefault();
 
-		var tax_count, tax_table;
+		var parent, tax_count, tax_table;
 
-		tax_count = $(".tl-taxonomy-parameter").length - 1;
+		parent = $(this).parent();
 
-		tax_table = $(".tl-taxonomy-parameter-template").clone()
-			.removeClass("tl-taxonomy-parameter-template hidden")
+		tax_count = parent.siblings().length - 1;
+
+		tax_table = parent.next().clone()
+			.removeClass("hide-if-js")
 			.wrap("<div>").parent().html()
 			.replace(/{key}/gi, tax_count);
 
-		$(this).before(tax_table);
+		tax_table = $(tax_table);
+		tax_table.insertBefore($(this));
+
+		// tags input
+		tax_table.find('.tl-tagsinput').tagsInput({
+			height           : "5em",
+			width            : "24em",
+			defaultText      : "add a value",
+			delimiter        : "\t"
+		});
 	});
 
-	$("#tl_taxonomydiv").on("click", ".tl-delete-taxonomy", function(e) {
+	// parameter table deletion
+	$(".inside").on("click", ".tl-delete", function(e) {
 		e.preventDefault();
 
-		$(this).parents(".tl-taxonomy-parameter").remove();
+		$(this).parents(".tl-parameter").remove();
 	});
 });

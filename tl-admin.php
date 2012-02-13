@@ -83,14 +83,16 @@ class TL_Admin {
 
 		wp_enqueue_script( 'jquery-ui-datepicker' );
 
-		wp_enqueue_script( 'the-loops', "{$the_loops->plugin_url}js/script$suffix.js", array( 'jquery-ui-datepicker' ), '20120212' );
+		wp_enqueue_script( 'tl-jquery-tagsinput', "{$the_loops->plugin_url}js/jquery-tagsinput$suffix.js", array( 'jquery' ), '20120213' );
+
+		wp_enqueue_script( 'the-loops', "{$the_loops->plugin_url}js/script$suffix.js", array( 'jquery-ui-datepicker', 'tl-jquery-tagsinput' ), '20120212' );
 
 		if ( 'classic' == get_user_option( 'admin_color') )
 			wp_enqueue_style ( 'jquery-ui-css', "{$the_loops->plugin_url}css/jquery-ui-classic$suffix.css", null, '20120211' );
 		else
 			wp_enqueue_style ( 'jquery-ui-css', "{$the_loops->plugin_url}css/jquery-ui-fresh$suffix.css", null, '20120211' );
 
-		wp_enqueue_style( 'the-loops', "{$the_loops->plugin_url}css/style$suffix.css", null, '20120211' );
+		wp_enqueue_style( 'the-loops', "{$the_loops->plugin_url}css/style$suffix.css", null, '20120213' );
 
 	}
 
@@ -116,6 +118,7 @@ class TL_Admin {
 	public static function add_meta_boxes() {
 		add_meta_box( 'tl_generaldiv', __( 'General' ), array( __CLASS__, 'meta_box_general' ), 'tl_loop', 'normal' );
 		add_meta_box( 'tl_taxonomydiv', __( 'Taxonomy Parameters' ), array( __CLASS__, 'meta_box_taxonomy' ), 'tl_loop', 'normal' );
+		add_meta_box( 'tl_customfielddiv', __( 'Custom Field Parameters' ), array( __CLASS__, 'meta_box_custom_field' ), 'tl_loop', 'normal' );
 		add_meta_box( 'tl_shortcodediv', __( 'Shortcode' ), array( __CLASS__, 'meta_box_shortcode' ), 'tl_loop', 'normal' );
 		add_meta_box( 'tl_widgetdiv', __( 'Widget' ), array( __CLASS__, 'meta_box_widget' ), 'tl_loop', 'normal' );
 	}
@@ -128,7 +131,7 @@ class TL_Admin {
 	 */
 	public static function closed_meta_boxes( $closed ) {
 		if ( false === $closed )
-			$closed = array( 'tl_taxonomydiv', 'tl_widgetdiv' );
+			$closed = array( 'tl_customfielddiv', 'tl_taxonomydiv', 'tl_widgetdiv' );
 
 		return $closed;
 	}
@@ -253,7 +256,7 @@ class TL_Admin {
 		$taxs = get_taxonomies( array( 'public' => true ), 'objects' );
 ?>
 <?php foreach ( $taxonomies as $key => $taxonomy ) : ?>
-	<table class="form-table tl-taxonomy-parameter">
+	<table class="form-table tl-parameter">
 		<tr valign="top">
 			<th scope="row">
 				<label for="loop_taxonomies_<?php echo $key; ?>_taxonomy"><?php _e( 'Taxonomy' ); ?></label>
@@ -267,7 +270,7 @@ class TL_Admin {
 					}
 					?>
 				</select>
-				<a href="#" class="tl-delete-taxonomy">remove</a>
+				<a href="#" class="tl-delete"><?php _e( 'remove' ); ?></a>
 			</td>
 		</tr>
 		<tr valign="top">
@@ -298,9 +301,9 @@ class TL_Admin {
 	</table>
 <?php endforeach; ?>
 
-<p><a id="tl-add-taxonomy-parameter" class="button" href="#"><?php _e( 'New' ); ?></a></p>
+<p><a class="tl-add-parameter button" href="#"><?php _e( 'New Parameter' ); ?></a></p>
 
-<table class="form-table tl-taxonomy-parameter tl-taxonomy-parameter-template hidden">
+<table class="form-table tl-parameter hide-if-js">
 		<tr valign="top">
 			<th scope="row">
 				<label for="loop_taxonomies_{key}_taxonomy"><?php _e( 'Taxonomy' ); ?></label>
@@ -313,7 +316,7 @@ class TL_Admin {
 					}
 					?>
 				</select>
-				<a href="#" class="tl-delete-taxonomy">remove</a>
+				<a href="#" class="tl-delete"><?php _e( 'remove' ); ?></a>
 			</td>
 		</tr>
 		<tr valign="top">
@@ -330,6 +333,130 @@ class TL_Admin {
 				<span class="description"><?php _e( 'Check if you want to hide the terms above instead of showing them' ); ?></span>
 			</td>
 		</tr>
+</table>
+<?php
+	}
+
+	/**
+	 * Display metabox for setting the loop custom field parameters
+	 *
+	 * @package The_Loops
+	 * @since 0.3
+	 */
+	public static function meta_box_custom_field() {
+		global $post_ID;
+
+		$content = get_post_meta( $post_ID, 'tl_loop_content', true );
+
+		$defaults = array(
+			'custom_fields' => array()
+		);
+		$content = wp_parse_args( $content, $defaults );
+		extract( $content );
+?>
+<?php foreach ( $custom_fields as $key => $custom_field ) : ?>
+	<table class="form-table tl-parameter">
+		<tr valign="top">
+			<th scope="row">
+				<label for="loop_custom_fields_<?php echo $key; ?>_key"><?php _e( 'Key' ); ?></label>
+			</th>
+			<td>
+				<input value="<?php echo esc_attr( $custom_field['key'] ); ?>" type="text" id="loop_custom_fields_<?php echo $key; ?>_key" name="loop[custom_fields][<?php echo $key; ?>][key]" class="regular-text" />
+				<a href="#" class="tl-delete"><?php _e( 'remove' ); ?></a>
+			</td>
+		</tr>
+		<tr valign="top">
+			<th scope="row"><label for="loop_custom_fields_<?php echo $key; ?>_compare"><?php _e( 'Comparison' ); ?></label></th>
+			<td>
+				<select id="loop_custom_fields_<?php echo $key; ?>_compare" name="loop[custom_fields][<?php echo $key; ?>][compare]">
+					<option<?php selected( $custom_field['compare'], 'IN' ); ?> value="IN"><?php _e( 'is equal to' ); ?></option>
+					<option<?php selected( $custom_field['compare'], 'NOT IN' ); ?> value="NOT IN"><?php _e( 'is not equal to' ); ?></option>
+					<option<?php selected( $custom_field['compare'], 'LIKE' ); ?> value="LIKE"><?php _e( 'contains' ); ?></option>
+					<option<?php selected( $custom_field['compare'], 'NOT LIKE' ); ?> value="NOT LIKE"><?php _e( "doesn't contain" ); ?></option>
+					<option<?php selected( $custom_field['compare'], 'BETWEEN' ); ?> value="BETWEEN"><?php _e( 'is between' ); ?></option>
+					<option<?php selected( $custom_field['compare'], 'NOT BETWEEN' ); ?> value="NOT BETWEEN"><?php _e( 'is not between' ); ?></option>
+				</select>
+			</td>
+		</tr>
+		<tr valign="top">
+			<th scope="row"><label for="loop_custom_fields_<?php echo $key; ?>_values"><?php _e( 'Values' ); ?></label></th>
+			<td>
+				<input value="<?php echo esc_attr( $custom_field['values'] ); ?>" type="text" id="loop_custom_fields_<?php echo $key; ?>_values" name="loop[custom_fields][<?php echo $key; ?>][values]" class="regular-text tl-tagsinput" />
+				<span class="description"><?php _e( 'Press TAB or ENTER to add several values' ); ?></span><br />
+				<span class="description"><?php _e( 'Add only one value for "contains" and "doesn\'t contain" comparisons' ); ?></span>
+			</td>
+		</tr>
+		<tr valign="top">
+			<th scope="row"><label for="loop_custom_fields_<?php echo $key; ?>_type"><?php _e( 'Type' ); ?></label></th>
+			<td>
+				<select id="loop_custom_fields_<?php echo $key; ?>_type" name="loop[custom_fields][<?php echo $key; ?>][type]">
+					<?php $type = $custom_field['type']; ?>
+					<option<?php selected( $custom_field['type'], 'CHAR' ); ?>>CHAR</option>
+					<option<?php selected( $custom_field['type'], 'NUMERIC' ); ?>>NUMERIC</option>
+					<option<?php selected( $custom_field['type'], 'DECIMAL' ); ?>>DECIMAL</option>
+					<option<?php selected( $custom_field['type'], 'SIGNED' ); ?>>SIGNED</option>
+					<option<?php selected( $custom_field['type'], 'UNSIGNED' ); ?>>UNSIGNED</option>
+					<option<?php selected( $custom_field['type'], 'DATE' ); ?>>DATE</option>
+					<option<?php selected( $custom_field['type'], 'DATETIME' ); ?>>DATETIME</option>
+					<option<?php selected( $custom_field['type'], 'TIME' ); ?>>TIME</option>
+					<option<?php selected( $custom_field['type'], 'BINARY' ); ?>>BINARY</option>
+				</select>
+				<span class="description"><?php _e( "Leave the default if you don't know what this means" ); ?></span>
+			</td>
+		</tr>
+	</table>
+<?php endforeach; ?>
+
+<p><a class="tl-add-parameter button" href="#"><?php _e( 'New Parameter' ); ?></a></p>
+
+<table class="form-table tl-parameter hide-if-js">
+	<tr valign="top">
+		<th scope="row">
+			<label for="loop_custom_fields_{key}_key"><?php _e( 'Key' ); ?></label>
+		</th>
+		<td>
+			<input value="" type="text" id="loop_custom_fields_{key}_key" name="loop[custom_fields][{key}][key]" class="regular-text" />
+			<a href="#" class="tl-delete"><?php _e( 'remove' ); ?></a>
+		</td>
+	</tr>
+	<tr valign="top">
+		<th scope="row"><label for="loop_custom_fields_{key}_compare"><?php _e( 'Comparison' ); ?></label></th>
+		<td>
+			<select id="loop_custom_fields_{key}_compare" name="loop[custom_fields][{key}][compare]">
+				<option value="IN"><?php _e( 'is equal to' ); ?></option>
+				<option value="NOT IN"><?php _e( 'is not equal to' ); ?></option>
+				<option value="LIKE"><?php _e( 'contains' ); ?></option>
+				<option value="NOT LIKE"><?php _e( "doesn't contain" ); ?></option>
+				<option value="BETWEEN"><?php _e( 'is between' ); ?></option>
+				<option value="NOT BETWEEN"><?php _e( 'is not between' ); ?></option>
+			</select>
+		</td>
+	</tr>
+	<tr valign="top">
+		<th scope="row"><label for="loop_custom_fields_{key}_values"><?php _e( 'Values' ); ?></label></th>
+		<td>
+			<input value="" type="text" id="loop_custom_fields_{key}_values" name="loop[custom_fields][{key}][values]" class="regular-text tl-tagsinput" />
+			<span class="description"><?php _e( 'Press TAB or ENTER to add several values' ); ?></span><br />
+			<span class="description"><?php _e( 'Add only one value for "contains" and "doesn\'t contain" comparisons' ); ?></span>
+		</td>
+	</tr>
+	<tr valign="top">
+		<th scope="row"><label for="loop_custom_fields_{key}_type"><?php _e( 'Type' ); ?></label></th>
+		<td>
+			<select id="loop_custom_fields_{key}_type" name="loop[custom_fields][{key}][type]">
+				<option>CHAR</option>
+				<option>NUMERIC</option>
+				<option>DECIMAL</option>
+				<option>SIGNED</option>
+				<option>UNSIGNED</option>
+				<option>DATE</option>
+				<option>DATETIME</option>
+				<option>TIME</option>
+				<option>BINARY</option>
+			</select>
+			<span class="description"><?php _e( "Leave the default if you don't know what this means" ); ?></span>
+		</td>
+	</tr>
 </table>
 <?php
 	}
@@ -463,7 +590,9 @@ class TL_Admin {
 
 		$data = stripslashes_deep( $_POST['loop'] );
 
+		// remove data added by template tables
 		array_pop( $data['taxonomies'] );
+		array_pop( $data['custom_fields'] );
 
 		update_post_meta( $post_id, 'tl_loop_content', $data );
 	}
