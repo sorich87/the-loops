@@ -33,9 +33,9 @@ function tl_WP_Query( $id, $type, $query = '' ) {
 
 	// post type and order
 	$args = array(
-		'post_type' => (array) $content['post_type'],
 		'orderby'   => $content['orderby'],
-		'order'     => $content['order']
+		'order'     => $content['order'],
+		'post_type' => (array) $content['post_type']
 	);
 
 	// pagination
@@ -44,6 +44,12 @@ function tl_WP_Query( $id, $type, $query = '' ) {
 		$args['nopaging'] = true;
 	} else {
 		$args['posts_per_page'] = $posts_per_page;
+	}
+
+	if ( empty( $content['pagination'] ) ) {
+		$args['paged'] = 1;
+	} else {
+		$args['paged'] = max( 1, get_query_var( 'paged' ) );
 	}
 
 	// author
@@ -180,27 +186,55 @@ function tl_get_loops( $args = array() ) {
  * @param array|string Custom query args
  */
 function tl_display_loop( $loop_id, $type, $args = null ) {
+	global $wp_query;
+
 	$tl_query = tl_WP_Query( $loop_id, $type, $args );
+
+	$tmp_query = clone $wp_query;
+	$wp_query  = clone $tl_query;
+
+	$content = get_post_meta( $loop_id, 'tl_loop_content', true );
 
 	ob_start();
 
 	echo '<div class="tl-loop">';
 
-	if ( $tl_query->have_posts() ) :
-		while( $tl_query->have_posts() ) :
-			$tl_query->the_post();
+	if ( have_posts() ) :
+		while( have_posts() ) :
+			the_post();
 
 			echo tl_display_post( $loop_id, $type );
 		endwhile;
-		wp_reset_query();
 	else:
 		tl_not_found( $loop_id );
 	endif;
+
+	if ( ! empty( $content['pagination'] ) ) {
+		switch ( $content['pagination'] ) {
+			case 'numeric' :
+				$pagination = paginate_links( array(
+					'base' => str_replace( 999999999, '%#%', get_pagenum_link( 999999999 ) ),
+					'format' => '?paged=%#%',
+					'current' => max( 1, get_query_var('paged') ),
+					'total' => $tl_query->max_num_pages
+				) );
+				break;
+
+			default:
+				$pagination = get_posts_nav_link();
+				break;
+		}
+
+		echo '<div class="pagination">' . apply_filters( 'tl_loop_pagination', $pagination, $tl_query ) . '</div>';
+	}
 
 	echo '</div>';
 
 	$content = ob_get_contents();
 	ob_end_clean();
+
+	$wp_query = clone $tmp_query;
+	wp_reset_query();
 
 	return $content;
 }

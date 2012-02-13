@@ -499,6 +499,16 @@ class TL_Admin {
 		</td>
 	</tr>
 	<tr valign="top">
+		<th scope="row"><label for="loop_pagination"><?php _e( 'Pagination' ); ?></label></th>
+		<td>
+			<select id="loop_pagination" name="loop[pagination]">
+				<option value=""><?php _e( 'none' ); ?></option>
+				<option<?php selected( $content['pagination'], 'previous_next' ); ?> value="previous_next"><?php _e( 'previous and next links only' ); ?></option>
+				<option<?php selected( $content['pagination'], 'numeric' ); ?> value="numeric"><?php _e( 'numeric' ); ?></option>
+			</select>
+		</td>
+	</tr>
+	<tr valign="top">
 		<th scope="row"><label for="loop_shortcode_template"><?php _e( 'Template' ); ?></label></th>
 		<td>
 			<select id="loop_shortcode_template" name="loop[shortcode][template]">
