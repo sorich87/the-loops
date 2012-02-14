@@ -24,7 +24,7 @@ class TL_Meta_Boxes {
 		add_meta_box( 'tl_generaldiv', __( 'General' ), array( __CLASS__, 'meta_box_general' ), 'tl_loop', 'normal' );
 		add_meta_box( 'tl_taxonomydiv', __( 'Taxonomy Parameters' ), array( __CLASS__, 'meta_box_taxonomy' ), 'tl_loop', 'normal' );
 		add_meta_box( 'tl_customfielddiv', __( 'Custom Field Parameters' ), array( __CLASS__, 'meta_box_custom_field' ), 'tl_loop', 'normal' );
-		add_meta_box( 'tl_displaydiv', __( 'Display' ), array( __CLASS__, 'meta_box_display' ), 'tl_loop', 'normal' );
+		add_meta_box( 'tl_orderpaginationdiv', __( 'Order & Pagination Parameters' ), array( __CLASS__, 'meta_box_order_pagination' ), 'tl_loop', 'normal' );
 	}
 
 	/**
@@ -41,10 +41,11 @@ class TL_Meta_Boxes {
 		$content = get_post_meta( $post_ID, 'tl_loop_content', true );
 
 		$defaults = array(
-			'post_type' => array( 'post' ), 'orderby' => 'title', 'order' => 'ASC',
+			'post_type' => array( 'post' ),
+			'template'  => 'List of full posts',
 			'not_found' => '<p>' . __( 'Nothing found!' ) . '</p>',
-			'authors' => '',
-			'date' => array(
+			'authors'   => '',
+			'date'      => array(
 				'min' => '',
 				'max' => '',
 			)
@@ -53,7 +54,7 @@ class TL_Meta_Boxes {
 ?>
 <table class="form-table">
 	<tr valign="top">
-	<th scope="row"><label for="loop_post_type"><?php _e( 'Display' ); ?></label></th>
+		<th scope="row"><label for="loop_post_type"><?php _e( 'Display' ); ?></label></th>
 		<td>
 			<select id="loop_post_type" name="loop[post_type][]" multiple="multiple">
 				<?php
@@ -63,28 +64,6 @@ class TL_Meta_Boxes {
 					echo "<option value='" . esc_attr( $ptype_name ) . "'$selected>{$ptype_obj->label}</option>";
 				}
 				?>
-			</select>
-		</td>
-	</tr>
-	<tr valign="top">
-	<th scope="row"><label for="loop_orderby"><?php _e( 'Sorted by' ); ?></label></th>
-		<td>
-			<select id="loop_orderby" name="loop[orderby]">
-				<?php
-				$orderby_params = array(
-					'ID' => __( 'ID' ), 'author' => __( 'Author' ), 'title' => __( 'Title' ),
-					'date' => __( 'Publication date' ), 'modified' => __( 'Last modified date' ), 'parent' => __( 'Parent ID' ),
-					'rand' => __( 'Random order' ), 'comment_count' => __( 'Number of comments' ), 'menu_order' => __( 'Page order' )
-				);
-				foreach ( $orderby_params as $key => $label ) {
-					$selected = selected( $key, $content['orderby'] );
-					echo "<option value='" . esc_attr( $key ) . "'$selected>{$label}</option>";
-				}
-				?>
-			</select>
-			<select id="loop_order" name="loop[order]">
-				<option value="DESC"<?php selected( 'DESC', $content['order'], true ); ?>><?php _e( 'DESC' ); ?></option>
-				<option value="ASC"<?php selected( 'ASC', $content['order'], true ); ?>><?php _e( 'ASC' ); ?></option>
 			</select>
 		</td>
 	</tr>
@@ -106,10 +85,37 @@ class TL_Meta_Boxes {
 		</td>
 	</tr>
 	<tr valign="top">
+		<th scope="row"><label for="loop_template"><?php _e( 'Template' ); ?></label></th>
+		<td>
+			<select id="loop_template" name="loop[template]">
+				<?php
+				$loop_templates = tl_get_loop_templates();
+				foreach ( $loop_templates as $name => $file ) {
+					$selected = selected( $name, $content['template'] );
+					echo "<option value='" . esc_attr( $name ) . "'$selected>{$name}</option>";
+				}
+				?>
+			</select>
+		</td>
+	</tr>
+	<tr valign="top">
 		<th scope="row"><label for="loop_not_found"><?php _e( 'Not found text' ); ?></label></th>
 		<td>
 			<input type="text" id="loop_not_found" name="loop[not_found]" value="<?php echo esc_attr( $content['not_found'] ); ?>" class="regular-text" />
 			<span class="description"><?php _e( 'Text to display when nothing found' ); ?></span>
+		</td>
+	</tr>
+	<tr valign="top">
+		<th scope="row"><?php _e( 'Shortcode' ); ?></th>
+		<td>
+			<code><?php echo '[the-loop id="' . $post_ID . '"]'; ?></code>
+			<span class="description"><?php _e( 'To use the shortcode, copy/paste it in the post or page where you want to display the loop' ); ?></span>
+		</td>
+	</tr>
+	<tr valign="top">
+		<th scope="row"><?php _e( 'Widget' ); ?></th>
+		<td>
+			<span class="description"><?php printf( __( 'To use the widget, <a href="%s">go to the widgets management screen</a> and assign The Loops widget to a sidebar' ), site_url( 'wp-admin/widgets.php' ) ) ?></span>
 		</td>
 	</tr>
 </table>
@@ -354,26 +360,45 @@ class TL_Meta_Boxes {
 	 * @package The_Loops
 	 * @since 0.3
 	 */
-	public static function meta_box_display() {
+	public static function meta_box_order_pagination() {
 		global $post_ID;
 
 		$content = get_post_meta( $post_ID, 'tl_loop_content', true );
 
 		$defaults = array(
+			'orderby' => 'title', 'order' => 'ASC',
 			'pagination'     => '',
-			'posts_per_page' => get_option( 'posts_per_page' ),
-			'template'       => 'List of full posts'
+			'posts_per_page' => get_option( 'posts_per_page' )
 		);
 		$content = wp_parse_args( $content, $defaults );
-
-		$loop_templates = tl_get_loop_templates();
 ?>
 <table class="form-table">
 	<tr valign="top">
-		<th scope="row"><label for="loop_posts_per_page"><?php _e( 'Show' ); ?></label></th>
+		<th scope="row"><label for="loop_orderby"><?php _e( 'Sorted by' ); ?></label></th>
+		<td>
+			<select id="loop_orderby" name="loop[orderby]">
+				<?php
+				$orderby_params = array(
+					'ID' => __( 'ID' ), 'author' => __( 'Author' ), 'title' => __( 'Title' ),
+					'date' => __( 'Publication date' ), 'modified' => __( 'Last modified date' ), 'parent' => __( 'Parent ID' ),
+					'rand' => __( 'Random order' ), 'comment_count' => __( 'Number of comments' ), 'menu_order' => __( 'Page order' )
+				);
+				foreach ( $orderby_params as $key => $label ) {
+					$selected = selected( $key, $content['orderby'] );
+					echo "<option value='" . esc_attr( $key ) . "'$selected>{$label}</option>";
+				}
+				?>
+			</select>
+			<select id="loop_order" name="loop[order]">
+				<option value="DESC"<?php selected( 'DESC', $content['order'], true ); ?>><?php _e( 'DESC' ); ?></option>
+				<option value="ASC"<?php selected( 'ASC', $content['order'], true ); ?>><?php _e( 'ASC' ); ?></option>
+			</select>
+		</td>
+	</tr>
+	<tr valign="top">
+		<th scope="row"><label for="loop_posts_per_page"><?php _e( 'Items per page' ); ?></label></th>
 		<td>
 			<input type="text" id="loop_posts_per_page" name="loop[posts_per_page]" value="<?php echo esc_attr( $content['posts_per_page'] ); ?>" size="3" />
-			<span><?php _e( 'items on the page' ); ?></span>
 			<span class="description"><?php _e( 'If this is left empty, all the items will be displayed' ); ?></span>
 		</td>
 	</tr>
@@ -385,32 +410,6 @@ class TL_Meta_Boxes {
 				<option<?php selected( $content['pagination'], 'previous_next' ); ?> value="previous_next"><?php _e( 'previous and next links only' ); ?></option>
 				<option<?php selected( $content['pagination'], 'numeric' ); ?> value="numeric"><?php _e( 'numeric' ); ?></option>
 			</select>
-		</td>
-	</tr>
-	<tr valign="top">
-		<th scope="row"><label for="loop_template"><?php _e( 'Template' ); ?></label></th>
-		<td>
-			<select id="loop_template" name="loop[template]">
-				<?php
-				foreach ( $loop_templates as $name => $file ) {
-					$selected = selected( $name, $content['template'] );
-					echo "<option value='" . esc_attr( $name ) . "'$selected>{$name}</option>";
-				}
-				?>
-			</select>
-		</td>
-	</tr>
-	<tr valign="top">
-		<th scope="row"><?php _e( 'Shortcode' ); ?></th>
-		<td>
-			<code><?php echo '[the-loop id="' . $post_ID . '"]'; ?></code>
-			<span class="description"><?php _e( 'To use the shortcode, copy/paste it in the post or page where you want to display the loop' ); ?></span>
-		</td>
-	</tr>
-	<tr valign="top">
-		<th scope="row"><?php _e( 'Widget' ); ?></th>
-		<td>
-			<span class="description"><?php printf( __( 'To use the widget, <a href="%s">go to the widgets management screen</a> and assign The Loops widget to a sidebar' ), site_url( 'wp-admin/widgets.php' ) ) ?></span>
 		</td>
 	</tr>
 </table>
