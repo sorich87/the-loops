@@ -126,7 +126,8 @@ class TL_Meta_Boxes {
 			'post_parent'   => '',
 			'post_status'   => array( 'publish' ),
 			'posts'         => '',
-			'readable'      => 1
+			'readable'      => 1,
+			'sticky_posts'  => 'top'
 		);
 		$content = wp_parse_args( $content, $defaults );
 ?>
@@ -176,6 +177,22 @@ class TL_Meta_Boxes {
 			<?php $checked = checked( $exclude_posts, 1, false ); ?>
 			<input<?php echo $checked; ?> type="checkbox" id="loop_exclude_posts" name="loop[exclude_posts]" value="1" />
 			<span class="description"><?php _e( 'Exclude the item ids defined above instead of including them' ); ?></span>
+		</td>
+	</tr>
+	<tr valign="top">
+		<th scope="row"><?php _e( 'Sticky posts' ); ?></th>
+		<td>
+			<input<?php checked( $content['sticky_posts'], 'top' ); ?> value="top" id="loop_sticky_posts_top" name="loop[sticky_posts]" type="radio" />
+			<label for="loop_sticky_posts_top"><?php _e( 'Show sticky posts before all the other posts' ); ?></label><br />
+
+			<input<?php checked( $content['sticky_posts'], 'ignore' ); ?> value="ignore" id="loop_sticky_posts_ignore" name="loop[sticky_posts]" type="radio" />
+			<label for="loop_sticky_posts_ignore"><?php _e( 'Show sticky posts in the natural order of the loop' ); ?></label><br />
+
+			<input<?php checked( $content['sticky_posts'], 'only' ); ?> value="only" id="loop_sticky_posts_only" name="loop[sticky_posts]" type="radio" />
+			<label for="loop_sticky_posts_only"><?php _e( 'Show sticky posts only' ); ?></label><br />
+
+			<input<?php checked( $content['sticky_posts'], 'hide' ); ?> value="hide" id="loop_sticky_posts_hide" name="loop[sticky_posts]" type="radio" />
+			<label for="loop_sticky_posts_hide"><?php _e( 'Hide sticky posts' ); ?></label><br />
 		</td>
 	</tr>
 </table>

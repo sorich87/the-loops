@@ -22,6 +22,8 @@ if ( ! defined( 'ABSPATH' ) )
  * @return WP_Query
  */
 function tl_query( $id, $query = '' ) {
+	global $the_loop_context, $post_ID;
+
 	$content = tl_get_loop_parameters( $id );
 
 	$args = array();
@@ -83,6 +85,8 @@ function tl_query( $id, $query = '' ) {
 	// posts
 	$args['post_parent'] = absint( $content['post_parent'] );
 
+	$args['post__in'] = $args['post__not_in'] = array();
+
 	if ( ! empty( $content['posts'] ) ) {
 		$posts = _tl_csv_to_array( $content['posts'] );
 		$posts = array_map( 'absint', $posts );
@@ -113,6 +117,26 @@ function tl_query( $id, $query = '' ) {
 		}
 	} else {
 		$args['orderby'] = $content['orderby'];
+	}
+
+	// sticky post
+	switch( $content['sticky_posts'] ) {
+		case 'ignore' :
+			$args['ignore_sticky_posts'] = true;
+			break;
+
+		case 'only' :
+			$args['ignore_sticky_posts'] = true;
+			$args['post__in'] = array_merge( $args['post__in'], get_option( 'sticky_posts' ) );
+			break;
+
+		case 'hide' :
+			$args['ignore_sticky_posts'] = true;
+			$args['post__not_in'] = array_merge( $args['post__not_in'], get_option( 'sticky_posts' ) );
+			break;
+
+		default:
+			break;
 	}
 
 	// time
@@ -183,6 +207,18 @@ function tl_query( $id, $query = '' ) {
 	}
 
 	$args = wp_parse_args( $query, $args );
+
+	// if a shortcode is being used, don't display the post in which it was inserted
+	if ( 'shortcode' == $the_loop_context ) {
+		if ( ! empty( $args['post__in'] ) ) {
+			$key = array_search( get_the_ID(), $args['post__in'] );
+			unset( $args['posts__in'][$key] );
+		} else if ( ! empty( $args['post__not_in'] ) ) {
+			$args['post__not_in'] = array_merge( $args['post__not_in'], (array) get_the_ID() );
+		} else {
+			$args['post__not_in'] = (array) get_the_ID();
+		}
+	}
 
 	add_filter( 'posts_where', 'tl_filter_where' );
 	$query = new WP_Query( $args );
@@ -339,21 +375,7 @@ function tl_shortcode( $atts ) {
 
 	$details = tl_get_loop_parameters( $id );
 
-	// Exclude current post/page where the shortcode will be displayed
-	$post__not_in = array();
-
-	if ( ! empty( $details['exclude_posts'] ) && ! empty( $details['posts'] ) ) {
-		$posts = _tl_csv_to_array( $details['posts'] );
-		$post__not_in = array_map( 'absint', $posts );
-	}
-
-	$args = array(
-		'post__not_in' => array_merge( $post__not_in, (array) get_the_ID() )
-	);
-
-	$content = tl_display_loop( $id, $details['template'], $args, 'shortcode' );
-
-	return $content;
+	return tl_display_loop( $id, $details['template'], null, 'shortcode' );
 }
 add_shortcode( 'the-loop', 'tl_shortcode' );
 
