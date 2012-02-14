@@ -14,6 +14,18 @@ jQuery(function($) {
 		}
 	});
 
+	// tags input
+	var customTagsInput = function() {
+		$(this).tagsInput({
+			height           : "5em",
+			width            : "24em",
+			defaultText      : "add a value",
+			delimiter        : "\t"
+		})
+	};
+
+	$(".tl-parameter").not(".hide-if-js").find(".tl-tagsinput").each(customTagsInput);
+
 	// parameter table addition
 	$(".tl-add-parameter").click(function(e) {
 		e.preventDefault();
@@ -33,12 +45,7 @@ jQuery(function($) {
 		tax_table.insertBefore($(this));
 
 		// tags input
-		tax_table.find('.tl-tagsinput').tagsInput({
-			height           : "5em",
-			width            : "24em",
-			defaultText      : "add a value",
-			delimiter        : "\t"
-		});
+		tax_table.find('.tl-tagsinput').each(customTagsInput);
 	});
 
 	// parameter table deletion
