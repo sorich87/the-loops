@@ -166,7 +166,7 @@ class TL_Admin {
 		array_pop( $data['taxonomies'] );
 		array_pop( $data['custom_fields'] );
 
-		update_post_meta( $post_id, 'tl_loop_content', $data );
+		update_post_meta( $post_id, '_tl_loop_parameters', $data );
 	}
 
 	/**

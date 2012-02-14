@@ -38,7 +38,7 @@ class TL_Meta_Boxes {
 
 		wp_nonce_field( 'tl_edit_loop', '_tlnonce' );
 
-		$content = get_post_meta( $post_ID, 'tl_loop_content', true );
+		$content = tl_get_loop_parameters( $post_ID );
 
 		$defaults = array(
 			'post_type' => array( 'post' ),
@@ -131,7 +131,7 @@ class TL_Meta_Boxes {
 	public static function meta_box_taxonomy() {
 		global $post_ID;
 
-		$content = get_post_meta( $post_ID, 'tl_loop_content', true );
+		$content = tl_get_loop_parameters( $post_ID );
 
 		$defaults = array(
 			'taxonomies' => array()
@@ -239,7 +239,7 @@ class TL_Meta_Boxes {
 	public static function meta_box_custom_field() {
 		global $post_ID;
 
-		$content = get_post_meta( $post_ID, 'tl_loop_content', true );
+		$content = tl_get_loop_parameters( $post_ID );
 
 		$defaults = array(
 			'custom_fields' => array()
@@ -363,7 +363,7 @@ class TL_Meta_Boxes {
 	public static function meta_box_order_pagination() {
 		global $post_ID;
 
-		$content = get_post_meta( $post_ID, 'tl_loop_content', true );
+		$content = tl_get_loop_parameters( $post_ID );
 
 		$defaults = array(
 			'meta_key'       => '',

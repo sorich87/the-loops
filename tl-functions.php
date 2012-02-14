@@ -22,13 +22,7 @@ if ( ! defined( 'ABSPATH' ) )
  * @return WP_Query
  */
 function tl_query( $id, $query = '' ) {
-	global $the_loops, $loop_id;
-
-	$loop_id = $id;
-	if ( empty ( $loop_id ) )
-		return;
-
-	$content = get_post_meta( $loop_id, 'tl_loop_content', true );
+	$content = tl_get_loop_parameters( $id );
 
 	// post type
 	$args = array(
@@ -150,11 +144,40 @@ function tl_query( $id, $query = '' ) {
 
 	$args = wp_parse_args( $query, $args );
 
-	add_filter( 'posts_where', array( $the_loops, 'filter_where' ) );
+	add_filter( 'posts_where', 'tl_filter_where' );
 	$query = new WP_Query( $args );
-	remove_filter( 'posts_where', array( $the_loops, 'filter_where' ) );
+	remove_filter( 'posts_where', 'tl_filter_where' );
 
 	return $query;
+}
+
+/**
+ * Filter WP_Query where clause
+ *
+ * @package The_Loops
+ * @since 0.3
+ */
+function tl_filter_where( $where ) {
+	global $the_loop_id;
+
+	$content = tl_get_loop_parameters( $the_loop_id );
+
+	$min_date = ! empty( $content['date']['min'] ) ? strtotime( $content['date']['min'] ) : null;
+	$max_date = ! empty( $content['date']['max'] ) ? strtotime( $content['date']['max'] ) : null;
+
+	if ( $max_date )
+		$max_date = $max_date + 60 * 60 * 24;
+
+	$min_date = $min_date ? date( 'Y-m-d', $min_date ) : null;
+	$max_date = $max_date ? date( 'Y-m-d', $max_date ) : null;
+
+	if ( $min_date )
+		$where .= " AND post_date >= '$min_date'";
+
+	if ( $max_date )
+		$where .= " AND post_date < '$max_date'";
+
+	return $where;
 }
 
 /**
@@ -197,14 +220,14 @@ function tl_get_loops( $args = array() ) {
  * @since 0.1
  */
 function tl_setup_globals( $loop_id, $args, $context ) {
-	global $wp_query, $orig_query, $tl_loop_id, $tl_context;
+	global $wp_query, $orig_query, $the_loop_id, $the_loop_context;
 
-	$tl_loop_id  = $loop_id;
-	$tl_context  = $context;
+	$the_loop_id      = $loop_id;
+	$the_loop_context = $context;
 
 	$tl_query = tl_query( $loop_id, $args );
 	$orig_query = clone $wp_query;
-	$wp_query  = clone $tl_query;
+	$wp_query   = clone $tl_query;
 }
 
 /**
@@ -214,12 +237,12 @@ function tl_setup_globals( $loop_id, $args, $context ) {
  * @since 0.3
  */
 function tl_clear_globals() {
-	global $wp_query, $orig_query, $tl_loop_id, $tl_context;
+	global $wp_query, $orig_query, $the_loop_id, $the_loop_context;
 
 	$wp_query = clone $orig_query;
 	wp_reset_query();
 
-	unset( $orig_query, $tl_loop_id, $tl_context );
+	unset( $orig_query, $the_loop_id, $the_loop_context );
 }
 
 /**
@@ -272,7 +295,7 @@ function tl_shortcode( $atts ) {
 	$args = array(
 		'post__not_in' => array( $post_id )
 	);
-	$details = get_post_meta( $id, 'tl_loop_content', true );
+	$details = tl_get_loop_parameters( $id );
 
 	$content = tl_display_loop( $id, $details['template'], $args, 'shortcode' );
 
@@ -380,5 +403,18 @@ function tl_locate_template( $template_names, $load = false, $require_once = fal
 		load_template( $located, $require_once );
 
 	return $located;
+}
+
+/**
+ * Get loop parameters
+ *
+ * @package The_Loops
+ * @since 0.3
+ *
+ * @param int  $loop_id Loop ID
+ * @return array Loop parameters
+ */
+function tl_get_loop_parameters( $loop_id ) {
+	return get_post_meta( $loop_id, '_tl_loop_parameters', true );
 }
 

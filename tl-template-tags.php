@@ -9,10 +9,10 @@
  * @param int $tl_loop_id Loop ID.
  */
 function tl_not_found_text( $tl_loop_id = 0, $echo = true ) {
-	if ( empty( $tl_loop_id ) )
-		global $tl_loop_id;
+	if ( empty( $the_loop_id ) )
+		global $the_loop_id;
 
-	$content = get_post_meta( $tl_loop_id, 'tl_loop_content', true );
+	$content = tl_get_loop_parameters( $the_loop_id );
 
 	if ( $echo )
 		echo $content['not_found'];
@@ -28,15 +28,15 @@ function tl_not_found_text( $tl_loop_id = 0, $echo = true ) {
  *
  * @param int $tl_loop_id Loop ID
  */
-function tl_pagination( $tl_loop_id = 0, $echo = true ) {
+function tl_pagination( $the_loop_id = 0, $echo = true ) {
 	global $wp_query;
 
-	if ( empty( $tl_loop_id ) )
-		global $tl_loop_id;
+	if ( empty( $the_loop_id ) )
+		global $the_loop_id;
 
 	$pagination = '';
 
-	$content = get_post_meta( $tl_loop_id, 'tl_loop_content', true );
+	$content = tl_get_loop_parameters( $the_loop_id );
 
 	if ( 'widget' != tl_get_loop_context() && ! empty( $content['pagination'] ) ) {
 		switch ( $content['pagination'] ) {
@@ -71,7 +71,7 @@ function tl_pagination( $tl_loop_id = 0, $echo = true ) {
  * @since 0.3
  */
 function tl_get_loop_context() {
-	global $tl_context;
-	return $tl_context;
+	global $the_loop_context;
+	return $the_loop_context;
 }
 
