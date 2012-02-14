@@ -198,51 +198,24 @@ function tl_get_loops( $args = array() ) {
  * @param int $loop_id Loop ID.
  * @param string $template Name of the template to use
  * @param array|string Custom query args
+ * @param string Context in which the loop is displayed
  */
-function tl_display_loop( $loop_id, $template, $args = null ) {
-	global $wp_query, $tl_loop_context;
+function tl_display_loop( $loop_id, $template, $args = null, $context = '' ) {
+	global $the_loops, $wp_query, $tl_loop_id, $tl_template, $tl_context;
+
+	$tl_loop_id  = $loop_id;
+	$tl_template = $template;
+	$tl_context  = $context;
 
 	$tl_query = tl_query( $loop_id, $args );
-
 	$tmp_query = clone $wp_query;
 	$wp_query  = clone $tl_query;
 
-	$content = get_post_meta( $loop_id, 'tl_loop_content', true );
-
 	ob_start();
 
-	echo '<div class="tl-loop">';
+	include( "{$the_loops->plugin_dir}tl-template-tags.php" );
 
-	if ( have_posts() ) :
-		while( have_posts() ) :
-			the_post();
-
-			echo tl_display_post( $loop_id, $template );
-		endwhile;
-	else:
-		tl_not_found( $loop_id );
-	endif;
-
-	if ( 'widget' != $tl_loop_context && ! empty( $content['pagination'] ) ) {
-		switch ( $content['pagination'] ) {
-			case 'numeric' :
-				$pagination = paginate_links( array(
-					'base'    => str_replace( 999999999, '%#%', get_pagenum_link( 999999999 ) ),
-					'format'  => '?paged=%#%',
-					'current' => max( 1, get_query_var('paged') ),
-					'total'   => $wp_query->max_num_pages
-				) );
-				break;
-
-			default:
-				$pagination = get_posts_nav_link();
-				break;
-		}
-
-		echo '<div class="pagination">' . apply_filters( 'tl_loop_pagination', $pagination, $tl_query ) . '</div>';
-	}
-
-	echo '</div>';
+	tl_locate_template( 'the-loops-index.php', true );
 
 	$content = ob_get_contents();
 	ob_end_clean();
@@ -254,55 +227,12 @@ function tl_display_loop( $loop_id, $template, $args = null ) {
 }
 
 /**
- * Display one post in the loop
- *
- * @package The_Loops
- * @since 0.1
- *
- * @param int $loop_id Loop ID.
- * @param string $loop_template Name of the template to use
- */
-function tl_display_post( $loop_id, $loop_template ) {
-	$content = get_post_meta( $loop_id, 'tl_loop_content', true );
-
-	$loop_templates = tl_get_loop_templates();
-	$loop_template_file = $loop_templates[$loop_template];
-
-	ob_start();
-
-	tl_locate_template( $loop_template_file, true );
-
-	$content = ob_get_contents();
-	ob_end_clean();
-
-	return $content;
-}
-
-/**
- * Display not found text
- *
- * @package The_Loops
- * @since 0.1
- *
- * @param int $loop_id Loop ID.
- */
-function tl_not_found( $loop_id ) {
-	$content = get_post_meta( $loop_id, 'tl_loop_content', true );
-
-	echo $content['not_found'];
-}
-
-/**
  * Add the loops shortcode which will render a loop from an id provided as attribute
  *
  * @package The_Loops
  * @since 0.1
  */
 function tl_shortcode( $atts ) {
-	global $tl_loop_context;
-
-	$tl_loop_context = 'shortcode';
-
 	extract( shortcode_atts( array(
 		'id' => 0,
 	), $atts ) );
@@ -315,9 +245,7 @@ function tl_shortcode( $atts ) {
 	);
 	$details = get_post_meta( $id, 'tl_loop_content', true );
 
-	$content = tl_display_loop( $id, $details['template'], $args );
-
-	$tl_loop_context = null;
+	$content = tl_display_loop( $id, $details['template'], $args, 'shortcode' );
 
 	return $content;
 }
@@ -331,6 +259,7 @@ add_shortcode( 'the-loop', 'tl_shortcode' );
  */
 function tl_get_default_loop_templates() {
 	global $the_loops;
+
 	$templates_files = scandir( $the_loops->templates_dir );
 
 	foreach ( $templates_files as $template ) {
@@ -406,14 +335,14 @@ function tl_locate_template( $template_names, $load = false, $require_once = fal
 		if ( ! $template_name )
 			continue;
 
-		if ( file_exists($the_loops->templates_dir . $template_name) ) {
-			$located = $the_loops->templates_dir . $template_name;
-			break;
-		} else if ( file_exists(STYLESHEETPATH . '/' . $template_name) ) {
+		if ( file_exists( STYLESHEETPATH . '/' . $template_name ) ) {
 			$located = STYLESHEETPATH . '/' . $template_name;
 			break;
-		} else if ( file_exists(TEMPLATEPATH . '/' . $template_name) ) {
+		} else if ( file_exists( TEMPLATEPATH . '/' . $template_name ) ) {
 			$located = TEMPLATEPATH . '/' . $template_name;
+			break;
+		} else if ( file_exists( $the_loops->templates_dir . $template_name ) ) {
+			$located = $the_loops->templates_dir . $template_name;
 			break;
 		}
 	}
@@ -422,16 +351,5 @@ function tl_locate_template( $template_names, $load = false, $require_once = fal
 		load_template( $located, $require_once );
 
 	return $located;
-}
-
-/**
- * Return loop context. 'widget' or 'shortcode'
- *
- * @package The_Loops
- * @since 0.2
- */
-function tl_loop_context() {
-	global $tl_loop_context;
-	return $tl_loop_context;
 }
 

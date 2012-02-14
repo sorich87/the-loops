@@ -12,8 +12,6 @@ class TL_Widget extends WP_Widget {
 	}
 
 	function widget( $args, $instance ) {
-		global $tl_loop_context;
-
 		extract( $args );
 
 		$instance['title'] = apply_filters( 'widget_title', empty( $instance['title'] ) ? '' : $instance['title'], $instance, $this->id_base );
@@ -28,9 +26,7 @@ class TL_Widget extends WP_Widget {
 			'posts_per_page' => $instance['posts_per_page']
 		);
 
-		$tl_loop_context = 'widget';
-		echo tl_display_loop( $instance['loop_id'], $instance['template'], $args );
-		$tl_loop_context = null;
+		echo tl_display_loop( $instance['loop_id'], $instance['template'], $args, 'widget' );
 
 		echo $after_widget;
 	}

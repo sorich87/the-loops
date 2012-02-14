@@ -11,11 +11,12 @@
  * @since 0.2
  */
 
-if ( 'widget' == tl_loop_context() )
+if ( 'widget' == tl_get_loop_context() )
 	$heading_tag = 'h4';
 else
 	$heading_tag = 'h2';
 ?>
+
 <<?php echo $heading_tag; ?>>
 	<a href="<?php the_permalink(); ?>" title="<?php printf( esc_attr__( 'Permalink to %s', 'twentyeleven' ), the_title_attribute( 'echo=0' ) ); ?>" rel="bookmark"><?php the_title(); ?></a>
 </<?php echo $heading_tag; ?>>
