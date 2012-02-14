@@ -33,8 +33,6 @@ class TL_Admin {
 		add_filter( 'post_updated_messages', array( __CLASS__, 'loop_updated_messages' ) );
 		add_filter( 'screen_layout_columns', array( __CLASS__, 'loop_screen_layout_columns' ), 10, 2 );
 		add_filter( 'script_loader_src', array( __CLASS__, 'disable_autosave' ), 10, 2 );
-
-		self::$current_db_version = get_option( 'tl_db_version' );
 	}
 
 	/**
