@@ -115,6 +115,27 @@ function tl_query( $id, $query = '' ) {
 		$args['orderby'] = $content['orderby'];
 	}
 
+	// time
+	if ( 'period' == $content['date_type'] ) {
+		if ( ! empty( $content['time']['year'] ) )
+			$args['year'] = absint( $content['time']['year'] );
+
+		if ( ! empty( $content['time']['monthnum'] ) )
+			$args['monthnum'] = $content['time']['monthnum'];
+
+		if ( ! empty( $content['time']['w'] ) )
+			$args['w'] = $content['time']['w'];
+
+		if ( ! empty( $content['time']['day'] ) )
+			$args['day'] = $content['time']['day'];
+
+		if ( ! empty( $content['time']['minute'] ) )
+			$args['minute'] = $content['time']['minute'];
+
+		if ( ! empty( $content['time']['second'] ) )
+			$args['second'] = $content['time']['second'];
+	}
+
 	// custom field
 	if ( ! empty( $content['custom_fields'] ) ) {
 		$meta_query = array();
@@ -181,10 +202,13 @@ function tl_filter_where( $where ) {
 
 	$content = tl_get_loop_parameters( $the_loop_id );
 
+	if ( ! in_array( $content['date_type'], array( 'dynamic', 'static' ) ) )
+		return $where;
+
 	if ( 'dynamic' == $content['date_type'] ) {
 		$min_date = ! empty( $content['days']['min'] ) ? strtotime( "-{$content['days']['min']} days" ) : null;
 		$max_date = ! empty( $content['days']['max'] ) ? strtotime( "-{$content['days']['max']} days" ) : null;
-	} else {
+	} else if( 'static' == $content['date_type'] ) {
 		$min_date = ! empty( $content['date']['min'] ) ? strtotime( $content['date']['min'] ) : null;
 		$max_date = ! empty( $content['date']['max'] ) ? strtotime( $content['date']['max'] ) : null;
 	}

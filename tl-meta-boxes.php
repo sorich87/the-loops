@@ -202,6 +202,15 @@ class TL_Meta_Boxes {
 			'days'      => array(
 				'min' => '',
 				'max' => ''
+			),
+			'time'      => array(
+				'day'      => '',
+				'hour'     => '',
+				'minute'   => '',
+				'monthnum' => '',
+				'second'   => '',
+				'w'        => '',
+				'year'     => ''
 			)
 		);
 		$content = wp_parse_args( $content, $defaults );
@@ -214,10 +223,11 @@ class TL_Meta_Boxes {
 			<select id="loop_date_type" name="loop[date_type]">
 				<option<?php selected( $content['date_type'], 'static' ); ?> value="static"><?php _e( 'static' ); ?></option>
 				<option<?php selected( $content['date_type'], 'dynamic' ); ?> value="dynamic"><?php _e( 'dynamic' ); ?></option>
+				<option<?php selected( $content['date_type'], 'period' ); ?> value="period"><?php _e( 'pediod' ); ?></option>
 			</select>
 		</td>
 	</tr>
-	<?php $maybe_hide = 'dynamic' == $content['date_type'] ? ' hide-if-js' : ''; ?>
+	<?php $maybe_hide = 'static' == $content['date_type'] ? '' : ' hide-if-js'; ?>
 	<tr valign="top" class="tl_date<?php echo $maybe_hide; ?>">
 		<th scope="row"><label for="loop-min-date"><?php _e( 'Date' ); ?></label></th>
 		<td>
@@ -237,6 +247,49 @@ class TL_Meta_Boxes {
 			to
 			<input type="text" id="loop-max-days" name="loop[days][max]" value="<?php echo esc_attr( $content['days']['max'] ); ?>" class="small-text" />
 			days ago <span class="description"><?php _e( 'If these fields are left empty, infinite values will be used' ); ?></span>
+		</td>
+	</tr>
+	<?php $maybe_hide = 'period' == $content['date_type'] ? '' : ' hide-if-js'; ?>
+	<tr valign="top" class="tl_period<?php echo $maybe_hide; ?>">
+		<th scope="row"><label for="loop_time_year"><?php _e( 'Time period' ); ?></label></th>
+		<td>
+		<input value="<?php echo esc_attr( $content['time']['year'] ); ?>" id="loop_time_year" name="loop[time][year]" type="text" placeholder="year" class="small-text" maxlength="4" />
+			<select id="loop_time_monthnum" name="loop[time][monthnum]">
+				<option value=""><?php _e( 'month' ); ?></option>
+				<?php for ( $i = 1; $i <= 12; $i++ ) : ?>
+					<option<?php selected( $content['time']['monthnum'], $i ); ?> value="<?php echo $i; ?>"><?php echo $i; ?></option>
+				<?php endfor; ?>
+			</select>
+			<select id="loop_time_w" name="loop[time][w]">
+				<option value=""><?php _e( 'week' ); ?></option>
+				<?php for ( $i = 0; $i <= 53; $i++ ) : ?>
+					<option<?php selected( $content['time']['w'], $i ); ?> value="<?php echo $i; ?>"><?php echo $i; ?></option>
+				<?php endfor; ?>
+			</select>
+			<select id="loop_time_day" name="loop[time][day]">
+				<option value=""><?php _e( 'day' ); ?></option>
+				<?php for ( $i = 1; $i <= 31; $i++ ) : ?>
+					<option<?php selected( $content['time']['day'], $i ); ?> value="<?php echo $i; ?>"><?php echo $i; ?></option>
+				<?php endfor; ?>
+			</select>
+			<select id="loop_time_hour" name="loop[time][hour]">
+				<option value=""><?php _e( 'hour' ); ?></option>
+				<?php for ( $i = 0; $i <= 23; $i++ ) : ?>
+					<option<?php selected( $content['time']['hour'], $i ); ?> value="<?php echo $i; ?>"><?php echo $i; ?></option>
+				<?php endfor; ?>
+			</select>
+			<select id="loop_time_minute" name="loop[time][minute]">
+				<option value=""><?php _e( 'minute' ); ?></option>
+				<?php for ( $i = 0; $i <= 60; $i++ ) : ?>
+					<option<?php selected( $content['time']['minute'], $i ); ?> value="<?php echo $i; ?>"><?php echo $i; ?></option>
+				<?php endfor; ?>
+			</select>
+			<select id="loop_time_second" name="loop[time][second]">
+				<option value=""><?php _e( 'second' ); ?></option>
+				<?php for ( $i = 0; $i <= 60; $i++ ) : ?>
+					<option<?php selected( $content['time']['second'], $i ); ?> value="<?php echo $i; ?>"><?php echo $i; ?></option>
+				<?php endfor; ?>
+			</select>
 		</td>
 	</tr>
 </table>

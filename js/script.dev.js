@@ -101,6 +101,12 @@ jQuery(function($) {
 	});
 
 	$("#loop_date_type").change(function () {
-		toggleInput($(this), ["dynamic"], [".tl_days"], [".tl_date"]);
+		if ( $(this).val() === "dynamic" ) {
+			toggleInput($(this), ["dynamic"], [".tl_days"], [".tl_date", ".tl_period"]);
+		} else if ( $(this).val() === "period" ) {
+			toggleInput($(this), ["period"], [".tl_period"], [".tl_date", ".tl_days"]);
+		} else if ( $(this).val() === "static" ) {
+			toggleInput($(this), ["static"], [".tl_date"], [".tl_days", ".tl_period"]);
+		}
 	});
 });
