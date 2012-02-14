@@ -90,7 +90,8 @@ function tl_query( $id, $query = '' ) {
 	}
 
 	// offset
-	$args['offset'] = absint( $content['offset'] );
+	if ( 'none' == $content['pagination'] )
+		$args['offset'] = absint( $content['offset'] );
 
 	// order and orderby
 	$args['order'] = $content['order'];

@@ -370,7 +370,7 @@ class TL_Meta_Boxes {
 			'offset'         => 0,
 			'orderby'        => 'title',
 			'order'          => 'ASC',
-			'pagination'     => '',
+			'pagination'     => 'previous_next',
 			'posts_per_page' => get_option( 'posts_per_page' )
 		);
 		$content = wp_parse_args( $content, $defaults );
@@ -381,13 +381,6 @@ class TL_Meta_Boxes {
 		<td>
 			<input type="text" id="loop_posts_per_page" name="loop[posts_per_page]" value="<?php echo esc_attr( $content['posts_per_page'] ); ?>" class="small-text" />
 			<span class="description"><?php _e( 'If this is left empty, all the items will be displayed' ); ?></span>
-		</td>
-	</tr>
-	<tr valign="top">
-		<th scope="row"><label for="loop_offset"><?php _e( 'Offset' ); ?></label></th>
-		<td>
-			<input type="text" id="loop_offset" name="loop[offset]" value="<?php echo esc_attr( $content['offset'] ); ?>" class="small-text" />
-			<span class="description"><?php _e( 'Number of items to displace or pass over' ); ?></span>
 		</td>
 	</tr>
 	<tr valign="top">
@@ -421,13 +414,21 @@ class TL_Meta_Boxes {
 		</td>
 	</tr>
 	<tr valign="top">
-		<th scope="row"><label for="loop_pagination"><?php _e( 'Pagination' ); ?></label></th>
+		<th scope="row"><label for="loop_pagination"><?php _e( 'Pagination format' ); ?></label></th>
 		<td>
 			<select id="loop_pagination" name="loop[pagination]">
-				<option value=""><?php _e( 'none' ); ?></option>
 				<option<?php selected( $content['pagination'], 'previous_next' ); ?> value="previous_next"><?php _e( 'previous and next links only' ); ?></option>
 				<option<?php selected( $content['pagination'], 'numeric' ); ?> value="numeric"><?php _e( 'numeric' ); ?></option>
+				<option<?php selected( $content['pagination'], 'none' ); ?> value="none"><?php _e( 'none' ); ?></option>
 			</select>
+		</td>
+	</tr>
+	<?php $maybe_hide = 'none' == $content['pagination'] ? '' : ' hide-if-js'; ?>
+	<tr valign="top" class="tl_offset<?php echo $maybe_hide; ?>">
+		<th scope="row"><label for="loop_offset"><?php _e( 'Offset' ); ?></label></th>
+		<td>
+			<input type="text" id="loop_offset" name="loop[offset]" value="<?php echo esc_attr( $content['offset'] ); ?>" class="small-text" />
+			<span class="description"><?php _e( 'Number of items to displace or pass over' ); ?></span>
 		</td>
 	</tr>
 </table>

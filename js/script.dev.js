@@ -55,4 +55,12 @@ jQuery(function($) {
 		else
 			$(".tl_meta_key").addClass("hide-if-js");
 	});
+
+	// offset input field toggle
+	$("#loop_pagination").change(function() {
+		if ( $(this).val() === "none" )
+			$(".tl_offset").removeClass("hide-if-js");
+		else
+			$(".tl_offset").addClass("hide-if-js");
+	});
 });

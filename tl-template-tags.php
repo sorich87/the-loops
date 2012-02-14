@@ -34,6 +34,8 @@ function tl_pagination( $tl_loop_id = 0, $echo = true ) {
 	if ( empty( $tl_loop_id ) )
 		global $tl_loop_id;
 
+	$pagination = '';
+
 	$content = get_post_meta( $tl_loop_id, 'tl_loop_content', true );
 
 	if ( 'widget' != tl_get_loop_context() && ! empty( $content['pagination'] ) ) {
@@ -47,16 +49,19 @@ function tl_pagination( $tl_loop_id = 0, $echo = true ) {
 				) );
 				break;
 
-			default:
+			case 'previous_next' :
 				$pagination = get_posts_nav_link();
 				break;
-		}
 
-		if ( $echo )
-			echo $pagination;
-		else
-			return $pagination;
+			default:
+				break;
+		}
 	}
+
+	if ( $echo )
+		echo $pagination;
+	else
+		return $pagination;
 }
 
 /**
