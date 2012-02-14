@@ -27,19 +27,9 @@ plugins.](http://wordpress.org/extend/plugins/profile/sorich87)
 * Works with any theme without modification
 * Works with any 'custom post types' plugin
 * Custom templates
-* Query by post type
-* Query by categories, tags or custom taxonomies
-* Query by custom fields
-* Query by date
-* Query by author
-* Sort by ID, author, title, publication date, last modified date,
-parent ID, number of comments, page order or randomly
+* Support all the WordPress post query possibilities
 * Display the loops anywhere with a shortcode
 * Display the loops in a widget
-
-**This plugin is in its earlier stages but stable and can be used in a
-production environnement. Please be indulgent if it does not have some
-features you need.**
 
 = Contributors =
 [Contributors are listed
@@ -113,6 +103,10 @@ your liking!
 
 == Changelog ==
 
+= 0.3 =
+* Support all the wordpress post query possibilities.
+* Improved custom templates.
+
 = 0.2 =
 * Custom templates.
 * Query by author.
@@ -121,6 +115,11 @@ your liking!
 * First release.
 
 == Upgrade Notice ==
+
+= 0.3 =
+This version supports all the wordpress post query possibilities and an
+improved template structure. It is not backward compatible with the
+previous versions. Check your loops after upgrading.
 
 = 0.2 =
 New features: custom templates & query by author.
