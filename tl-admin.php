@@ -13,11 +13,6 @@ if ( ! defined( 'ABSPATH' ) )
 
 if ( ! class_exists( 'TL_Admin' ) ) :
 class TL_Admin {
-	// Database version
-	private static $db_version = 2;
-
-	// Holds the current db version retrieved from the database
-	private static $current_db_version = 0;
 
 	/**
 	 * Admin loader
@@ -28,7 +23,6 @@ class TL_Admin {
 	public static function init() {
 		add_action( 'add_meta_boxes', array( __CLASS__, 'add_meta_boxes' ) );
 		add_action( 'admin_enqueue_scripts', array( __CLASS__, 'enqueue_scripts' ) );
-		add_action( 'admin_init', array( __CLASS__, 'upgrade_to_0_3' ) );
 		add_action( 'admin_menu', array( __CLASS__, 'remove_publish_meta_box' ) );
 		add_action( 'dbx_post_sidebar', array( __CLASS__, 'loop_save_button' ) );
 		add_action( 'save_post', array( __CLASS__, 'save_loop' ), 10, 2 );
@@ -225,47 +219,6 @@ class TL_Admin {
 		return $actions;
 	}
 
-	/**
-	 * Upgrade storage from plugins versions before 0.3
-	 *
-	 * @package The_Loops
-	 * @since 0.3
-	 */
-	public static function upgrade_to_0_3() {
-		if ( self::$current_db_version >= 2 )
-			return;
-
-		$loops = tl_get_loops( array( 'fields' => 'ids' ) );
-		if ( ! $loops )
-			return;
-
-		$taxs = get_taxonomies( array( 'public' => true ), 'objects' );
-
-		foreach ( $loops as $loop ) {
-			$content = get_post_meta( $loop, 'tl_loop_content', true );
-
-			foreach ( $taxs as $tax ) {
-				if ( empty( $content[$tax->name] ) )
-					continue;
-
-				$content['taxonomies'][] = array(
-					'taxonomy'         => $tax->name,
-					'terms'            => $content[$tax->name],
-					'include_children' => '1'
-				);
-
-				unset( $content[$tax->name] );
-			}
-
-			$content['posts_per_page'] = $content['shortcode']['posts_per_page'];
-			$content['template']       = $content['shortcode']['template'];
-			unset( $content['shortcode'] );
-
-			update_post_meta( $loop, 'tl_loop_content', $content );
-		}
-
-		update_option( 'tl_db_version', self::$db_version );
-	}
 }
 endif;
 
