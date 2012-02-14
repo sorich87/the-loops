@@ -49,17 +49,22 @@ jQuery(function($) {
 	});
 
 	// toggle target elements when an input value change to one of the predefined values
+	// if no condition is specified, just check if the input value is not empty
 	var toggleInput = function (input, targets, conditions) {
 		var match = false
-			, value = input.val();
+			, value = input.val()
+			, valueIsArray = $.isArray(value);
 
-		if ( $.isArray(value) ) {
+		if ( valueIsArray ) {
 			$.each(value, function (i, val) {
 				if ( $.inArray(val, conditions) > -1 ) {
 					match = true;
 					return;
 				}
 			});
+		} else if ( ! conditions ) {
+			value = $.trim(value);
+			match = value.length > 0;
 		} else {
 			match = $.inArray(value, conditions) > -1;
 		}

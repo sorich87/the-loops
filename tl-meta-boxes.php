@@ -135,8 +135,10 @@ class TL_Meta_Boxes {
 		$content = tl_get_loop_parameters( $post_ID );
 
 		$defaults = array(
-			'post_status' => array( 'publish' ),
-			'readable'    => 1
+			'exclude_posts' => 0,
+			'post_status'   => array( 'publish' ),
+			'posts'         => '',
+			'readable'      => 1
 		);
 		$content = wp_parse_args( $content, $defaults );
 ?>
@@ -163,6 +165,22 @@ class TL_Meta_Boxes {
 			<?php $checked = checked( $readable, 1, false ); ?>
 			<input<?php echo $checked; ?> type="checkbox" id="loop_readable" name="loop[readable]" value="1" />
 			<span class="description"><?php _e( "Hide private posts from users who don't have the appropriate capability" ); ?></span>
+		</td>
+	</tr>
+	<tr valign="top">
+		<th scope="row"><label for="loop_posts"><?php _e( 'Items' ); ?></label></th>
+		<td>
+			<input type="text" id="loop_posts" name="loop[posts]" value="<?php echo esc_attr( $content['posts'] ); ?>" class="regular-text" />
+			<span class="description"><?php _e( "Comma-separated list of item ids to retrieve." ); ?></span>
+		</td>
+	</tr>
+	<tr valign="top" class="tl_exclude_posts">
+		<th scope="row"><label for="loop_exclude_posts"><?php _e( 'Exclude items' ); ?></label></th>
+		<td>
+			<?php $exclude_posts = isset( $content['exclude_posts'] ) ? $content['exclude_posts'] : 0; ?>
+			<?php $checked = checked( $exclude_posts, 1, false ); ?>
+			<input<?php echo $checked; ?> type="checkbox" id="loop_exclude_posts" name="loop[exclude_posts]" value="1" />
+			<span class="description"><?php _e( 'Exclude the item ids defined above instead of including them' ); ?></span>
 		</td>
 	</tr>
 </table>

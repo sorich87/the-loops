@@ -24,11 +24,7 @@ if ( ! defined( 'ABSPATH' ) )
 function tl_query( $id, $query = '' ) {
 	$content = tl_get_loop_parameters( $id );
 
-	// post type and status
-	$args = array(
-		'post_type'   => (array) $content['post_type'],
-		'post_status' => (array) $content['post_status']
-	);
+	$args = array();
 
 	// author
 	$authors_logins = _tl_csv_to_array( $content['authors'] );
@@ -83,6 +79,21 @@ function tl_query( $id, $query = '' ) {
 			$args['tax_query'] = $tax_query;
 		}
 	}
+
+	// posts
+	if ( ! empty( $content['posts'] ) ) {
+		$posts = _tl_csv_to_array( $content['posts'] );
+		$posts = array_map( 'absint', $posts );
+
+		if ( empty( $content['exclude_posts'] ) )
+			$args['post__in'] = $posts;
+		else
+			$args['post__not_in'] = $posts;
+	}
+
+	// post type and status
+	$args['post_type']   = (array) $content['post_type'];
+	$args['post_status'] = (array) $content['post_status'];
 
 	// offset
 	if ( 'none' == $content['pagination'] )
@@ -295,13 +306,19 @@ function tl_shortcode( $atts ) {
 		'id' => 0,
 	), $atts ) );
 
-	$post_id = get_the_ID();
+	$details = tl_get_loop_parameters( $id );
 
 	// Exclude current post/page where the shortcode will be displayed
+	$post__not_in = array();
+
+	if ( ! empty( $details['exclude_posts'] ) && ! empty( $details['posts'] ) ) {
+		$posts = _tl_csv_to_array( $details['posts'] );
+		$post__not_in = array_map( 'absint', $posts );
+	}
+
 	$args = array(
-		'post__not_in' => array( $post_id )
+		'post__not_in' => array_merge( $post__not_in, (array) get_the_ID() )
 	);
-	$details = tl_get_loop_parameters( $id );
 
 	$content = tl_display_loop( $id, $details['template'], $args, 'shortcode' );
 
