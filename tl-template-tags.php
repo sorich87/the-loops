@@ -70,26 +70,3 @@ function tl_get_loop_context() {
 	return $tl_context;
 }
 
-/**
- * Return loop template filename
- *
- * @package The_Loops
- * @since 0.3
- */
-function tl_get_loop_template() {
-	global $tl_template;
-	return $tl_template;
-}
-
-/**
- * Display a post in the loop
- *
- * @package The_Loops
- * @since 0.1
- */
-function tl_display_post() {
-	global $tl_template;
-
-	tl_locate_template( $tl_template, true );
-}
-

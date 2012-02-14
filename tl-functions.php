@@ -195,14 +195,10 @@ function tl_get_loops( $args = array() ) {
  * @package The_Loops
  * @since 0.1
  */
-function tl_setup_globals( $loop_id, $template_name, $args, $context ) {
-	global $wp_query, $orig_query, $tl_loop_id, $tl_template, $tl_context;
-
-	$loop_templates = tl_get_loop_templates();
-	$loop_template = $loop_templates[$template_name];
+function tl_setup_globals( $loop_id, $args, $context ) {
+	global $wp_query, $orig_query, $tl_loop_id, $tl_context;
 
 	$tl_loop_id  = $loop_id;
-	$tl_template = $loop_template;
 	$tl_context  = $context;
 
 	$tl_query = tl_query( $loop_id, $args );
@@ -217,12 +213,12 @@ function tl_setup_globals( $loop_id, $template_name, $args, $context ) {
  * @since 0.3
  */
 function tl_clear_globals() {
-	global $wp_query, $orig_query, $tl_loop_id, $tl_template, $tl_context;
+	global $wp_query, $orig_query, $tl_loop_id, $tl_context;
 
 	$wp_query = clone $orig_query;
 	wp_reset_query();
 
-	unset( $orig_query, $tl_loop_id, $tl_template, $tl_context );
+	unset( $orig_query, $tl_loop_id, $tl_context );
 }
 
 /**
@@ -239,13 +235,16 @@ function tl_clear_globals() {
 function tl_display_loop( $loop_id, $template_name, $args = null, $context = '' ) {
 	global $the_loops;
 
-	tl_setup_globals( $loop_id, $template_name, $args, $context );
+	$loop_templates = tl_get_loop_templates();
+	$loop_template = $loop_templates[$template_name];
+
+	tl_setup_globals( $loop_id, $args, $context );
 
 	ob_start();
 
 	include( "{$the_loops->plugin_dir}tl-template-tags.php" );
 
-	tl_locate_template( 'the-loops-index.php', true );
+	tl_locate_template( $loop_template, true );
 
 	$content = ob_get_contents();
 	ob_end_clean();

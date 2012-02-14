@@ -11,6 +11,29 @@
  * @since 0.2
  */
 ?>
-<li>
-	<a href="<?php the_permalink(); ?>" title="<?php printf( esc_attr__( 'Permalink to %s', 'twentyeleven' ), the_title_attribute( 'echo=0' ) ); ?>" rel="bookmark"><?php the_title(); ?></a>
-</li>
+
+<div class="tl-loop">
+
+	<?php if ( have_posts() ) : ?>
+
+		<ul>
+
+			<?php while( have_posts() ) : the_post(); ?>
+
+				<li>
+					<a href="<?php the_permalink(); ?>" title="<?php printf( esc_attr__( 'Permalink to %s', 'twentyeleven' ), the_title_attribute( 'echo=0' ) ); ?>" rel="bookmark"><?php the_title(); ?></a>
+				</li>
+
+			<?php endwhile; ?>
+
+		</ul>
+
+	<?php else : ?>
+
+		<div class="tl-not-found"><?php tl_not_found_text(); ?></div>
+
+	<?php endif; ?>
+
+	<div class="tl-pagination"><?php tl_pagination(); ?></div>
+
+</div>
