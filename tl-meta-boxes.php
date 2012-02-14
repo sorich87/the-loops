@@ -136,6 +136,7 @@ class TL_Meta_Boxes {
 
 		$defaults = array(
 			'exclude_posts' => 0,
+			'post_parent'   => '',
 			'post_status'   => array( 'publish' ),
 			'posts'         => '',
 			'readable'      => 1
@@ -165,6 +166,13 @@ class TL_Meta_Boxes {
 			<?php $checked = checked( $readable, 1, false ); ?>
 			<input<?php echo $checked; ?> type="checkbox" id="loop_readable" name="loop[readable]" value="1" />
 			<span class="description"><?php _e( "Hide private posts from users who don't have the appropriate capability" ); ?></span>
+		</td>
+	</tr>
+	<tr valign="top">
+		<th scope="row"><label for="loop_post_parent"><?php _e( 'Item parent' ); ?></label></th>
+		<td>
+			<input type="text" id="loop_post_parent" name="loop[post_parent]" value="<?php echo esc_attr( $content['post_parent'] ); ?>" class="small-text" />
+			<span class="description"><?php _e( 'For hierarchical post types, display only children of the post id defined here' ); ?></span>
 		</td>
 	</tr>
 	<tr valign="top">

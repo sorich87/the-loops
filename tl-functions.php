@@ -81,6 +81,8 @@ function tl_query( $id, $query = '' ) {
 	}
 
 	// posts
+	$args['post_parent'] = absint( $content['post_parent'] );
+
 	if ( ! empty( $content['posts'] ) ) {
 		$posts = _tl_csv_to_array( $content['posts'] );
 		$posts = array_map( 'absint', $posts );
