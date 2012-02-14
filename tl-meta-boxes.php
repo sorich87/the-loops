@@ -21,8 +21,8 @@ class TL_Meta_Boxes {
 	 * @since 0.3
 	 */
 	public static function init() {
-		add_meta_box( 'tl_generaldiv', __( 'General' ), array( __CLASS__, 'meta_box_general' ), 'tl_loop', 'normal' );
-		add_meta_box( 'tl_postdiv', __( 'Post Parameters' ), array( __CLASS__, 'meta_box_post' ), 'tl_loop', 'normal' );
+		add_meta_box( 'tl_generaldiv', __( 'General Parameters' ), array( __CLASS__, 'meta_box_general' ), 'tl_loop', 'normal' );
+		add_meta_box( 'tl_advanceddiv', __( 'Advanced Parameters' ), array( __CLASS__, 'meta_box_advanced' ), 'tl_loop', 'normal' );
 		add_meta_box( 'tl_taxonomydiv', __( 'Taxonomy Parameters' ), array( __CLASS__, 'meta_box_taxonomy' ), 'tl_loop', 'normal' );
 		add_meta_box( 'tl_customfielddiv', __( 'Custom Field Parameters' ), array( __CLASS__, 'meta_box_custom_field' ), 'tl_loop', 'normal' );
 		add_meta_box( 'tl_orderpaginationdiv', __( 'Order & Pagination Parameters' ), array( __CLASS__, 'meta_box_order_pagination' ), 'tl_loop', 'normal' );
@@ -129,7 +129,7 @@ class TL_Meta_Boxes {
 	 * @package The_Loops
 	 * @since 0.3
 	 */
-	public static function meta_box_post() {
+	public static function meta_box_advanced() {
 		global $post_ID;
 
 		$content = tl_get_loop_parameters( $post_ID );
@@ -145,7 +145,7 @@ class TL_Meta_Boxes {
 ?>
 <table class="form-table">
 	<tr valign="top">
-		<th scope="row"><label for="loop_post_status"><?php _e( 'Post status' ); ?></label></th>
+		<th scope="row"><label for="loop_post_status"><?php _e( 'Status' ); ?></label></th>
 		<td>
 			<select id="loop_post_status" name="loop[post_status][]" multiple="multiple">
 				<?php
