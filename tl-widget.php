@@ -72,7 +72,7 @@ class TL_Widget extends WP_Widget {
 		</p>
 		<p>
 			<label for="<?php echo $this->get_field_id('posts_per_page'); ?>"><?php _e( 'Number of items:' ); ?></label>
-			<input id="<?php echo $this->get_field_id('posts_per_page'); ?>" name="<?php echo $this->get_field_name('posts_per_page'); ?>" type="text" value="<?php echo $posts_per_page; ?>" size="3" />
+			<input id="<?php echo $this->get_field_id('posts_per_page'); ?>" name="<?php echo $this->get_field_name('posts_per_page'); ?>" type="text" value="<?php echo $posts_per_page; ?>" class="small-text" />
 		</p>
 		<p>
 			<label for="<?php echo $this->get_field_id('template'); ?>"><?php _e( 'Template:' ); ?></label>
