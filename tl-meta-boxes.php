@@ -217,7 +217,7 @@ class TL_Meta_Boxes {
 			</select>
 		</td>
 	</tr>
-	<?php $maybe_hide = 'dynamic' == $content['pagination'] ? '' : ' hide-if-js'; ?>
+	<?php $maybe_hide = 'dynamic' == $content['date_type'] ? ' hide-if-js' : ''; ?>
 	<tr valign="top" class="tl_date<?php echo $maybe_hide; ?>">
 		<th scope="row"><label for="loop-min-date"><?php _e( 'Date' ); ?></label></th>
 		<td>
@@ -228,7 +228,7 @@ class TL_Meta_Boxes {
 			<span class="description"><?php _e( 'If these fields are left empty, infinite values will be used' ); ?></span>
 		</td>
 	</tr>
-	<?php $maybe_hide = 'dynamic' == $content['pagination'] ? ' hide-if-js' : ''; ?>
+	<?php $maybe_hide = 'dynamic' == $content['date_type'] ? '' : ' hide-if-js'; ?>
 	<tr valign="top" class="tl_days<?php echo $maybe_hide; ?>">
 		<th scope="row"><label for="loop-min-days"><?php _e( 'Date' ); ?></label></th>
 		<td>
