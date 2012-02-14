@@ -50,7 +50,7 @@ jQuery(function($) {
 
 	// toggle target elements when an input value change to one of the predefined values
 	// if no condition is specified, just check if the input value is not empty
-	var toggleInput = function (input, targets, conditions) {
+	var toggleInput = function (input, conditions, targetsForTrue, targetsForFalse) {
 		var match = false
 			, value = input.val()
 			, valueIsArray = $.isArray(value);
@@ -69,23 +69,31 @@ jQuery(function($) {
 			match = $.inArray(value, conditions) > -1;
 		}
 
-		targets = targets.join(",");
+		targetsForTrue  = targetsForTrue.join(",");
+		targetsForFalse = targetsForFalse.join(",");
 
-		if ( match )
-			$(targets).removeClass("hide-if-js");
-		else
-			$(targets).addClass("hide-if-js");
+		if ( match ) {
+			$(targetsForTrue).removeClass("hide-if-js");
+			$(targetsForFalse).addClass("hide-if-js");
+		} else {
+			$(targetsForTrue).addClass("hide-if-js");
+			$(targetsForFalse).removeClass("hide-if-js");
+		}
 	}
 
 	$("#loop_orderby").change(function () {
-		toggleInput($(this), [".tl_meta_key"], ["meta_value", "meta_value_num"]);
+		toggleInput($(this), ["meta_value", "meta_value_num"], [".tl_meta_key"]);
 	});
 
 	$("#loop_pagination").change(function () {
-		toggleInput($(this), [".tl_offset", ".tl_paged"], ["none"]);
+		toggleInput($(this), ["none"], [".tl_offset", ".tl_paged"]);
 	});
 
 	$("#loop_post_status").change(function () {
-		toggleInput($(this), [".tl_readable"], ["private"]);
+		toggleInput($(this), ["private"], [".tl_readable"]);
+	});
+
+	$("#loop_date_type").change(function () {
+		toggleInput($(this), ["dynamic"], [".tl_days"], [".tl_date"]);
 	});
 });

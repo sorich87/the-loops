@@ -24,6 +24,7 @@ class TL_Meta_Boxes {
 		add_meta_box( 'tl_generaldiv', __( 'General Parameters' ), array( __CLASS__, 'meta_box_general' ), 'tl_loop', 'normal' );
 		add_meta_box( 'tl_taxonomydiv', __( 'Taxonomy Parameters' ), array( __CLASS__, 'meta_box_taxonomy' ), 'tl_loop', 'normal' );
 		add_meta_box( 'tl_orderpaginationdiv', __( 'Order & Pagination Parameters' ), array( __CLASS__, 'meta_box_order_pagination' ), 'tl_loop', 'normal' );
+		add_meta_box( 'tl_datediv', __( 'Date Parameters' ), array( __CLASS__, 'meta_box_date' ), 'tl_loop', 'normal' );
 		add_meta_box( 'tl_customfielddiv', __( 'Custom Field Parameters' ), array( __CLASS__, 'meta_box_custom_field' ), 'tl_loop', 'normal' );
 		add_meta_box( 'tl_advanceddiv', __( 'Advanced Parameters' ), array( __CLASS__, 'meta_box_advanced' ), 'tl_loop', 'normal' );
 	}
@@ -45,11 +46,7 @@ class TL_Meta_Boxes {
 			'post_type' => array( 'post' ),
 			'template'  => 'List of full posts',
 			'not_found' => '<p>' . __( 'Nothing found!' ) . '</p>',
-			'authors'   => '',
-			'date'      => array(
-				'min' => '',
-				'max' => '',
-			)
+			'authors'   => ''
 		);
 		$content = wp_parse_args( $content, $defaults );
 ?>
@@ -66,16 +63,6 @@ class TL_Meta_Boxes {
 				}
 				?>
 			</select>
-		</td>
-	</tr>
-	<tr valign="top">
-		<th scope="row"><label for="loop-min-date"><?php _e( 'Date range' ); ?></label></th>
-		<td>
-			from
-			<input type="text" class="loop-date" id="loop-min-date" name="loop[date][min]" value="<?php echo esc_attr( $content['date']['min'] ); ?>" class="regular-text" />
-			to
-			<input type="text" class="loop-date" id="loop-max-date" name="loop[date][max]" value="<?php echo esc_attr( $content['date']['max'] ); ?>" class="regular-text" />
-			<span class="description"><?php _e( 'If these fields are left empty, infinite values will be used' ); ?></span>
 		</td>
 	</tr>
 	<tr valign="top">
@@ -189,6 +176,67 @@ class TL_Meta_Boxes {
 			<?php $checked = checked( $exclude_posts, 1, false ); ?>
 			<input<?php echo $checked; ?> type="checkbox" id="loop_exclude_posts" name="loop[exclude_posts]" value="1" />
 			<span class="description"><?php _e( 'Exclude the item ids defined above instead of including them' ); ?></span>
+		</td>
+	</tr>
+</table>
+<?php
+	}
+
+	/**
+	 * Display metabox for setting the loop date parameters
+	 *
+	 * @package The_Loops
+	 * @since 0.3
+	 */
+	public static function meta_box_date() {
+		global $post_ID;
+
+		$content = tl_get_loop_parameters( $post_ID );
+
+		$defaults = array(
+			'date'      => array(
+				'min' => '',
+				'max' => ''
+			),
+			'date_type' => 'static',
+			'days'      => array(
+				'min' => '',
+				'max' => ''
+			)
+		);
+		$content = wp_parse_args( $content, $defaults );
+		extract( $content );
+?>
+<table class="form-table">
+	<tr valign="top">
+		<th scope="row"><label for="loop_date_type"><?php _e( 'Type' ); ?></label></th>
+		<td>
+			<select id="loop_date_type" name="loop[date_type]">
+				<option<?php selected( $content['date_type'], 'static' ); ?> value="static"><?php _e( 'static' ); ?></option>
+				<option<?php selected( $content['date_type'], 'dynamic' ); ?> value="dynamic"><?php _e( 'dynamic' ); ?></option>
+			</select>
+		</td>
+	</tr>
+	<?php $maybe_hide = 'dynamic' == $content['pagination'] ? '' : ' hide-if-js'; ?>
+	<tr valign="top" class="tl_date<?php echo $maybe_hide; ?>">
+		<th scope="row"><label for="loop-min-date"><?php _e( 'Date' ); ?></label></th>
+		<td>
+			from
+			<input type="text" class="loop-date" id="loop-min-date" name="loop[date][min]" value="<?php echo esc_attr( $content['date']['min'] ); ?>" class="regular-text" />
+			to
+			<input type="text" class="loop-date" id="loop-max-date" name="loop[date][max]" value="<?php echo esc_attr( $content['date']['max'] ); ?>" class="regular-text" />
+			<span class="description"><?php _e( 'If these fields are left empty, infinite values will be used' ); ?></span>
+		</td>
+	</tr>
+	<?php $maybe_hide = 'dynamic' == $content['pagination'] ? ' hide-if-js' : ''; ?>
+	<tr valign="top" class="tl_days<?php echo $maybe_hide; ?>">
+		<th scope="row"><label for="loop-min-days"><?php _e( 'Date' ); ?></label></th>
+		<td>
+			from
+			<input type="text" id="loop-min-days" name="loop[days][min]" value="<?php echo esc_attr( $content['days']['min'] ); ?>" class="small-text" />
+			to
+			<input type="text" id="loop-max-days" name="loop[days][max]" value="<?php echo esc_attr( $content['days']['max'] ); ?>" class="small-text" />
+			days ago <span class="description"><?php _e( 'If these fields are left empty, infinite values will be used' ); ?></span>
 		</td>
 	</tr>
 </table>

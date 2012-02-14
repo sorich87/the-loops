@@ -126,7 +126,7 @@ class TL_Admin {
 	 */
 	public static function closed_meta_boxes( $closed ) {
 		if ( false === $closed )
-			$closed = array( 'tl_customfielddiv', 'tl_orderpaginationdiv', 'tl_advanceddiv', 'tl_taxonomydiv' );
+			$closed = array( 'tl_advanceddiv', 'tl_customfielddiv', 'tl_datediv', 'tl_orderpaginationdiv', 'tl_taxonomydiv' );
 
 		return $closed;
 	}

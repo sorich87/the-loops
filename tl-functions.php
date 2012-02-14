@@ -181,8 +181,13 @@ function tl_filter_where( $where ) {
 
 	$content = tl_get_loop_parameters( $the_loop_id );
 
-	$min_date = ! empty( $content['date']['min'] ) ? strtotime( $content['date']['min'] ) : null;
-	$max_date = ! empty( $content['date']['max'] ) ? strtotime( $content['date']['max'] ) : null;
+	if ( 'dynamic' == $content['date_type'] ) {
+		$min_date = ! empty( $content['days']['min'] ) ? strtotime( "-{$content['days']['min']} days" ) : null;
+		$max_date = ! empty( $content['days']['max'] ) ? strtotime( "-{$content['days']['max']} days" ) : null;
+	} else {
+		$min_date = ! empty( $content['date']['min'] ) ? strtotime( $content['date']['min'] ) : null;
+		$max_date = ! empty( $content['date']['max'] ) ? strtotime( $content['date']['max'] ) : null;
+	}
 
 	if ( $max_date )
 		$max_date = $max_date + 60 * 60 * 24;
