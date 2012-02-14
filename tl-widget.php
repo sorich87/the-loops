@@ -23,7 +23,10 @@ class TL_Widget extends WP_Widget {
 		if ( $instance['title'] )
 			echo $before_title . $instance['title'] . $after_title;
 
-		$args = array( 'posts_per_page' => $instance['posts_per_page'] );
+		$args = array(
+			'offset'         => $instance['offset'],
+			'posts_per_page' => $instance['posts_per_page']
+		);
 
 		$tl_loop_context = 'widget';
 		echo tl_display_loop( $instance['loop_id'], $instance['template'], $args );
@@ -35,6 +38,7 @@ class TL_Widget extends WP_Widget {
 	function update( $new_instance, $old_instance ) {
 		$instance = $old_instance;
 		$instance['loop_id']        = absint( $new_instance['loop_id'] );
+		$instance['offset']         = absint( $new_instance['offset'] );
 		$instance['posts_per_page'] = absint( $new_instance['posts_per_page'] );
 		$instance['template']       = $new_instance['template'];
 		$instance['title']          = strip_tags( $new_instance['title'] );
@@ -44,6 +48,7 @@ class TL_Widget extends WP_Widget {
 	function form( $instance ) {
 		$defaults = array(
 			'loop_id'        => 0,
+			'offset'         => 0,
 			'posts_per_page' => get_option( 'posts_per_page' ) / 2,
 			'template'       => 'List of titles',
 			'title'          => ''
@@ -51,6 +56,7 @@ class TL_Widget extends WP_Widget {
 		$instance = wp_parse_args( (array) $instance, $defaults );
 		$loop_id        = $instance['loop_id'];
 		$posts_per_page = $instance['posts_per_page'];
+		$offset         = $instance['offset'];
 		$template       = esc_attr( $instance['template'] );
 		$title          = esc_attr( $instance['title'] );
 		?>
@@ -73,6 +79,10 @@ class TL_Widget extends WP_Widget {
 		<p>
 			<label for="<?php echo $this->get_field_id('posts_per_page'); ?>"><?php _e( 'Number of items:' ); ?></label>
 			<input id="<?php echo $this->get_field_id('posts_per_page'); ?>" name="<?php echo $this->get_field_name('posts_per_page'); ?>" type="text" value="<?php echo $posts_per_page; ?>" class="small-text" />
+		</p>
+		<p>
+			<label for="<?php echo $this->get_field_id('offset'); ?>"><?php _e( 'Offset:' ); ?></label>
+			<input id="<?php echo $this->get_field_id('offset'); ?>" name="<?php echo $this->get_field_name('offset'); ?>" type="text" value="<?php echo $offset; ?>" class="small-text" />
 		</p>
 		<p>
 			<label for="<?php echo $this->get_field_id('template'); ?>"><?php _e( 'Template:' ); ?></label>
