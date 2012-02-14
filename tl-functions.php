@@ -89,6 +89,9 @@ function tl_query( $id, $query = '' ) {
 		}
 	}
 
+	// offset
+	$args['offset'] = absint( $content['offset'] );
+
 	// order and orderby
 	$args['order'] = $content['order'];
 
@@ -224,10 +227,10 @@ function tl_display_loop( $loop_id, $template, $args = null ) {
 		switch ( $content['pagination'] ) {
 			case 'numeric' :
 				$pagination = paginate_links( array(
-					'base' => str_replace( 999999999, '%#%', get_pagenum_link( 999999999 ) ),
-					'format' => '?paged=%#%',
+					'base'    => str_replace( 999999999, '%#%', get_pagenum_link( 999999999 ) ),
+					'format'  => '?paged=%#%',
 					'current' => max( 1, get_query_var('paged') ),
-					'total' => $tl_query->max_num_pages
+					'total'   => $wp_query->max_num_pages
 				) );
 				break;
 

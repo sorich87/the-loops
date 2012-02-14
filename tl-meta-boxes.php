@@ -367,6 +367,7 @@ class TL_Meta_Boxes {
 
 		$defaults = array(
 			'meta_key'       => '',
+			'offset'         => 0,
 			'orderby'        => 'title',
 			'order'          => 'ASC',
 			'pagination'     => '',
@@ -375,6 +376,20 @@ class TL_Meta_Boxes {
 		$content = wp_parse_args( $content, $defaults );
 ?>
 <table class="form-table">
+	<tr valign="top">
+		<th scope="row"><label for="loop_posts_per_page"><?php _e( 'Items per page' ); ?></label></th>
+		<td>
+			<input type="text" id="loop_posts_per_page" name="loop[posts_per_page]" value="<?php echo esc_attr( $content['posts_per_page'] ); ?>" class="small-text" />
+			<span class="description"><?php _e( 'If this is left empty, all the items will be displayed' ); ?></span>
+		</td>
+	</tr>
+	<tr valign="top">
+		<th scope="row"><label for="loop_offset"><?php _e( 'Offset' ); ?></label></th>
+		<td>
+			<input type="text" id="loop_offset" name="loop[offset]" value="<?php echo esc_attr( $content['offset'] ); ?>" class="small-text" />
+			<span class="description"><?php _e( 'Number of items to displace or pass over' ); ?></span>
+		</td>
+	</tr>
 	<tr valign="top">
 		<th scope="row"><label for="loop_orderby"><?php _e( 'Sorted by' ); ?></label></th>
 		<td>
@@ -403,13 +418,6 @@ class TL_Meta_Boxes {
 		<th scope="row"><label for="loop_meta_key"><?php _e( 'Meta key' ); ?></label></th>
 		<td>
 			<input type="text" id="loop_meta_key" name="loop[meta_key]" value="<?php echo esc_attr( $content['meta_key'] ); ?>" class="regular-text" />
-		</td>
-	</tr>
-	<tr valign="top">
-		<th scope="row"><label for="loop_posts_per_page"><?php _e( 'Items per page' ); ?></label></th>
-		<td>
-			<input type="text" id="loop_posts_per_page" name="loop[posts_per_page]" value="<?php echo esc_attr( $content['posts_per_page'] ); ?>" class="small-text" />
-			<span class="description"><?php _e( 'If this is left empty, all the items will be displayed' ); ?></span>
 		</td>
 	</tr>
 	<tr valign="top">
