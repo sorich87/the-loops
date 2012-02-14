@@ -49,10 +49,24 @@ jQuery(function($) {
 	});
 
 	// toggle target elements when an input value change to one of the predefined values
-	var toggleInput = function (input, targets, values) {
+	var toggleInput = function (input, targets, conditions) {
+		var match = false
+			, value = input.val();
+
+		if ( $.isArray(value) ) {
+			$.each(value, function (i, val) {
+				if ( $.inArray(val, conditions) > -1 ) {
+					match = true;
+					return;
+				}
+			});
+		} else {
+			match = $.inArray(value, conditions) > -1;
+		}
+
 		targets = targets.join(",");
 
-		if ( values.indexOf( input.val() ) >= 0 )
+		if ( match )
 			$(targets).removeClass("hide-if-js");
 		else
 			$(targets).addClass("hide-if-js");
@@ -64,5 +78,9 @@ jQuery(function($) {
 
 	$("#loop_pagination").change(function () {
 		toggleInput($(this), [".tl_offset", ".tl_paged"], ["none"]);
+	});
+
+	$("#loop_post_status").change(function () {
+		toggleInput($(this), [".tl_readable"], ["private"]);
 	});
 });

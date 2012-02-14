@@ -22,6 +22,7 @@ class TL_Meta_Boxes {
 	 */
 	public static function init() {
 		add_meta_box( 'tl_generaldiv', __( 'General' ), array( __CLASS__, 'meta_box_general' ), 'tl_loop', 'normal' );
+		add_meta_box( 'tl_postdiv', __( 'Post Parameters' ), array( __CLASS__, 'meta_box_post' ), 'tl_loop', 'normal' );
 		add_meta_box( 'tl_taxonomydiv', __( 'Taxonomy Parameters' ), array( __CLASS__, 'meta_box_taxonomy' ), 'tl_loop', 'normal' );
 		add_meta_box( 'tl_customfielddiv', __( 'Custom Field Parameters' ), array( __CLASS__, 'meta_box_custom_field' ), 'tl_loop', 'normal' );
 		add_meta_box( 'tl_orderpaginationdiv', __( 'Order & Pagination Parameters' ), array( __CLASS__, 'meta_box_order_pagination' ), 'tl_loop', 'normal' );
@@ -116,6 +117,52 @@ class TL_Meta_Boxes {
 		<th scope="row"><?php _e( 'Widget' ); ?></th>
 		<td>
 			<span class="description"><?php printf( __( 'To use the widget, <a href="%s">go to the widgets management screen</a> and assign The Loops widget to a sidebar' ), site_url( 'wp-admin/widgets.php' ) ) ?></span>
+		</td>
+	</tr>
+</table>
+<?php
+	}
+
+	/**
+	 * Display metabox for setting the loop post parameters
+	 *
+	 * @package The_Loops
+	 * @since 0.3
+	 */
+	public static function meta_box_post() {
+		global $post_ID;
+
+		$content = tl_get_loop_parameters( $post_ID );
+
+		$defaults = array(
+			'post_status' => array( 'publish' ),
+			'readable'    => 1
+		);
+		$content = wp_parse_args( $content, $defaults );
+?>
+<table class="form-table">
+	<tr valign="top">
+		<th scope="row"><label for="loop_post_status"><?php _e( 'Post status' ); ?></label></th>
+		<td>
+			<select id="loop_post_status" name="loop[post_status][]" multiple="multiple">
+				<?php
+				$pstati = get_post_stati( array( 'show_in_admin_all_list' => true ), 'objects' );
+				foreach ( $pstati as $pstatus_name => $pstatus_obj ) {
+					$selected = in_array( $pstatus_name, $content['post_status'] ) ? ' selected="selected"' : '';
+					echo "<option value='" . esc_attr( $pstatus_name ) . "'$selected>{$pstatus_obj->label}</option>";
+				}
+				?>
+			</select>
+		</td>
+	</tr>
+	<?php $maybe_hide = in_array( 'private', $content['post_status'] ) ? '' : ' hide-if-js'; ?>
+	<tr valign="top" class="tl_readable<?php echo $maybe_hide; ?>">
+		<th scope="row"><label for="loop_readable"><?php _e( 'Permission' ); ?></label></th>
+		<td>
+			<?php $readable = isset( $content['readable'] ) ? $content['readable'] : 0; ?>
+			<?php $checked = checked( $readable, 1, false ); ?>
+			<input<?php echo $checked; ?> type="checkbox" id="loop_readable" name="loop[readable]" value="1" />
+			<span class="description"><?php _e( "Hide private posts from users who don't have the appropriate capability" ); ?></span>
 		</td>
 	</tr>
 </table>

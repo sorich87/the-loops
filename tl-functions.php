@@ -24,9 +24,10 @@ if ( ! defined( 'ABSPATH' ) )
 function tl_query( $id, $query = '' ) {
 	$content = tl_get_loop_parameters( $id );
 
-	// post type
+	// post type and status
 	$args = array(
-		'post_type' => (array) $content['post_type']
+		'post_type'   => (array) $content['post_type'],
+		'post_status' => (array) $content['post_status']
 	);
 
 	// author
@@ -140,6 +141,11 @@ function tl_query( $id, $query = '' ) {
 		$args['paged'] = 1;
 	} else {
 		$args['paged'] = max( 1, get_query_var( 'paged' ) );
+	}
+
+	// permission
+	if ( in_array( 'private', $content['post_status'] ) && ! empty( $content['readable'] ) ) {
+		$args['perm'] = 'readable';
 	}
 
 	$args = wp_parse_args( $query, $args );
