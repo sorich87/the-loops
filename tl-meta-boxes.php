@@ -22,10 +22,10 @@ class TL_Meta_Boxes {
 	 */
 	public static function init() {
 		add_meta_box( 'tl_generaldiv', __( 'General Parameters' ), array( __CLASS__, 'meta_box_general' ), 'tl_loop', 'normal' );
-		add_meta_box( 'tl_advanceddiv', __( 'Advanced Parameters' ), array( __CLASS__, 'meta_box_advanced' ), 'tl_loop', 'normal' );
 		add_meta_box( 'tl_taxonomydiv', __( 'Taxonomy Parameters' ), array( __CLASS__, 'meta_box_taxonomy' ), 'tl_loop', 'normal' );
-		add_meta_box( 'tl_customfielddiv', __( 'Custom Field Parameters' ), array( __CLASS__, 'meta_box_custom_field' ), 'tl_loop', 'normal' );
 		add_meta_box( 'tl_orderpaginationdiv', __( 'Order & Pagination Parameters' ), array( __CLASS__, 'meta_box_order_pagination' ), 'tl_loop', 'normal' );
+		add_meta_box( 'tl_customfielddiv', __( 'Custom Field Parameters' ), array( __CLASS__, 'meta_box_custom_field' ), 'tl_loop', 'normal' );
+		add_meta_box( 'tl_advanceddiv', __( 'Advanced Parameters' ), array( __CLASS__, 'meta_box_advanced' ), 'tl_loop', 'normal' );
 	}
 
 	/**
