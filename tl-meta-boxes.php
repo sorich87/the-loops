@@ -366,7 +366,9 @@ class TL_Meta_Boxes {
 		$content = get_post_meta( $post_ID, 'tl_loop_content', true );
 
 		$defaults = array(
-			'orderby' => 'title', 'order' => 'ASC',
+			'meta_key'       => '',
+			'orderby'        => 'title',
+			'order'          => 'ASC',
 			'pagination'     => '',
 			'posts_per_page' => get_option( 'posts_per_page' )
 		);
@@ -381,7 +383,8 @@ class TL_Meta_Boxes {
 				$orderby_params = array(
 					'ID' => __( 'ID' ), 'author' => __( 'Author' ), 'title' => __( 'Title' ),
 					'date' => __( 'Publication date' ), 'modified' => __( 'Last modified date' ), 'parent' => __( 'Parent ID' ),
-					'rand' => __( 'Random order' ), 'comment_count' => __( 'Number of comments' ), 'menu_order' => __( 'Page order' )
+					'rand' => __( 'Random order' ), 'comment_count' => __( 'Number of comments' ), 'menu_order' => __( 'Page order' ),
+					'meta_value' => __( 'Meta value' ), 'meta_value_num' => __( 'Numeric meta value' )
 				);
 				foreach ( $orderby_params as $key => $label ) {
 					$selected = selected( $key, $content['orderby'] );
@@ -393,6 +396,13 @@ class TL_Meta_Boxes {
 				<option value="DESC"<?php selected( 'DESC', $content['order'], true ); ?>><?php _e( 'DESC' ); ?></option>
 				<option value="ASC"<?php selected( 'ASC', $content['order'], true ); ?>><?php _e( 'ASC' ); ?></option>
 			</select>
+		</td>
+	</tr>
+	<?php $maybe_hide = in_array( $content['orderby'], array( 'meta_value', 'meta_value_num' ) ) ? '' : ' hide-if-js'; ?>
+	<tr valign="top" class="tl_meta_key<?php echo $maybe_hide; ?>">
+		<th scope="row"><label for="loop_meta_key"><?php _e( 'Meta key' ); ?></label></th>
+		<td>
+			<input type="text" id="loop_meta_key" name="loop[meta_key]" value="<?php echo esc_attr( $content['meta_key'] ); ?>" class="regular-text" />
 		</td>
 	</tr>
 	<tr valign="top">

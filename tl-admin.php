@@ -88,7 +88,7 @@ class TL_Admin {
 
 		wp_enqueue_script( 'tl-jquery-tagsinput', "{$the_loops->plugin_url}js/jquery-tagsinput$suffix.js", array( 'jquery' ), '20120213' );
 
-		wp_enqueue_script( 'the-loops', "{$the_loops->plugin_url}js/script$suffix.js", array( 'jquery-ui-datepicker', 'tl-jquery-tagsinput' ), '20120212' );
+		wp_enqueue_script( 'the-loops', "{$the_loops->plugin_url}js/script$suffix.js", array( 'jquery-ui-datepicker', 'tl-jquery-tagsinput' ), '20120214' );
 
 		if ( 'classic' == get_user_option( 'admin_color') )
 			wp_enqueue_style ( 'jquery-ui-css', "{$the_loops->plugin_url}css/jquery-ui-classic$suffix.css", null, '20120211' );

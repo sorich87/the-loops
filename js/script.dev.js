@@ -47,4 +47,12 @@ jQuery(function($) {
 
 		$(this).parents(".tl-parameter").remove();
 	});
+
+	// meta key input field toggle
+	$("#loop_orderby").change(function() {
+		if ( $(this).val() === "meta_value" || $(this).val() === "meta_value_num" )
+			$(".tl_meta_key").removeClass("hide-if-js");
+		else
+			$(".tl_meta_key").addClass("hide-if-js");
+	});
 });

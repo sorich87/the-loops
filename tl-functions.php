@@ -30,26 +30,10 @@ function tl_query( $id, $query = '' ) {
 
 	$content = get_post_meta( $loop_id, 'tl_loop_content', true );
 
-	// post type and order
+	// post type
 	$args = array(
-		'orderby'   => $content['orderby'],
-		'order'     => $content['order'],
 		'post_type' => (array) $content['post_type']
 	);
-
-	// pagination
-	$posts_per_page = (int) $content['posts_per_page'];
-	if ( empty( $posts_per_page ) ) {
-		$args['nopaging'] = true;
-	} else {
-		$args['posts_per_page'] = $posts_per_page;
-	}
-
-	if ( empty( $content['pagination'] ) ) {
-		$args['paged'] = 1;
-	} else {
-		$args['paged'] = max( 1, get_query_var( 'paged' ) );
-	}
 
 	// author
 	$authors_logins = _tl_csv_to_array( $content['authors'] );
@@ -105,6 +89,20 @@ function tl_query( $id, $query = '' ) {
 		}
 	}
 
+	// order and orderby
+	$args['order'] = $content['order'];
+
+	if ( in_array( $content['orderby'], array( 'meta_value', 'meta_value_num' ) ) ) {
+		$content['meta_key'] = trim ( $content['meta_key'] );
+
+		if ( ! empty( $content['meta_key'] ) ) {
+			$args['meta_key'] = $content['meta_key'];
+			$args['orderby']  = $content['orderby'];
+		}
+	} else {
+		$args['orderby'] = $content['orderby'];
+	}
+
 	// custom field
 	if ( ! empty( $content['custom_fields'] ) ) {
 		$meta_query = array();
@@ -130,6 +128,20 @@ function tl_query( $id, $query = '' ) {
 			$meta_query['relation'] = 'AND';
 			$args['meta_query'] = $meta_query;
 		}
+	}
+
+	// pagination
+	$posts_per_page = (int) $content['posts_per_page'];
+	if ( empty( $posts_per_page ) ) {
+		$args['nopaging'] = true;
+	} else {
+		$args['posts_per_page'] = $posts_per_page;
+	}
+
+	if ( empty( $content['pagination'] ) ) {
+		$args['paged'] = 1;
+	} else {
+		$args['paged'] = max( 1, get_query_var( 'paged' ) );
 	}
 
 	$args = wp_parse_args( $query, $args );
