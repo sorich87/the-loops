@@ -48,19 +48,21 @@ jQuery(function($) {
 		$(this).parents(".tl-parameter").remove();
 	});
 
-	// meta key input field toggle
-	$("#loop_orderby").change(function() {
-		if ( $(this).val() === "meta_value" || $(this).val() === "meta_value_num" )
-			$(".tl_meta_key").removeClass("hide-if-js");
+	// toggle target elements when an input value change to one of the predefined values
+	var toggleInput = function (input, targets, values) {
+		targets = targets.join(",");
+
+		if ( values.indexOf( input.val() ) >= 0 )
+			$(targets).removeClass("hide-if-js");
 		else
-			$(".tl_meta_key").addClass("hide-if-js");
+			$(targets).addClass("hide-if-js");
+	}
+
+	$("#loop_orderby").change(function () {
+		toggleInput($(this), [".tl_meta_key"], ["meta_value", "meta_value_num"]);
 	});
 
-	// offset input field toggle
-	$("#loop_pagination").change(function() {
-		if ( $(this).val() === "none" )
-			$(".tl_offset").removeClass("hide-if-js");
-		else
-			$(".tl_offset").addClass("hide-if-js");
+	$("#loop_pagination").change(function () {
+		toggleInput($(this), [".tl_offset", ".tl_paged"], ["none"]);
 	});
 });

@@ -370,6 +370,7 @@ class TL_Meta_Boxes {
 			'offset'         => 0,
 			'orderby'        => 'title',
 			'order'          => 'ASC',
+			'paged'          => 1,
 			'pagination'     => 'previous_next',
 			'posts_per_page' => get_option( 'posts_per_page' )
 		);
@@ -429,6 +430,14 @@ class TL_Meta_Boxes {
 		<td>
 			<input type="text" id="loop_offset" name="loop[offset]" value="<?php echo esc_attr( $content['offset'] ); ?>" class="small-text" />
 			<span class="description"><?php _e( 'Number of items to displace or pass over' ); ?></span>
+		</td>
+	</tr>
+	<?php $maybe_hide = 'none' == $content['pagination'] ? '' : ' hide-if-js'; ?>
+	<tr valign="top" class="tl_paged<?php echo $maybe_hide; ?>">
+		<th scope="row"><label for="loop_paged"><?php _e( 'Page' ); ?></label></th>
+		<td>
+			<input type="text" id="loop_paged" name="loop[paged]" value="<?php echo esc_attr( $content['paged'] ); ?>" class="small-text" />
+			<span class="description"><?php _e( 'Show the posts that would normally show up just on this page number when using a pagination' ); ?></span>
 		</td>
 	</tr>
 </table>
