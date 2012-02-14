@@ -68,7 +68,7 @@ function tl_query( $id, $query = '' ) {
 			$tax_query[] = array(
 				'taxonomy'         => $taxonomy['taxonomy'],
 				'field'            => 'slug',
-				'terms'            => $terms,
+				'terms'            => array_map( 'sanitize_title', $terms ),
 				'include_children' => empty( $taxonomy['include_children'] ) ? false : true,
 				'operator'         => empty( $taxonomy['exclude'] ) ? 'IN' : 'NOT IN'
 			);
@@ -143,7 +143,7 @@ function tl_query( $id, $query = '' ) {
 	}
 
 	// pagination
-	$posts_per_page = (int) $content['posts_per_page'];
+	$posts_per_page = absint( $content['posts_per_page'] );
 	if ( empty( $posts_per_page ) ) {
 		$args['nopaging'] = true;
 	} else {
