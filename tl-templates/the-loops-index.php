@@ -10,11 +10,19 @@
 
 	<?php if ( have_posts() ) : ?>
 
+		<?php if ( 'the-loops-title.php' == tl_get_loop_template() ) : ?>
+			<ul>
+		<?php endif; ?>
+
 		<?php while( have_posts() ) : the_post(); ?>
 
 			<?php tl_display_post(); ?>
 
 		<?php endwhile; ?>
+
+		<?php if ( 'the-loops-title.php' == tl_get_loop_template() ) : ?>
+			</ul>
+		<?php endif; ?>
 
 	<?php else : ?>
 

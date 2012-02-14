@@ -190,26 +190,56 @@ function tl_get_loops( $args = array() ) {
 }
 
 /**
+ * Setup globals before displaying the loop
+ *
+ * @package The_Loops
+ * @since 0.1
+ */
+function tl_setup_globals( $loop_id, $template_name, $args, $context ) {
+	global $wp_query, $orig_query, $tl_loop_id, $tl_template, $tl_context;
+
+	$loop_templates = tl_get_loop_templates();
+	$loop_template = $loop_templates[$template_name];
+
+	$tl_loop_id  = $loop_id;
+	$tl_template = $loop_template;
+	$tl_context  = $context;
+
+	$tl_query = tl_query( $loop_id, $args );
+	$orig_query = clone $wp_query;
+	$wp_query  = clone $tl_query;
+}
+
+/**
+ * Clear globals after displaying the loop
+ *
+ * @package The_Loops
+ * @since 0.3
+ */
+function tl_clear_globals() {
+	global $wp_query, $orig_query, $tl_loop_id, $tl_template, $tl_context;
+
+	$wp_query = clone $orig_query;
+	wp_reset_query();
+
+	unset( $orig_query, $tl_loop_id, $tl_template, $tl_context );
+}
+
+/**
  * Display a loop
  *
  * @package The_Loops
  * @since 0.1
  *
  * @param int $loop_id Loop ID.
- * @param string $template Name of the template to use
+ * @param string $template_name Name of the template to use
  * @param array|string Custom query args
  * @param string Context in which the loop is displayed
  */
-function tl_display_loop( $loop_id, $template, $args = null, $context = '' ) {
-	global $the_loops, $wp_query, $tl_loop_id, $tl_template, $tl_context;
+function tl_display_loop( $loop_id, $template_name, $args = null, $context = '' ) {
+	global $the_loops;
 
-	$tl_loop_id  = $loop_id;
-	$tl_template = $template;
-	$tl_context  = $context;
-
-	$tl_query = tl_query( $loop_id, $args );
-	$tmp_query = clone $wp_query;
-	$wp_query  = clone $tl_query;
+	tl_setup_globals( $loop_id, $template_name, $args, $context );
 
 	ob_start();
 
@@ -220,8 +250,7 @@ function tl_display_loop( $loop_id, $template, $args = null, $context = '' ) {
 	$content = ob_get_contents();
 	ob_end_clean();
 
-	$wp_query = clone $tmp_query;
-	wp_reset_query();
+	tl_clear_globals();
 
 	return $content;
 }

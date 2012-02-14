@@ -4,7 +4,7 @@
  * Return not found text
  *
  * @package The_Loops
- * @since 0.1
+ * @since 0.3
  *
  * @param int $tl_loop_id Loop ID.
  */
@@ -24,7 +24,7 @@ function tl_not_found_text( $tl_loop_id = 0, $echo = true ) {
  * Return pagination
  *
  * @package The_Loops
- * @since 0.1
+ * @since 0.3
  *
  * @param int $tl_loop_id Loop ID
  */
@@ -63,11 +63,22 @@ function tl_pagination( $tl_loop_id = 0, $echo = true ) {
  * Return loop context. 'widget' or 'shortcode'
  *
  * @package The_Loops
- * @since 0.2
+ * @since 0.3
  */
 function tl_get_loop_context() {
 	global $tl_context;
 	return $tl_context;
+}
+
+/**
+ * Return loop template filename
+ *
+ * @package The_Loops
+ * @since 0.3
+ */
+function tl_get_loop_template() {
+	global $tl_template;
+	return $tl_template;
 }
 
 /**
@@ -79,9 +90,6 @@ function tl_get_loop_context() {
 function tl_display_post() {
 	global $tl_template;
 
-	$loop_templates = tl_get_loop_templates();
-	$template = $loop_templates[$tl_template];
-
-	tl_locate_template( $template, true );
+	tl_locate_template( $tl_template, true );
 }
 
