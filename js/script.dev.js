@@ -100,6 +100,10 @@ jQuery(function($) {
 		toggleInput($(this), ["private"], [".tl_readable"]);
 	});
 
+	$("#loop_post_type").change(function () {
+		toggleInput($(this), ["attachment"], [".tl_post_mime_type"]);
+	});
+
 	$("#loop_date_type").change(function () {
 		if ( $(this).val() === "dynamic" ) {
 			toggleInput($(this), ["dynamic"], [".tl_days"], [".tl_date", ".tl_period"]);

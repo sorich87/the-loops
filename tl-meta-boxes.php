@@ -43,10 +43,11 @@ class TL_Meta_Boxes {
 		$content = tl_get_loop_parameters( $post_ID );
 
 		$defaults = array(
-			'post_type' => array( 'post' ),
-			'template'  => 'List of full posts',
-			'not_found' => '<p>' . __( 'Nothing found!' ) . '</p>',
-			'authors'   => ''
+			'authors'        => '',
+			'not_found'      => '<p>' . __( 'Nothing found!' ) . '</p>',
+			'post_mime_type' => '',
+			'post_type'      => array( 'post' ),
+			'template'       => 'List of full posts'
 		);
 		$content = wp_parse_args( $content, $defaults );
 		extract( $content );
@@ -64,6 +65,13 @@ class TL_Meta_Boxes {
 				}
 				?>
 			</select>
+		</td>
+	</tr>
+	<tr valign="top" class="tl_post_mime_type hide-if-js">
+		<th scope="row"><label for="loop_post_mime_type"><?php _e( 'Mime types' ); ?></label></th>
+		<td>
+			<input value="<?php echo esc_attr( $post_mime_type ); ?>" id="loop_post_mime_type" name="loop[post_mime_type]" type="text" class="regular-text" />
+			<span class="description"><?php _e( 'For media only. Comma-separated list of mime types.' ); ?></span>
 		</td>
 	</tr>
 	<tr valign="top">

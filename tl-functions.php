@@ -206,6 +206,10 @@ function tl_query( $id, $query = '' ) {
 		$args['perm'] = 'readable';
 	}
 
+	// attachments mime type
+	if ( in_array( 'attachment', $content['post_type'] ) )
+		$args['post_mime_type'] = $content['post_mime_type'];
+
 	$args = wp_parse_args( $query, $args );
 
 	// if a shortcode is being used, don't display the post in which it was inserted
