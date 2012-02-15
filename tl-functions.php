@@ -83,13 +83,12 @@ function tl_query( $id, $query = '' ) {
 	}
 
 	// posts
-	$args['post_parent'] = absint( $content['post_parent'] );
+	$args['post_parent'] = $content['post_parent'];
 
 	$args['post__in'] = $args['post__not_in'] = array();
 
 	if ( ! empty( $content['posts'] ) ) {
 		$posts = _tl_csv_to_array( $content['posts'] );
-		$posts = array_map( 'absint', $posts );
 
 		if ( empty( $content['exclude_posts'] ) )
 			$args['post__in'] = $posts;
@@ -98,12 +97,12 @@ function tl_query( $id, $query = '' ) {
 	}
 
 	// post type and status
-	$args['post_type']   = (array) $content['post_type'];
-	$args['post_status'] = (array) $content['post_status'];
+	$args['post_type']   = $content['post_type'];
+	$args['post_status'] = $content['post_status'];
 
 	// offset
 	if ( 'none' == $content['pagination'] )
-		$args['offset'] = absint( $content['offset'] );
+		$args['offset'] = $content['offset'];
 
 	// order and orderby
 	$args['order'] = $content['order'];
@@ -141,23 +140,23 @@ function tl_query( $id, $query = '' ) {
 
 	// time
 	if ( 'period' == $content['date_type'] ) {
-		if ( ! empty( $content['time']['year'] ) )
-			$args['year'] = absint( $content['time']['year'] );
+		if ( ! empty( $content['year'] ) )
+			$args['year'] = $content['year'];
 
-		if ( ! empty( $content['time']['monthnum'] ) )
-			$args['monthnum'] = $content['time']['monthnum'];
+		if ( ! empty( $content['monthnum'] ) )
+			$args['monthnum'] = $content['monthnum'];
 
-		if ( ! empty( $content['time']['w'] ) )
-			$args['w'] = $content['time']['w'];
+		if ( ! empty( $content['w'] ) )
+			$args['w'] = $content['w'];
 
-		if ( ! empty( $content['time']['day'] ) )
-			$args['day'] = $content['time']['day'];
+		if ( ! empty( $content['day'] ) )
+			$args['day'] = $content['day'];
 
-		if ( ! empty( $content['time']['minute'] ) )
-			$args['minute'] = $content['time']['minute'];
+		if ( ! empty( $content['minute'] ) )
+			$args['minute'] = $content['minute'];
 
-		if ( ! empty( $content['time']['second'] ) )
-			$args['second'] = $content['time']['second'];
+		if ( ! empty( $content['second'] ) )
+			$args['second'] = $content['second'];
 	}
 
 	// custom field
@@ -213,8 +212,8 @@ function tl_query( $id, $query = '' ) {
 	// search
 	if ( ! empty( $content['s'] ) ) {
 		$args['s']        = $content['s'];
-		$args['exact']    = (bool) $content['exact'];
-		$args['sentence'] = (bool) $content['sentence'];
+		$args['exact']    = $content['exact'];
+		$args['sentence'] = $content['sentence'];
 	}	
 
 	$args = wp_parse_args( $query, $args );

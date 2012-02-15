@@ -67,7 +67,8 @@ class TL_Meta_Boxes {
 			</select>
 		</td>
 	</tr>
-	<tr valign="top" class="tl_post_mime_type hide-if-js">
+	<?php $maybe_hide = in_array( 'attachment', $post_type ) ? '' : ' hide-if-js'; ?>
+	<tr valign="top" class="tl_post_mime_type<?php echo $maybe_hide; ?>">
 		<th scope="row"><label for="loop_post_mime_type"><?php _e( 'Mime types' ); ?></label></th>
 		<td>
 			<input value="<?php echo esc_attr( $post_mime_type ); ?>" id="loop_post_mime_type" name="loop[post_mime_type]" type="text" class="regular-text" />
@@ -143,6 +144,9 @@ class TL_Meta_Boxes {
 		);
 		$content = wp_parse_args( $content, $defaults );
 		extract( $content );
+
+		// trim because we check for empty value below
+		$s = trim( $s );
 ?>
 <table class="form-table">
 	<tr valign="top">
@@ -192,17 +196,19 @@ class TL_Meta_Boxes {
 		<th scope="row"><label for="loop_s"><?php _e( 'Search terms' ); ?></label></th>
 		<td>
 			<input type="text" id="loop_s" name="loop[s]" value="<?php echo esc_attr( $s ); ?>" class="regular-text" />
-			<span class="description"><?php _e( 'Display only the items that match these search terms' ); ?></span>
+			<span class="description"><?php _e( 'Displar only the items that match these search terms' ); ?></span>
 		</td>
 	</tr>
-	<tr valign="top" class="tl_sentence hide-if-js">
+	<?php $maybe_hide = ! empty( $s ) ? '' : ' hide-if-js'; ?>
+	<tr valign="top" class="tl_sentence<?php echo $maybe_hide; ?>">
 		<th scope="row"><label for="loop_sentence"><?php _e( 'Sentence' ); ?></label></th>
 		<td>
 			<input<?php checked( $sentence, 1 ); ?> type="checkbox" id="loop_sentence" name="loop[sentence]" value="1" />
 			<span class="description"><?php _e( 'Consider the search terms above as a whole sentence to search for' ); ?></span>
 		</td>
 	</tr>
-	<tr valign="top" class="tl_exact hide-if-js">
+	<?php $maybe_hide = ! empty( $s ) ? '' : ' hide-if-js'; ?>
+	<tr valign="top" class="tl_exact<?php echo $maybe_hide; ?>">
 		<th scope="row"><label for="loop_exact"><?php _e( 'Exact matches' ); ?></label></th>
 		<td>
 			<input<?php checked( $exact, 1 ); ?> type="checkbox" id="loop_exact" name="loop[exact]" value="1" />
@@ -246,19 +252,17 @@ class TL_Meta_Boxes {
 				'max' => ''
 			),
 			'date_type' => 'static',
+			'day'       => '',
 			'days'      => array(
 				'min' => '',
 				'max' => ''
 			),
-			'time'      => array(
-				'day'      => '',
-				'hour'     => '',
-				'minute'   => '',
-				'monthnum' => '',
-				'second'   => '',
-				'w'        => '',
-				'year'     => ''
-			)
+			'hour'      => '',
+			'minute'    => '',
+			'monthnum'  => '',
+			'second'    => '',
+			'w'         => '',
+			'year'      => ''
 		);
 		$content = wp_parse_args( $content, $defaults );
 		extract( $content );
@@ -303,43 +307,43 @@ class TL_Meta_Boxes {
 	</tr>
 	<?php $maybe_hide = 'period' == $date_type ? '' : ' hide-if-js'; ?>
 	<tr valign="top" class="tl_period<?php echo $maybe_hide; ?>">
-		<th scope="row"><label for="loop_time_year"><?php _e( 'Time period' ); ?></label></th>
+		<th scope="row"><label for="loop_year"><?php _e( 'Time period' ); ?></label></th>
 		<td>
-			<input value="<?php echo esc_attr( $time['year'] ); ?>" id="loop_time_year" name="loop[time][year]" type="text" placeholder="<?php _e( 'year' ); ?>" class="small-text" maxlength="4" />
-			<select id="loop_time_monthnum" name="loop[time][monthnum]">
+			<input value="<?php echo esc_attr( $year ); ?>" id="loop_year" name="loop[year]" type="text" placeholder="<?php _e( 'year' ); ?>" class="small-text" maxlength="4" />
+			<select id="loop_monthnum" name="loop[monthnum]">
 				<option value=""><?php _e( 'month' ); ?></option>
 				<?php for ( $i = 1; $i <= 12; $i++ ) : ?>
-					<option<?php selected( $time['monthnum'], $i ); ?> value="<?php echo $i; ?>"><?php echo $i; ?></option>
+					<option<?php selected( $monthnum, $i ); ?> value="<?php echo $i; ?>"><?php echo $i; ?></option>
 				<?php endfor; ?>
 			</select>
-			<select id="loop_time_w" name="loop[time][w]">
+			<select id="loop_w" name="loop[w]">
 				<option value=""><?php _e( 'week' ); ?></option>
 				<?php for ( $i = 0; $i <= 53; $i++ ) : ?>
-					<option<?php selected( $time['w'], $i ); ?> value="<?php echo $i; ?>"><?php echo $i; ?></option>
+					<option<?php selected( $w, $i ); ?> value="<?php echo $i; ?>"><?php echo $i; ?></option>
 				<?php endfor; ?>
 			</select>
-			<select id="loop_time_day" name="loop[time][day]">
+			<select id="loop_day" name="loop[day]">
 				<option value=""><?php _e( 'day' ); ?></option>
 				<?php for ( $i = 1; $i <= 31; $i++ ) : ?>
-					<option<?php selected( $time['day'], $i ); ?> value="<?php echo $i; ?>"><?php echo $i; ?></option>
+					<option<?php selected( $day, $i ); ?> value="<?php echo $i; ?>"><?php echo $i; ?></option>
 				<?php endfor; ?>
 			</select>
-			<select id="loop_time_hour" name="loop[time][hour]">
+			<select id="loop_hour" name="loop[hour]">
 				<option value=""><?php _e( 'hour' ); ?></option>
 				<?php for ( $i = 0; $i <= 23; $i++ ) : ?>
-					<option<?php selected( $time['hour'], $i ); ?> value="<?php echo $i; ?>"><?php echo $i; ?></option>
+					<option<?php selected( $hour, $i ); ?> value="<?php echo $i; ?>"><?php echo $i; ?></option>
 				<?php endfor; ?>
 			</select>
-			<select id="loop_time_minute" name="loop[time][minute]">
+			<select id="loop_minute" name="loop[minute]">
 				<option value=""><?php _e( 'minute' ); ?></option>
 				<?php for ( $i = 0; $i <= 60; $i++ ) : ?>
-					<option<?php selected( $time['minute'], $i ); ?> value="<?php echo $i; ?>"><?php echo $i; ?></option>
+					<option<?php selected( $minute, $i ); ?> value="<?php echo $i; ?>"><?php echo $i; ?></option>
 				<?php endfor; ?>
 			</select>
-			<select id="loop_time_second" name="loop[time][second]">
+			<select id="loop_second" name="loop[second]">
 				<option value=""><?php _e( 'second' ); ?></option>
 				<?php for ( $i = 0; $i <= 60; $i++ ) : ?>
-					<option<?php selected( $time['second'], $i ); ?> value="<?php echo $i; ?>"><?php echo $i; ?></option>
+					<option<?php selected( $second, $i ); ?> value="<?php echo $i; ?>"><?php echo $i; ?></option>
 				<?php endfor; ?>
 			</select>
 		</td>
