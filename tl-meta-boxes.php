@@ -49,6 +49,7 @@ class TL_Meta_Boxes {
 			'authors'   => ''
 		);
 		$content = wp_parse_args( $content, $defaults );
+		extract( $content );
 ?>
 <table class="form-table">
 	<tr valign="top">
@@ -58,7 +59,7 @@ class TL_Meta_Boxes {
 				<?php
 				$ptypes = get_post_types( array( 'public' => true ), 'objects' );
 				foreach ( $ptypes as $ptype_name => $ptype_obj ) {
-					$selected = in_array( $ptype_name, $content['post_type'] ) ? ' selected="selected"' : '';
+					$selected = in_array( $ptype_name, $post_type ) ? ' selected="selected"' : '';
 					echo "<option value='" . esc_attr( $ptype_name ) . "'$selected>{$ptype_obj->label}</option>";
 				}
 				?>
@@ -68,7 +69,7 @@ class TL_Meta_Boxes {
 	<tr valign="top">
 		<th scope="row"><label for="loop_authors"><?php _e( 'Authors' ); ?></label></th>
 		<td>
-			<input type="text" id="loop_authors" name="loop[authors]" value="<?php echo esc_attr( $content['authors'] ); ?>" class="regular-text" />
+			<input type="text" id="loop_authors" name="loop[authors]" value="<?php echo esc_attr( $authors ); ?>" class="regular-text" />
 			<span class="description"><?php _e( "Comma-separated list of authors usernames. Exclude an author by prefixing the username with a '-' (minus) sign." ); ?></span>
 		</td>
 	</tr>
@@ -79,7 +80,7 @@ class TL_Meta_Boxes {
 				<?php
 				$loop_templates = tl_get_loop_templates();
 				foreach ( $loop_templates as $name => $file ) {
-					$selected = selected( $name, $content['template'] );
+					$selected = selected( $name, $template );
 					echo "<option value='" . esc_attr( $name ) . "'$selected>{$name}</option>";
 				}
 				?>
@@ -89,7 +90,7 @@ class TL_Meta_Boxes {
 	<tr valign="top">
 		<th scope="row"><label for="loop_not_found"><?php _e( 'Not found text' ); ?></label></th>
 		<td>
-			<input type="text" id="loop_not_found" name="loop[not_found]" value="<?php echo esc_attr( $content['not_found'] ); ?>" class="regular-text" />
+			<input type="text" id="loop_not_found" name="loop[not_found]" value="<?php echo esc_attr( $not_found ); ?>" class="regular-text" />
 			<span class="description"><?php _e( 'Text to display when nothing found' ); ?></span>
 		</td>
 	</tr>
@@ -130,6 +131,7 @@ class TL_Meta_Boxes {
 			'sticky_posts'  => 'top'
 		);
 		$content = wp_parse_args( $content, $defaults );
+		extract( $content );
 ?>
 <table class="form-table">
 	<tr valign="top">
@@ -139,59 +141,55 @@ class TL_Meta_Boxes {
 				<?php
 				$pstati = get_post_stati( array( 'show_in_admin_all_list' => true ), 'objects' );
 				foreach ( $pstati as $pstatus_name => $pstatus_obj ) {
-					$selected = in_array( $pstatus_name, $content['post_status'] ) ? ' selected="selected"' : '';
+					$selected = in_array( $pstatus_name, $post_status ) ? ' selected="selected"' : '';
 					echo "<option value='" . esc_attr( $pstatus_name ) . "'$selected>{$pstatus_obj->label}</option>";
 				}
 				?>
 			</select>
 		</td>
 	</tr>
-	<?php $maybe_hide = in_array( 'private', $content['post_status'] ) ? '' : ' hide-if-js'; ?>
+	<?php $maybe_hide = in_array( 'private', $post_status ) ? '' : ' hide-if-js'; ?>
 	<tr valign="top" class="tl_readable<?php echo $maybe_hide; ?>">
 		<th scope="row"><label for="loop_readable"><?php _e( 'Permission' ); ?></label></th>
 		<td>
-			<?php $readable = isset( $content['readable'] ) ? $content['readable'] : 0; ?>
-			<?php $checked = checked( $readable, 1, false ); ?>
-			<input<?php echo $checked; ?> type="checkbox" id="loop_readable" name="loop[readable]" value="1" />
+			<input<?php checked( $readable, 1 ); ?> type="checkbox" id="loop_readable" name="loop[readable]" value="1" />
 			<span class="description"><?php _e( "Hide private posts from users who don't have the appropriate capability" ); ?></span>
 		</td>
 	</tr>
 	<tr valign="top">
 		<th scope="row"><label for="loop_post_parent"><?php _e( 'Item parent' ); ?></label></th>
 		<td>
-			<input type="text" id="loop_post_parent" name="loop[post_parent]" value="<?php echo esc_attr( $content['post_parent'] ); ?>" class="small-text" />
+			<input type="text" id="loop_post_parent" name="loop[post_parent]" value="<?php echo esc_attr( $post_parent ); ?>" class="small-text" />
 			<span class="description"><?php _e( 'For hierarchical post types, display only children of the post id defined here' ); ?></span>
 		</td>
 	</tr>
 	<tr valign="top">
 		<th scope="row"><label for="loop_posts"><?php _e( 'Items' ); ?></label></th>
 		<td>
-			<input type="text" id="loop_posts" name="loop[posts]" value="<?php echo esc_attr( $content['posts'] ); ?>" class="regular-text" />
+			<input type="text" id="loop_posts" name="loop[posts]" value="<?php echo esc_attr( $posts ); ?>" class="regular-text" />
 			<span class="description"><?php _e( "Comma-separated list of item ids to retrieve." ); ?></span>
 		</td>
 	</tr>
 	<tr valign="top" class="tl_exclude_posts">
 		<th scope="row"><label for="loop_exclude_posts"><?php _e( 'Exclude items' ); ?></label></th>
 		<td>
-			<?php $exclude_posts = isset( $content['exclude_posts'] ) ? $content['exclude_posts'] : 0; ?>
-			<?php $checked = checked( $exclude_posts, 1, false ); ?>
-			<input<?php echo $checked; ?> type="checkbox" id="loop_exclude_posts" name="loop[exclude_posts]" value="1" />
+			<input<?php checked( $exclude_posts, 1 ); ?> type="checkbox" id="loop_exclude_posts" name="loop[exclude_posts]" value="1" />
 			<span class="description"><?php _e( 'Exclude the item ids defined above instead of including them' ); ?></span>
 		</td>
 	</tr>
 	<tr valign="top">
 		<th scope="row"><?php _e( 'Sticky posts' ); ?></th>
 		<td>
-			<input<?php checked( $content['sticky_posts'], 'top' ); ?> value="top" id="loop_sticky_posts_top" name="loop[sticky_posts]" type="radio" />
+			<input<?php checked( $sticky_posts, 'top' ); ?> value="top" id="loop_sticky_posts_top" name="loop[sticky_posts]" type="radio" />
 			<label for="loop_sticky_posts_top"><?php _e( 'Show sticky posts before all the other posts' ); ?></label><br />
 
-			<input<?php checked( $content['sticky_posts'], 'ignore' ); ?> value="ignore" id="loop_sticky_posts_ignore" name="loop[sticky_posts]" type="radio" />
+			<input<?php checked( $sticky_posts, 'ignore' ); ?> value="ignore" id="loop_sticky_posts_ignore" name="loop[sticky_posts]" type="radio" />
 			<label for="loop_sticky_posts_ignore"><?php _e( 'Show sticky posts in the natural order of the loop' ); ?></label><br />
 
-			<input<?php checked( $content['sticky_posts'], 'only' ); ?> value="only" id="loop_sticky_posts_only" name="loop[sticky_posts]" type="radio" />
+			<input<?php checked( $sticky_posts, 'only' ); ?> value="only" id="loop_sticky_posts_only" name="loop[sticky_posts]" type="radio" />
 			<label for="loop_sticky_posts_only"><?php _e( 'Show sticky posts only' ); ?></label><br />
 
-			<input<?php checked( $content['sticky_posts'], 'hide' ); ?> value="hide" id="loop_sticky_posts_hide" name="loop[sticky_posts]" type="radio" />
+			<input<?php checked( $sticky_posts, 'hide' ); ?> value="hide" id="loop_sticky_posts_hide" name="loop[sticky_posts]" type="radio" />
 			<label for="loop_sticky_posts_hide"><?php _e( 'Hide sticky posts' ); ?></label><br />
 		</td>
 	</tr>
@@ -238,78 +236,78 @@ class TL_Meta_Boxes {
 		<th scope="row"><label for="loop_date_type"><?php _e( 'Type' ); ?></label></th>
 		<td>
 			<select id="loop_date_type" name="loop[date_type]">
-				<option<?php selected( $content['date_type'], 'static' ); ?> value="static"><?php _e( 'static' ); ?></option>
-				<option<?php selected( $content['date_type'], 'dynamic' ); ?> value="dynamic"><?php _e( 'dynamic' ); ?></option>
-				<option<?php selected( $content['date_type'], 'period' ); ?> value="period"><?php _e( 'pediod' ); ?></option>
+				<option<?php selected( $date_type, 'static' ); ?> value="static"><?php _e( 'static' ); ?></option>
+				<option<?php selected( $date_type, 'dynamic' ); ?> value="dynamic"><?php _e( 'dynamic' ); ?></option>
+				<option<?php selected( $date_type, 'period' ); ?> value="period"><?php _e( 'pediod' ); ?></option>
 			</select>
 		</td>
 	</tr>
-	<?php $maybe_hide = 'static' == $content['date_type'] ? '' : ' hide-if-js'; ?>
+	<?php $maybe_hide = 'static' == $date_type ? '' : ' hide-if-js'; ?>
 	<tr valign="top" class="tl_date<?php echo $maybe_hide; ?>">
 		<th scope="row"><label for="loop-min-date"><?php _e( 'Date' ); ?></label></th>
 		<td>
 			<?php
 			printf(
 				__( 'from %1$s to %2$s' ),
-				'<input type="text" class="loop-date" id="loop-min-date" name="loop[date][min]" value="' . esc_attr( $content['date']['min'] ) . '" class="regular-text" />',
-				'<input type="text" class="loop-date" id="loop-max-date" name="loop[date][max]" value="' . esc_attr( $content['date']['max'] ) . '" class="regular-text" />'
+				'<input type="text" class="loop-date" id="loop-min-date" name="loop[date][min]" value="' . esc_attr( $date['min'] ) . '" class="regular-text" />',
+				'<input type="text" class="loop-date" id="loop-max-date" name="loop[date][max]" value="' . esc_attr( $date['max'] ) . '" class="regular-text" />'
 			);
 			?>
 			<span class="description"><?php _e( 'If these fields are left empty, infinite values will be used' ); ?></span>
 		</td>
 	</tr>
-	<?php $maybe_hide = 'dynamic' == $content['date_type'] ? '' : ' hide-if-js'; ?>
+	<?php $maybe_hide = 'dynamic' == $date_type ? '' : ' hide-if-js'; ?>
 	<tr valign="top" class="tl_days<?php echo $maybe_hide; ?>">
 		<th scope="row"><label for="loop-min-days"><?php _e( 'Date' ); ?></label></th>
 		<td>
 			<?php
 			printf(
 				__( 'from %1$s to %2$s days ago' ),
-				'<input type="text" id="loop-min-days" name="loop[days][min]" value="' . esc_attr( $content['days']['min'] ) . '" class="small-text" />',
-				'<input type="text" id="loop-max-days" name="loop[days][max]" value="' . esc_attr( $content['days']['max'] ) . '" class="small-text" />'
+				'<input type="text" id="loop-min-days" name="loop[days][min]" value="' . esc_attr( $days['min'] ) . '" class="small-text" />',
+				'<input type="text" id="loop-max-days" name="loop[days][max]" value="' . esc_attr( $days['max'] ) . '" class="small-text" />'
 			);
 			?>
 		</td>
 	</tr>
-	<?php $maybe_hide = 'period' == $content['date_type'] ? '' : ' hide-if-js'; ?>
+	<?php $maybe_hide = 'period' == $date_type ? '' : ' hide-if-js'; ?>
 	<tr valign="top" class="tl_period<?php echo $maybe_hide; ?>">
 		<th scope="row"><label for="loop_time_year"><?php _e( 'Time period' ); ?></label></th>
 		<td>
-		<input value="<?php echo esc_attr( $content['time']['year'] ); ?>" id="loop_time_year" name="loop[time][year]" type="text" placeholder="<?php _e( 'year' ); ?>" class="small-text" maxlength="4" />
+			<input value="<?php echo esc_attr( $time['year'] ); ?>" id="loop_time_year" name="loop[time][year]" type="text" placeholder="<?php _e( 'year' ); ?>" class="small-text" maxlength="4" />
 			<select id="loop_time_monthnum" name="loop[time][monthnum]">
 				<option value=""><?php _e( 'month' ); ?></option>
 				<?php for ( $i = 1; $i <= 12; $i++ ) : ?>
-					<option<?php selected( $content['time']['monthnum'], $i ); ?> value="<?php echo $i; ?>"><?php echo $i; ?></option>
+					<option<?php selected( $time['monthnum'], $i ); ?> value="<?php echo $i; ?>"><?php echo $i; ?></option>
 				<?php endfor; ?>
 			</select>
 			<select id="loop_time_w" name="loop[time][w]">
 				<option value=""><?php _e( 'week' ); ?></option>
 				<?php for ( $i = 0; $i <= 53; $i++ ) : ?>
-					<option<?php selected( $content['time']['w'], $i ); ?> value="<?php echo $i; ?>"><?php echo $i; ?></option>
+					<option<?php selected( $time['w'], $i ); ?> value="<?php echo $i; ?>"><?php echo $i; ?></option>
 				<?php endfor; ?>
 			</select>
 			<select id="loop_time_day" name="loop[time][day]">
 				<option value=""><?php _e( 'day' ); ?></option>
 				<?php for ( $i = 1; $i <= 31; $i++ ) : ?>
-					<option<?php selected( $content['time']['day'], $i ); ?> value="<?php echo $i; ?>"><?php echo $i; ?></option>
+					<option<?php selected( $time['day'], $i ); ?> value="<?php echo $i; ?>"><?php echo $i; ?></option>
 				<?php endfor; ?>
 			</select>
 			<select id="loop_time_hour" name="loop[time][hour]">
 				<option value=""><?php _e( 'hour' ); ?></option>
 				<?php for ( $i = 0; $i <= 23; $i++ ) : ?>
-					<option<?php selected( $content['time']['hour'], $i ); ?> value="<?php echo $i; ?>"><?php echo $i; ?></option>
+					<option<?php selected( $time['hour'], $i ); ?> value="<?php echo $i; ?>"><?php echo $i; ?></option>
 				<?php endfor; ?>
 			</select>
 			<select id="loop_time_minute" name="loop[time][minute]">
 				<option value=""><?php _e( 'minute' ); ?></option>
 				<?php for ( $i = 0; $i <= 60; $i++ ) : ?>
-					<option<?php selected( $content['time']['minute'], $i ); ?> value="<?php echo $i; ?>"><?php echo $i; ?></option>
+					<option<?php selected( $time['minute'], $i ); ?> value="<?php echo $i; ?>"><?php echo $i; ?></option>
 				<?php endfor; ?>
 			</select>
 			<select id="loop_time_second" name="loop[time][second]">
 				<option value=""><?php _e( 'second' ); ?></option>
 				<?php for ( $i = 0; $i <= 60; $i++ ) : ?>
-					<option<?php selected( $content['time']['second'], $i ); ?> value="<?php echo $i; ?>"><?php echo $i; ?></option>
+					<option<?php selected( $time['second'], $i ); ?> value="<?php echo $i; ?>"><?php echo $i; ?></option>
 				<?php endfor; ?>
 			</select>
 		</td>
@@ -571,12 +569,13 @@ class TL_Meta_Boxes {
 			'posts_per_page' => get_option( 'posts_per_page' )
 		);
 		$content = wp_parse_args( $content, $defaults );
+		extract( $content );
 ?>
 <table class="form-table">
 	<tr valign="top">
 		<th scope="row"><label for="loop_posts_per_page"><?php _e( 'Items per page' ); ?></label></th>
 		<td>
-			<input type="text" id="loop_posts_per_page" name="loop[posts_per_page]" value="<?php echo esc_attr( $content['posts_per_page'] ); ?>" class="small-text" />
+			<input type="text" id="loop_posts_per_page" name="loop[posts_per_page]" value="<?php echo esc_attr( $posts_per_page ); ?>" class="small-text" />
 			<span class="description"><?php _e( 'If this is left empty, all the items will be displayed' ); ?></span>
 		</td>
 	</tr>
@@ -592,47 +591,47 @@ class TL_Meta_Boxes {
 					'meta_value' => __( 'Meta value' ), 'meta_value_num' => __( 'Numeric meta value' )
 				);
 				foreach ( $orderby_params as $key => $label ) {
-					$selected = selected( $key, $content['orderby'] );
+					$selected = selected( $key, $orderby );
 					echo "<option value='" . esc_attr( $key ) . "'$selected>{$label}</option>";
 				}
 				?>
 			</select>
 			<select id="loop_order" name="loop[order]">
-				<option value="DESC"<?php selected( 'DESC', $content['order'], true ); ?>><?php _e( 'DESC' ); ?></option>
-				<option value="ASC"<?php selected( 'ASC', $content['order'], true ); ?>><?php _e( 'ASC' ); ?></option>
+				<option value="DESC"<?php selected( 'DESC', $order, true ); ?>><?php _e( 'DESC' ); ?></option>
+				<option value="ASC"<?php selected( 'ASC', $order, true ); ?>><?php _e( 'ASC' ); ?></option>
 			</select>
 		</td>
 	</tr>
-	<?php $maybe_hide = in_array( $content['orderby'], array( 'meta_value', 'meta_value_num' ) ) ? '' : ' hide-if-js'; ?>
+	<?php $maybe_hide = in_array( $orderby, array( 'meta_value', 'meta_value_num' ) ) ? '' : ' hide-if-js'; ?>
 	<tr valign="top" class="tl_meta_key<?php echo $maybe_hide; ?>">
 		<th scope="row"><label for="loop_meta_key"><?php _e( 'Meta key' ); ?></label></th>
 		<td>
-			<input type="text" id="loop_meta_key" name="loop[meta_key]" value="<?php echo esc_attr( $content['meta_key'] ); ?>" class="regular-text" />
+			<input type="text" id="loop_meta_key" name="loop[meta_key]" value="<?php echo esc_attr( $meta_key ); ?>" class="regular-text" />
 		</td>
 	</tr>
 	<tr valign="top">
 		<th scope="row"><label for="loop_pagination"><?php _e( 'Pagination format' ); ?></label></th>
 		<td>
 			<select id="loop_pagination" name="loop[pagination]">
-				<option<?php selected( $content['pagination'], 'previous_next' ); ?> value="previous_next"><?php _e( 'previous and next links only' ); ?></option>
-				<option<?php selected( $content['pagination'], 'numeric' ); ?> value="numeric"><?php _e( 'numeric' ); ?></option>
-				<option<?php selected( $content['pagination'], 'none' ); ?> value="none"><?php _e( 'none' ); ?></option>
+				<option<?php selected( $pagination, 'previous_next' ); ?> value="previous_next"><?php _e( 'previous and next links only' ); ?></option>
+				<option<?php selected( $pagination, 'numeric' ); ?> value="numeric"><?php _e( 'numeric' ); ?></option>
+				<option<?php selected( $pagination, 'none' ); ?> value="none"><?php _e( 'none' ); ?></option>
 			</select>
 		</td>
 	</tr>
-	<?php $maybe_hide = 'none' == $content['pagination'] ? '' : ' hide-if-js'; ?>
+	<?php $maybe_hide = 'none' == $pagination ? '' : ' hide-if-js'; ?>
 	<tr valign="top" class="tl_offset<?php echo $maybe_hide; ?>">
 		<th scope="row"><label for="loop_offset"><?php _e( 'Offset' ); ?></label></th>
 		<td>
-			<input type="text" id="loop_offset" name="loop[offset]" value="<?php echo esc_attr( $content['offset'] ); ?>" class="small-text" />
+			<input type="text" id="loop_offset" name="loop[offset]" value="<?php echo esc_attr( $offset ); ?>" class="small-text" />
 			<span class="description"><?php _e( 'Number of items to displace or pass over' ); ?></span>
 		</td>
 	</tr>
-	<?php $maybe_hide = 'none' == $content['pagination'] ? '' : ' hide-if-js'; ?>
+	<?php $maybe_hide = 'none' == $pagination ? '' : ' hide-if-js'; ?>
 	<tr valign="top" class="tl_paged<?php echo $maybe_hide; ?>">
 		<th scope="row"><label for="loop_paged"><?php _e( 'Page' ); ?></label></th>
 		<td>
-			<input type="text" id="loop_paged" name="loop[paged]" value="<?php echo esc_attr( $content['paged'] ); ?>" class="small-text" />
+			<input type="text" id="loop_paged" name="loop[paged]" value="<?php echo esc_attr( $paged ); ?>" class="small-text" />
 			<span class="description"><?php _e( 'Show the posts that would normally show up just on this page number when using a pagination' ); ?></span>
 		</td>
 	</tr>
