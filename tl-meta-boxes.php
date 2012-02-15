@@ -26,7 +26,7 @@ class TL_Meta_Boxes {
 		add_meta_box( 'tl_orderpaginationdiv', __( 'Order & Pagination Parameters' ), array( __CLASS__, 'meta_box_order_pagination' ), 'tl_loop', 'normal' );
 		add_meta_box( 'tl_datediv', __( 'Date Parameters' ), array( __CLASS__, 'meta_box_date' ), 'tl_loop', 'normal' );
 		add_meta_box( 'tl_customfielddiv', __( 'Custom Field Parameters' ), array( __CLASS__, 'meta_box_custom_field' ), 'tl_loop', 'normal' );
-		add_meta_box( 'tl_advanceddiv', __( 'Advanced Parameters' ), array( __CLASS__, 'meta_box_advanced' ), 'tl_loop', 'normal' );
+		add_meta_box( 'tl_otherdiv', __( 'Other Parameters' ), array( __CLASS__, 'meta_box_other' ), 'tl_loop', 'normal' );
 	}
 
 	/**
@@ -117,7 +117,7 @@ class TL_Meta_Boxes {
 	 * @package The_Loops
 	 * @since 0.3
 	 */
-	public static function meta_box_advanced() {
+	public static function meta_box_other() {
 		global $post_ID;
 
 		$content = tl_get_loop_parameters( $post_ID );
