@@ -220,6 +220,10 @@ function tl_query( $id, $query = '' ) {
 		}
 	}
 
+	// if pagination is hidden, turn off SQL_CALC_FOUND_ROWS
+	if ( 'none' == $content['pagination'] )
+		$args['no_found_rows'] = true;
+
 	add_filter( 'posts_where', 'tl_filter_where' );
 	$query = new WP_Query( $args );
 	remove_filter( 'posts_where', 'tl_filter_where' );
