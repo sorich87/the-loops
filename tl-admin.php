@@ -80,7 +80,12 @@ class TL_Admin {
 
 		wp_enqueue_script( 'tl-jquery-tagsinput', "{$the_loops->plugin_url}js/jquery-tagsinput$suffix.js", array( 'jquery' ), '20120213' );
 
-		wp_enqueue_script( 'the-loops', "{$the_loops->plugin_url}js/script$suffix.js", array( 'jquery-ui-datepicker', 'tl-jquery-tagsinput' ), '20120214' );
+		wp_enqueue_script( 'the-loops', "{$the_loops->plugin_url}js/script$suffix.js", array( 'jquery-ui-datepicker', 'tl-jquery-tagsinput' ), '20120215' );
+
+		$l10n = array(
+			'addAValue' => __( 'add a value' )
+		);
+		wp_localize_script( 'the-loops', 'tlLoops', $l10n );
 
 		if ( 'classic' == get_user_option( 'admin_color') )
 			wp_enqueue_style ( 'jquery-ui-css', "{$the_loops->plugin_url}css/jquery-ui-classic$suffix.css", null, '20120211' );
@@ -88,7 +93,6 @@ class TL_Admin {
 			wp_enqueue_style ( 'jquery-ui-css', "{$the_loops->plugin_url}css/jquery-ui-fresh$suffix.css", null, '20120211' );
 
 		wp_enqueue_style( 'the-loops', "{$the_loops->plugin_url}css/style$suffix.css", null, '20120213' );
-
 	}
 
 	/**

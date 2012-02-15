@@ -19,7 +19,7 @@ jQuery(function($) {
 		$(this).tagsInput({
 			height           : "5em",
 			width            : "24em",
-			defaultText      : "add a value",
+			defaultText      : tlLoops.addAValue,
 			delimiter        : "\t"
 		})
 	};
