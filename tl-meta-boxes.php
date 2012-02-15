@@ -196,7 +196,7 @@ class TL_Meta_Boxes {
 		<th scope="row"><label for="loop_s"><?php _e( 'Search terms' ); ?></label></th>
 		<td>
 			<input type="text" id="loop_s" name="loop[s]" value="<?php echo esc_attr( $s ); ?>" class="regular-text" />
-			<span class="description"><?php _e( 'Displar only the items that match these search terms' ); ?></span>
+			<span class="description"><?php _e( 'Display only the items that match these search terms' ); ?></span>
 		</td>
 	</tr>
 	<?php $maybe_hide = ! empty( $s ) ? '' : ' hide-if-js'; ?>
