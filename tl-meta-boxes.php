@@ -131,11 +131,14 @@ class TL_Meta_Boxes {
 		$content = tl_get_loop_parameters( $post_ID );
 
 		$defaults = array(
+			'exact'         => 0,
 			'exclude_posts' => 0,
 			'post_parent'   => '',
 			'post_status'   => array( 'publish' ),
 			'posts'         => '',
 			'readable'      => 1,
+			's'             => '',
+			'sentence'      => 0,
 			'sticky_posts'  => 'top'
 		);
 		$content = wp_parse_args( $content, $defaults );
@@ -183,6 +186,27 @@ class TL_Meta_Boxes {
 		<td>
 			<input<?php checked( $exclude_posts, 1 ); ?> type="checkbox" id="loop_exclude_posts" name="loop[exclude_posts]" value="1" />
 			<span class="description"><?php _e( 'Exclude the item ids defined above instead of including them' ); ?></span>
+		</td>
+	</tr>
+	<tr valign="top">
+		<th scope="row"><label for="loop_s"><?php _e( 'Search terms' ); ?></label></th>
+		<td>
+			<input type="text" id="loop_s" name="loop[s]" value="<?php echo esc_attr( $s ); ?>" class="regular-text" />
+			<span class="description"><?php _e( 'Display only the items that match these search terms' ); ?></span>
+		</td>
+	</tr>
+	<tr valign="top" class="tl_sentence hide-if-js">
+		<th scope="row"><label for="loop_sentence"><?php _e( 'Sentence' ); ?></label></th>
+		<td>
+			<input<?php checked( $sentence, 1 ); ?> type="checkbox" id="loop_sentence" name="loop[sentence]" value="1" />
+			<span class="description"><?php _e( 'Consider the search terms above as a whole sentence to search for' ); ?></span>
+		</td>
+	</tr>
+	<tr valign="top" class="tl_exact hide-if-js">
+		<th scope="row"><label for="loop_exact"><?php _e( 'Exact matches' ); ?></label></th>
+		<td>
+			<input<?php checked( $exact, 1 ); ?> type="checkbox" id="loop_exact" name="loop[exact]" value="1" />
+			<span class="description"><?php _e( 'Use exact matches' ); ?></span>
 		</td>
 	</tr>
 	<tr valign="top">

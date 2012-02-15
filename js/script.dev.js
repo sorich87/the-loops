@@ -104,6 +104,10 @@ jQuery(function($) {
 		toggleInput($(this), ["attachment"], [".tl_post_mime_type"]);
 	});
 
+	$("#loop_s").change(function () {
+		toggleInput($(this), null, [".tl_exact", ".tl_sentence"]);
+	});
+
 	$("#loop_date_type").change(function () {
 		if ( $(this).val() === "dynamic" ) {
 			toggleInput($(this), ["dynamic"], [".tl_days"], [".tl_date", ".tl_period"]);
