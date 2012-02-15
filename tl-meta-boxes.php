@@ -212,7 +212,7 @@ class TL_Meta_Boxes {
 		<th scope="row"><label for="loop_exact"><?php _e( 'Exact matches' ); ?></label></th>
 		<td>
 			<input<?php checked( $exact, 1 ); ?> type="checkbox" id="loop_exact" name="loop[exact]" value="1" />
-			<span class="description"><?php _e( 'Use exact matches' ); ?></span>
+			<span class="description"><?php _e( 'Search for exact matches' ); ?></span>
 		</td>
 	</tr>
 	<tr valign="top">
