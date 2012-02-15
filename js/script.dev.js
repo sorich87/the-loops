@@ -104,7 +104,7 @@ jQuery(function($) {
 		toggleInput($(this), ["attachment"], [".tl_post_mime_type"]);
 	});
 
-	$("#loop_s").change(function () {
+	$("#loop_s").keyup(function () {
 		toggleInput($(this), null, [".tl_exact", ".tl_sentence"]);
 	});
 
