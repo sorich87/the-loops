@@ -248,10 +248,13 @@ class TL_Meta_Boxes {
 	<tr valign="top" class="tl_date<?php echo $maybe_hide; ?>">
 		<th scope="row"><label for="loop-min-date"><?php _e( 'Date' ); ?></label></th>
 		<td>
-			from
-			<input type="text" class="loop-date" id="loop-min-date" name="loop[date][min]" value="<?php echo esc_attr( $content['date']['min'] ); ?>" class="regular-text" />
-			to
-			<input type="text" class="loop-date" id="loop-max-date" name="loop[date][max]" value="<?php echo esc_attr( $content['date']['max'] ); ?>" class="regular-text" />
+			<?php
+			printf(
+				__( 'from %1$s to %2$s' ),
+				'<input type="text" class="loop-date" id="loop-min-date" name="loop[date][min]" value="' . esc_attr( $content['date']['min'] ) . '" class="regular-text" />',
+				'<input type="text" class="loop-date" id="loop-max-date" name="loop[date][max]" value="' . esc_attr( $content['date']['max'] ) . '" class="regular-text" />'
+			);
+			?>
 			<span class="description"><?php _e( 'If these fields are left empty, infinite values will be used' ); ?></span>
 		</td>
 	</tr>
@@ -259,18 +262,20 @@ class TL_Meta_Boxes {
 	<tr valign="top" class="tl_days<?php echo $maybe_hide; ?>">
 		<th scope="row"><label for="loop-min-days"><?php _e( 'Date' ); ?></label></th>
 		<td>
-			from
-			<input type="text" id="loop-min-days" name="loop[days][min]" value="<?php echo esc_attr( $content['days']['min'] ); ?>" class="small-text" />
-			to
-			<input type="text" id="loop-max-days" name="loop[days][max]" value="<?php echo esc_attr( $content['days']['max'] ); ?>" class="small-text" />
-			days ago <span class="description"><?php _e( 'If these fields are left empty, infinite values will be used' ); ?></span>
+			<?php
+			printf(
+				__( 'from %1$s to %2$s days ago' ),
+				'<input type="text" id="loop-min-days" name="loop[days][min]" value="' . esc_attr( $content['days']['min'] ) . '" class="small-text" />',
+				'<input type="text" id="loop-max-days" name="loop[days][max]" value="' . esc_attr( $content['days']['max'] ) . '" class="small-text" />'
+			);
+			?>
 		</td>
 	</tr>
 	<?php $maybe_hide = 'period' == $content['date_type'] ? '' : ' hide-if-js'; ?>
 	<tr valign="top" class="tl_period<?php echo $maybe_hide; ?>">
 		<th scope="row"><label for="loop_time_year"><?php _e( 'Time period' ); ?></label></th>
 		<td>
-		<input value="<?php echo esc_attr( $content['time']['year'] ); ?>" id="loop_time_year" name="loop[time][year]" type="text" placeholder="year" class="small-text" maxlength="4" />
+		<input value="<?php echo esc_attr( $content['time']['year'] ); ?>" id="loop_time_year" name="loop[time][year]" type="text" placeholder="<?php _e( 'year' ); ?>" class="small-text" maxlength="4" />
 			<select id="loop_time_monthnum" name="loop[time][monthnum]">
 				<option value=""><?php _e( 'month' ); ?></option>
 				<?php for ( $i = 1; $i <= 12; $i++ ) : ?>
