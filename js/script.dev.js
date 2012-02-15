@@ -76,15 +76,15 @@ jQuery(function($) {
 			match = $.inArray(value, conditions) > -1;
 		}
 
-		targetsForTrue  = targetsForTrue.join(",");
-		targetsForFalse = targetsForFalse.join(",");
+		targetsForTrue  = targetsForTrue ? targetsForTrue.join(",") : null;
+		targetsForFalse = targetsForFalse ? targetsForFalse.join(",") : null;
 
 		if ( match ) {
-			$(targetsForTrue).removeClass("hide-if-js");
-			$(targetsForFalse).addClass("hide-if-js");
+			$(targetsForTrue).show('slow');
+			$(targetsForFalse).hide('slow');
 		} else {
-			$(targetsForTrue).addClass("hide-if-js");
-			$(targetsForFalse).removeClass("hide-if-js");
+			$(targetsForTrue).hide('slow');
+			$(targetsForFalse).show('slow');
 		}
 	}
 
