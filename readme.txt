@@ -3,7 +3,7 @@ Contributors: sorich87
 Tags: loop, loops, The Loop, shortcode, widget, post, posts, page, pages
 Requires at least: 3.3
 Tested up to: 3.4
-Stable tag: 0.2
+Stable tag: 0.3
 
 Like Drupal Views but for WordPress, The Loops allows you to query the
 database for content and display it in a page without having to write
