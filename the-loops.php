@@ -78,6 +78,7 @@ class The_Loops {
 	 */
 	private function includes() {
 		require( $this->plugin_dir . 'tl-functions.php' );
+		require( $this->plugin_dir . 'tl-template-tags.php' );
 		require( $this->plugin_dir . 'tl-widget.php' );
 
 		if ( is_admin() )

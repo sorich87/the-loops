@@ -26,6 +26,7 @@ class TL_Admin {
 		add_action( 'admin_menu', array( __CLASS__, 'remove_publish_meta_box' ) );
 		add_action( 'dbx_post_sidebar', array( __CLASS__, 'loop_save_button' ) );
 		add_action( 'save_post', array( __CLASS__, 'save_loop' ), 10, 2 );
+		add_action( 'submitpost_box', array( __CLASS__, 'loop_type_tabs' ) );
 
 		add_filter( 'bulk_actions-edit-tl_loop', array( __CLASS__, 'remove_bulk_edit' ) );
 		add_filter( 'get_user_option_closedpostboxes_tl_loop', array( __CLASS__, 'closed_meta_boxes' ) );
@@ -109,6 +110,34 @@ class TL_Admin {
 	}
 
 	/**
+	 * Display tabs to choose the loop type
+	 * @package The_Loops
+	 * @since 0.4
+	 */
+	public static function loop_type_tabs() {
+		global $post_ID;
+
+		if ( 'tl_loop' != get_current_screen()->id )
+			return;
+
+		$objects = isset( $_GET['tl_objects'] ) ? $_GET['tl_objects'] : tl_get_loop_object_type( $post_ID );
+?>
+<h3 class="nav-tab-wrapper">
+	<span><?php _e( 'Objects:' ); ?></span>
+
+	<?php $active_class = 'posts' == $objects ? ' nav-tab-active' : ''; ?>
+	<a href="<?php echo add_query_arg( 'tl_objects', 'posts' ); ?>" class="nav-tab<?php echo $active_class; ?>"><?php _e( 'Posts' ); ?></a>
+
+	<?php $active_class = 'users' == $objects ? ' nav-tab-active' : ''; ?>
+	<a href="<?php echo add_query_arg( 'tl_objects', 'users' ); ?>" class="nav-tab<?php echo $active_class; ?>"><?php _e( 'Users' ); ?></a>
+</h3>
+<input type="hidden" name="tl_objects" id="tl_objects" value="<?php echo $objects; ?>" />
+<?php
+
+		wp_nonce_field( 'tl_edit_loop', '_tlnonce' );
+	}
+
+	/**
 	 * Add loop content metabox
 	 *
 	 * @package The_Loops
@@ -129,8 +158,13 @@ class TL_Admin {
 	 * @since 0.3
 	 */
 	public static function closed_meta_boxes( $closed ) {
-		if ( false === $closed )
-			$closed = array( 'tl_otherdiv', 'tl_customfielddiv', 'tl_datediv', 'tl_orderpaginationdiv', 'tl_taxonomydiv' );
+		if ( false === $closed ) {
+			$closed = array(
+				'tl_postsotherdiv', 'tl_postsdatediv', 'tl_postsorderpaginationdiv',
+				'tl_usersotherdiv', 'tl_usersorderpaginationdiv',
+				'tl_customfielddiv', 'tl_taxonomydiv'
+			);
+		}
 
 		return $closed;
 	}
@@ -167,10 +201,14 @@ class TL_Admin {
 		$data = stripslashes_deep( $_POST['loop'] );
 
 		// remove data added by template tables
-		array_pop( $data['taxonomies'] );
-		array_pop( $data['custom_fields'] );
+		if ( ! empty( $data['taxonomies'] ) )
+			array_pop( $data['taxonomies'] );
+
+		if ( ! empty( $data['custom_fields'] ) )
+			array_pop( $data['custom_fields'] );
 
 		update_post_meta( $post_id, '_tl_loop_parameters', $data );
+		update_post_meta( $post_id, '_tl_loop_object_type', $_POST['tl_objects'] );
 	}
 
 	/**

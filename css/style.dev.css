@@ -3,6 +3,18 @@
 	width: 75px;
 }
 
+#poststuff h3.nav-tab-wrapper {
+	padding: 0;
+	margin: 0 0 20px;
+}
+#poststuff h3.nav-tab-wrapper span {
+	margin: 0 20px 0 0;
+}
+#poststuff h3 .nav-tab {
+	font-size: 16px;
+	line-height: 20px;
+}
+
 /*
 
 	jQuery Tags Input Plugin 1.3.3

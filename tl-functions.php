@@ -159,32 +159,8 @@ function tl_query( $id, $query = '' ) {
 			$args['second'] = $content['second'];
 	}
 
-	// custom field
-	if ( ! empty( $content['custom_fields'] ) ) {
-		$meta_query = array();
-
-		foreach ( $content['custom_fields'] as $custom_field ) {
-			if ( empty( $custom_field['key'] ) )
-				continue;
-
-			$values = _tl_csv_to_array( $custom_field['values'], "\t" );
-
-			if ( in_array( $custom_field['compare'], array( 'LIKE', 'NOT LIKE' ) ) )
-				$values = $values[0];
-
-			$meta_query[] = array(
-				'key'     => trim( $custom_field['key'] ),
-				'value'   => $values,
-				'compare' => $custom_field['compare'],
-				'type'    => $custom_field['type']
-			);
-		}
-
-		if ( $meta_query ) {
-			$meta_query['relation'] = 'AND';
-			$args['meta_query'] = $meta_query;
-		}
-	}
+	// custom fields
+	$args['meta_query'] = _tl_build_meta_query( $content['custom_fields'] );
 
 	// pagination
 	$posts_per_page = absint( $content['posts_per_page'] );
@@ -279,6 +255,67 @@ function tl_filter_where( $where ) {
 }
 
 /**
+ * Returns a WP_User_Query based on a loop details.
+ *
+ * @package The_Loops
+ * @since 0.4
+ *
+ * @param int $id Loop ID.
+ * @param string|array $query URL query string or array.
+ * @return WP_User_Query
+ */
+function tl_user_query( $id, $query = '' ) {
+	global $the_loop_context, $post_ID;
+
+	$content = tl_get_loop_parameters( $id );
+
+	$args = array();
+
+	// order and orderby
+	$args['order'] = $content['order'];
+	$args['orderby'] = $content['orderby'];
+
+	// offset and pagination
+	if ( 'none' == $content['pagination'] ) {
+		$args['offset'] = $content['offset'] + ( $content['paged'] - 1 ) * $content['number'];
+	} else {
+		$paged = max( 1, get_query_var( 'paged' ) );
+
+		$args['offset'] = ( $paged - 1 ) * $content['number'];
+	}
+	$args['number'] = absint( $content['number'] );
+
+	// search
+	$args['search'] = $content['search'];
+
+	// role
+	$args['role'] = $content['role'];
+
+	// user ids
+	$users = trim( $content['users'] );
+	if ( ! empty( $users ) ) {
+		if ( empty( $content['exclude_users'] ) ) {
+			$args['include'] = $users;
+		} else {
+			$args['exclude'] = $users;
+		}
+	}
+
+	// custom fields
+	$args['meta_query'] = _tl_build_meta_query( $content['custom_fields'] );
+
+	$args = wp_parse_args( $query, $args );
+
+	// if pagination is hidden, turn off SQL_CALC_FOUND_ROWS
+	if ( 'none' == $content['pagination'] )
+		$args['count_total'] = false;
+
+	$args['fields'] = 'all_with_meta';
+
+	return new WP_User_Query( $args );
+}
+
+/**
  * Convert a string of comma-separated values to an array
  *
  * @package The_Loops
@@ -292,6 +329,40 @@ function _tl_csv_to_array( $string, $delimiter = ',' ) {
 
 	$array = explode( $delimiter, $string );
 	return array_unique( array_map( 'trim', $array ) );
+}
+
+/**
+ * Build a meta query array based on form data
+ *
+ * @package The_Loops
+ * @since 0.4
+ * @param array $custom_fields Form data
+ * @return array Meta query
+ */
+function _tl_build_meta_query( $custom_fields ) {
+	if ( empty( $custom_fields ) )
+		return;
+
+	$meta_query = array();
+
+	foreach ( $custom_fields as $custom_field ) {
+		if ( empty( $custom_field['key'] ) )
+			continue;
+
+		$values = _tl_csv_to_array( $custom_field['values'], "\t" );
+
+		if ( in_array( $custom_field['compare'], array( 'LIKE', 'NOT LIKE' ) ) )
+			$values = $values[0];
+
+		$meta_query[] = array(
+			'key'     => trim( $custom_field['key'] ),
+			'value'   => $values,
+			'compare' => $custom_field['compare'],
+			'type'    => $custom_field['type']
+		);
+	}
+
+	return $meta_query;
 }
 
 /**
@@ -318,14 +389,24 @@ function tl_get_loops( $args = array() ) {
  * @since 0.1
  */
 function tl_setup_globals( $loop_id, $args, $context ) {
-	global $wp_query, $orig_query, $the_loop_id, $the_loop_context;
+	global $wp_query, $orig_query, $the_loop_id, $the_loop_context, $tl_user_query;
 
 	$the_loop_id      = $loop_id;
 	$the_loop_context = $context;
 
-	$tl_query = tl_query( $loop_id, $args );
-	$orig_query = clone $wp_query;
-	$wp_query   = clone $tl_query;
+	$type = tl_get_loop_object_type( $loop_id );
+
+	switch ( $type ) {
+		case 'posts' :
+			$tl_query = tl_query( $loop_id, $args );
+			$orig_query = clone $wp_query;
+			$wp_query   = clone $tl_query;
+			break;
+
+		case 'users' :
+			$tl_user_query = tl_user_query( $loop_id, $args );
+			break;
+	}
 }
 
 /**
@@ -335,12 +416,14 @@ function tl_setup_globals( $loop_id, $args, $context ) {
  * @since 0.3
  */
 function tl_clear_globals() {
-	global $wp_query, $orig_query, $the_loop_id, $the_loop_context;
+	global $wp_query, $orig_query, $the_loop_id, $the_loop_context, $tl_user_query;
 
-	$wp_query = clone $orig_query;
-	wp_reset_query();
+	if ( 'posts' == tl_get_loop_object_type( $the_loop_id ) ) {
+		$wp_query = clone $orig_query;
+		wp_reset_query();
+	}
 
-	unset( $orig_query, $the_loop_id, $the_loop_context );
+	unset( $orig_query, $the_loop_id, $the_loop_context, $tl_user_query );
 }
 
 /**
@@ -357,14 +440,14 @@ function tl_clear_globals() {
 function tl_display_loop( $loop_id, $template_name, $args = null, $context = '' ) {
 	global $the_loops;
 
-	$loop_templates = tl_get_loop_templates();
-	$loop_template = $loop_templates[$template_name];
+	$type = tl_get_loop_object_type( $loop_id );
+
+	$loop_templates = tl_get_loop_templates( $type );
+	$loop_template = isset( $loop_templates[$template_name] ) ? $loop_templates[$template_name] : '';
 
 	tl_setup_globals( $loop_id, $args, $context );
 
 	ob_start();
-
-	include( "{$the_loops->plugin_dir}tl-template-tags.php" );
 
 	tl_locate_template( $loop_template, true );
 
@@ -394,63 +477,91 @@ function tl_shortcode( $atts ) {
 add_shortcode( 'the-loop', 'tl_shortcode' );
 
 /**
- * Get the default Loop Templates
+ * Check if a template file is a loop template and corresponds to the specified object type
+ *
+ * @package The_Loops
+ * @since 0.4
+ *
+ * @param string $file Template file name
+ * @param string $objects Template objects type
+ * @return string Template name
+ */
+function tl_is_loop_template( $file, $objects = 'posts' ) {
+	$data = get_file_data( $file, array(
+		'name'    => 'The Loops Template',
+		'objects' => 'The Loops Objects'
+	) );
+
+	$template_name    = trim( $data['name'] );
+	$template_objects = trim( $data['objects'] );
+
+	if ( empty( $template_name ) )
+		return;
+
+	if ( 'all' == $objects || ( empty( $template_objects ) && 'posts' == $objects )
+		|| ( 'posts' != $template_objects && $objects == $template_objects ) )
+		return $template_name;
+}
+
+/**
+ * Get the default Loop Templates corresponding to the specified objects type
  *
  * @package The_Loops
  * @since 0.2
+ *
+ * @param string $objects Loop objects type
+ * @return array Default templates
  */
-function tl_get_default_loop_templates() {
+function tl_get_default_loop_templates( $objects = 'posts' ) {
 	global $the_loops;
 
 	$templates_files = scandir( $the_loops->templates_dir );
 
+	$loop_templates = array();
 	foreach ( $templates_files as $template ) {
 		if ( ! is_file( $the_loops->templates_dir . $template ) )
 			continue;
 
-		// don't allow template files in subdirectories
-		if ( false !== strpos( $template, '/' ) )
-			continue;
+		$template_name = tl_is_loop_template( $the_loops->templates_dir. $template, $objects );
 
-		$data = get_file_data( $the_loops->templates_dir. $template, array( 'name' => 'The Loops Template' ) );
-
-		if ( ! empty( $data['name'] ) )
-			$loop_templates[trim( $data['name'] )] = $template;
+		if ( $template_name )
+			$loop_templates[$template_name] = $template;
 	}
 
 	return $loop_templates;
 }
 
 /**
- * Get the Loop Templates available in the current theme or the default ones
+ * Get all the available Loop Templates corresponding to the specified objects type
  *
  * @package The_Loops
  * @since 0.2
+ *
+ * @param string $objects Loop objects type
+ * @return array Loop templates
  */
-function tl_get_loop_templates() {
+function tl_get_loop_templates( $objects = 'posts' ) {
 	$themes = get_themes();
 	$theme = get_current_theme();
 	$templates = $themes[$theme]['Template Files'];
-	$loop_templates = tl_get_default_loop_templates();
+	$loop_templates = tl_get_default_loop_templates( $objects );
 
-	if ( is_array( $templates ) ) {
-		$base = array( trailingslashit(get_template_directory()), trailingslashit(get_stylesheet_directory()) );
+	$base = array( trailingslashit( get_template_directory() ), trailingslashit( get_stylesheet_directory() ) );
 
-		foreach ( $templates as $template ) {
-			$basename = str_replace( $base, '', $template );
+	foreach ( (array) $templates as $template ) {
+		$basename = str_replace( $base, '', $template );
 
-			// don't allow template files in subdirectories
-			if ( false !== strpos( $basename, '/' ) )
-				continue;
+		// don't allow template files in subdirectories
+		if ( false !== strpos( $basename, '/' ) )
+			continue;
 
-			if ( 'functions.php' == $basename )
-				continue;
+		if ( 'functions.php' == $basename )
+			continue;
 
-			$data = get_file_data( $template, array( 'name' => 'The Loops Template' ) );
+		$template_name = tl_is_loop_template( $template, $objects );
 
-			if ( !empty( $data['name'] ) )
-				$loop_templates[trim( $data['name'] )] = $basename;
-		}
+		if ( $template_name )
+			$loop_templates[$template_name] = $basename;
 	}
 
 	return $loop_templates;
@@ -506,5 +617,23 @@ function tl_locate_template( $template_names, $load = false, $require_once = fal
  */
 function tl_get_loop_parameters( $loop_id ) {
 	return get_post_meta( $loop_id, '_tl_loop_parameters', true );
+}
+
+/**
+ * Get loop object type
+ *
+ * @package The_Loops
+ * @since 0.4
+ *
+ * @param int $loop_id Loop ID
+ * @return string Object type
+ */
+function tl_get_loop_object_type( $loop_id ) {
+	$type = get_post_meta( $loop_id, '_tl_loop_object_type', true );
+
+	if ( empty( $type ) )
+		$type = 'posts';
+
+	return $type;
 }
 

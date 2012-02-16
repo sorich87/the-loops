@@ -21,12 +21,27 @@ class TL_Meta_Boxes {
 	 * @since 0.3
 	 */
 	public static function init() {
-		add_meta_box( 'tl_generaldiv', __( 'General Parameters' ), array( __CLASS__, 'meta_box_general' ), 'tl_loop', 'normal' );
-		add_meta_box( 'tl_taxonomydiv', __( 'Taxonomy Parameters' ), array( __CLASS__, 'meta_box_taxonomy' ), 'tl_loop', 'normal' );
-		add_meta_box( 'tl_orderpaginationdiv', __( 'Order & Pagination Parameters' ), array( __CLASS__, 'meta_box_order_pagination' ), 'tl_loop', 'normal' );
-		add_meta_box( 'tl_datediv', __( 'Date Parameters' ), array( __CLASS__, 'meta_box_date' ), 'tl_loop', 'normal' );
-		add_meta_box( 'tl_customfielddiv', __( 'Custom Field Parameters' ), array( __CLASS__, 'meta_box_custom_field' ), 'tl_loop', 'normal' );
-		add_meta_box( 'tl_otherdiv', __( 'Other Parameters' ), array( __CLASS__, 'meta_box_other' ), 'tl_loop', 'normal' );
+		global $post_ID;
+
+		$objects = isset( $_GET['tl_objects'] ) ? $_GET['tl_objects'] : tl_get_loop_object_type( $post_ID );
+
+		switch ( $objects ) {
+			case 'users' :
+				add_meta_box( 'tl_usersgeneraldiv', __( 'General Parameters' ), array( __CLASS__, 'meta_box_users_general' ), 'tl_loop', 'normal' );
+				add_meta_box( 'tl_usersorderpaginationdiv', __( 'Order & Pagination Parameters' ), array( __CLASS__, 'meta_box_users_order_pagination' ), 'tl_loop', 'normal' );
+				add_meta_box( 'tl_customfielddiv', __( 'Custom Field Parameters' ), array( __CLASS__, 'meta_box_custom_field' ), 'tl_loop', 'normal' );
+				add_meta_box( 'tl_usersotherdiv', __( 'Other Parameters' ), array( __CLASS__, 'meta_box_users_other' ), 'tl_loop', 'normal' );
+				break;
+
+			default :
+				add_meta_box( 'tl_postsgeneraldiv', __( 'General Parameters' ), array( __CLASS__, 'meta_box_posts_general' ), 'tl_loop', 'normal' );
+				add_meta_box( 'tl_taxonomydiv', __( 'Taxonomy Parameters' ), array( __CLASS__, 'meta_box_taxonomy' ), 'tl_loop', 'normal' );
+				add_meta_box( 'tl_postsorderpaginationdiv', __( 'Order & Pagination Parameters' ), array( __CLASS__, 'meta_box_posts_order_pagination' ), 'tl_loop', 'normal' );
+				add_meta_box( 'tl_postsdatediv', __( 'Date Parameters' ), array( __CLASS__, 'meta_box_posts_date' ), 'tl_loop', 'normal' );
+				add_meta_box( 'tl_customfielddiv', __( 'Custom Field Parameters' ), array( __CLASS__, 'meta_box_custom_field' ), 'tl_loop', 'normal' );
+				add_meta_box( 'tl_postsotherdiv', __( 'Other Parameters' ), array( __CLASS__, 'meta_box_posts_other' ), 'tl_loop', 'normal' );
+				break;
+		}
 	}
 
 	/**
@@ -35,10 +50,8 @@ class TL_Meta_Boxes {
 	 * @package The_Loops
 	 * @since 0.3
 	 */
-	public static function meta_box_general() {
+	public static function meta_box_posts_general() {
 		global $post_ID;
-
-		wp_nonce_field( 'tl_edit_loop', '_tlnonce' );
 
 		$content = tl_get_loop_parameters( $post_ID );
 
@@ -126,7 +139,7 @@ class TL_Meta_Boxes {
 	 * @package The_Loops
 	 * @since 0.3
 	 */
-	public static function meta_box_other() {
+	public static function meta_box_posts_other() {
 		global $post_ID;
 
 		$content = tl_get_loop_parameters( $post_ID );
@@ -241,7 +254,7 @@ class TL_Meta_Boxes {
 	 * @package The_Loops
 	 * @since 0.3
 	 */
-	public static function meta_box_date() {
+	public static function meta_box_posts_date() {
 		global $post_ID;
 
 		$content = tl_get_loop_parameters( $post_ID );
@@ -590,7 +603,7 @@ class TL_Meta_Boxes {
 	 * @package The_Loops
 	 * @since 0.3
 	 */
-	public static function meta_box_order_pagination() {
+	public static function meta_box_posts_order_pagination() {
 		global $post_ID;
 
 		$content = tl_get_loop_parameters( $post_ID );
@@ -669,6 +682,208 @@ class TL_Meta_Boxes {
 		<td>
 			<input type="text" id="loop_paged" name="loop[paged]" value="<?php echo esc_attr( $paged ); ?>" class="small-text" />
 			<span class="description"><?php _e( 'Show the items that would normally show up just on this page number when using a pagination' ); ?></span>
+		</td>
+	</tr>
+</table>
+<?php
+	}
+
+	/**
+	 * Display metabox for setting the content of a users loop
+	 *
+	 * @package The_Loops
+	 * @since 0.4
+	 */
+	public static function meta_box_users_general() {
+		global $post_ID, $wp_roles;
+
+		$content = tl_get_loop_parameters( $post_ID );
+
+		$defaults = array(
+			'not_found' => '<p>' . __( 'Nothing found!' ) . '</p>',
+			'role'      => 'subscriber',
+			'template'  => 'List of user bios'
+		);
+		$content = wp_parse_args( $content, $defaults );
+		extract( $content );
+?>
+<table class="form-table">
+	<tr valign="top">
+		<th scope="row"><label for="loop_role"><?php _e( 'Role' ); ?></label></th>
+		<td>
+			<select id="loop_role" name="loop[role]">
+				<?php
+				$available_roles = $wp_roles->get_names();
+				foreach ( $available_roles as $key => $name ) {
+					$selected = selected( $key, $role, false );
+					echo "<option value='$key'$selected>$name</option>";
+				}
+				?>
+			</select>
+		</td>
+	</tr>
+	<tr valign="top">
+		<th scope="row"><label for="loop_template"><?php _e( 'Template' ); ?></label></th>
+		<td>
+			<select id="loop_template" name="loop[template]">
+				<?php
+				$loop_templates = tl_get_loop_templates( 'users' );
+				foreach ( $loop_templates as $name => $file ) {
+					$selected = selected( $name, $template );
+					echo "<option value='" . esc_attr( $name ) . "'$selected>{$name}</option>";
+				}
+				?>
+			</select>
+		</td>
+	</tr>
+	<tr valign="top">
+		<th scope="row"><label for="loop_not_found"><?php _e( 'Not found text' ); ?></label></th>
+		<td>
+			<input type="text" id="loop_not_found" name="loop[not_found]" value="<?php echo esc_attr( $not_found ); ?>" class="regular-text" />
+			<span class="description"><?php _e( 'Text to display when nothing found' ); ?></span>
+		</td>
+	</tr>
+	<tr valign="top">
+		<th scope="row"><?php _e( 'Shortcode' ); ?></th>
+		<td>
+			<code><?php echo '[the-loop id="' . $post_ID . '"]'; ?></code>
+			<span class="description"><?php _e( 'To use the shortcode, copy/paste it in the post or page where you want to display the loop' ); ?></span>
+		</td>
+	</tr>
+	<tr valign="top">
+		<th scope="row"><?php _e( 'Widget' ); ?></th>
+		<td>
+			<span class="description"><?php printf( __( 'To use the widget, <a href="%s">go to the widgets management screen</a> and assign The Loops widget to a sidebar' ), site_url( 'wp-admin/widgets.php' ) ) ?></span>
+		</td>
+	</tr>
+</table>
+<?php
+	}
+
+	/**
+	 * Display metabox for a users loop display settings
+	 *
+	 * @package The_Loops
+	 * @since 0.4
+	 */
+	public static function meta_box_users_order_pagination() {
+		global $post_ID;
+
+		$content = tl_get_loop_parameters( $post_ID );
+
+		$defaults = array(
+			'number'         => get_option( 'posts_per_page' ),
+			'offset'         => 0,
+			'orderby'        => 'display_name',
+			'order'          => 'ASC',
+			'paged'          => 1,
+			'pagination'     => 'previous_next'
+		);
+		$content = wp_parse_args( $content, $defaults );
+		extract( $content );
+?>
+<table class="form-table">
+	<tr valign="top">
+		<th scope="row"><label for="loop_number"><?php _e( 'Items per page' ); ?></label></th>
+		<td>
+			<input type="text" id="loop_number" name="loop[number]" value="<?php echo esc_attr( $number ); ?>" class="small-text" />
+			<span class="description"><?php _e( 'If this is left empty, all the items will be displayed' ); ?></span>
+		</td>
+	</tr>
+	<tr valign="top">
+		<th scope="row"><label for="loop_orderby"><?php _e( 'Sorted by' ); ?></label></th>
+		<td>
+			<select id="loop_orderby" name="loop[orderby]">
+				<?php
+				$orderby_params = array(
+					'ID' => __( 'ID' ), 'user_login' => __( 'Username' ), 'display_name' => __( 'Display name' ),
+					'user_nicename' => __( 'Nicename' ), 'user_email' => __( 'E-mail' ), 'user_url' => __( 'Website' ),
+					'user_registered' => __( 'Registration date' ), 'post_count' => __( 'Number of posts' ), 'rand' => __( 'Random order' )
+				);
+				foreach ( $orderby_params as $key => $label ) {
+					$selected = selected( $key, $orderby );
+					echo "<option value='" . esc_attr( $key ) . "'$selected>{$label}</option>";
+				}
+				?>
+			</select>
+			<select id="loop_order" name="loop[order]">
+				<option value="DESC"<?php selected( 'DESC', $order, true ); ?>><?php _e( 'DESC' ); ?></option>
+				<option value="ASC"<?php selected( 'ASC', $order, true ); ?>><?php _e( 'ASC' ); ?></option>
+			</select>
+		</td>
+	</tr>
+	<tr valign="top">
+		<th scope="row"><label for="loop_pagination"><?php _e( 'Pagination format' ); ?></label></th>
+		<td>
+			<select id="loop_pagination" name="loop[pagination]">
+				<option<?php selected( $pagination, 'previous_next' ); ?> value="previous_next"><?php _e( 'previous and next links only' ); ?></option>
+				<option<?php selected( $pagination, 'numeric' ); ?> value="numeric"><?php _e( 'numeric' ); ?></option>
+				<option<?php selected( $pagination, 'none' ); ?> value="none"><?php _e( 'none' ); ?></option>
+			</select>
+		</td>
+	</tr>
+	<?php $maybe_hide = 'none' == $pagination ? '' : ' hide-if-js'; ?>
+	<tr valign="top" class="tl_offset<?php echo $maybe_hide; ?>">
+		<th scope="row"><label for="loop_offset"><?php _e( 'Offset' ); ?></label></th>
+		<td>
+			<input type="text" id="loop_offset" name="loop[offset]" value="<?php echo esc_attr( $offset ); ?>" class="small-text" />
+			<span class="description"><?php _e( 'Number of items to displace or pass over' ); ?></span>
+		</td>
+	</tr>
+	<?php $maybe_hide = 'none' == $pagination ? '' : ' hide-if-js'; ?>
+	<tr valign="top" class="tl_paged<?php echo $maybe_hide; ?>">
+		<th scope="row"><label for="loop_paged"><?php _e( 'Page' ); ?></label></th>
+		<td>
+			<input type="text" id="loop_paged" name="loop[paged]" value="<?php echo esc_attr( $paged ); ?>" class="small-text" />
+			<span class="description"><?php _e( 'Show the items that would normally show up just on this page number when using a pagination' ); ?></span>
+		</td>
+	</tr>
+</table>
+<?php
+	}
+
+	/**
+	 * Display metabox for setting a users loop other parameters
+	 *
+	 * @package The_Loops
+	 * @since 0.4
+	 */
+	public static function meta_box_users_other() {
+		global $post_ID;
+
+		$content = tl_get_loop_parameters( $post_ID );
+
+		$defaults = array(
+			'exact'         => 1,
+			'exclude_users' => 0,
+			'users'         => '',
+			'search'        => '',
+			'sentence'      => 0,
+		);
+		$content = wp_parse_args( $content, $defaults );
+		extract( $content );
+?>
+<table class="form-table">
+	<tr valign="top">
+		<th scope="row"><label for="loop_users"><?php _e( 'Users' ); ?></label></th>
+		<td>
+			<input type="text" id="loop_users" name="loop[users]" value="<?php echo esc_attr( $users ); ?>" class="regular-text" />
+			<span class="description"><?php _e( "Comma-separated list of user ids to retrieve." ); ?></span>
+		</td>
+	</tr>
+	<tr valign="top" class="tl_exclude_users">
+		<th scope="row"><label for="loop_exclude_users"><?php _e( 'Exclude users' ); ?></label></th>
+		<td>
+			<input<?php checked( $exclude_users, 1 ); ?> id="loop_exclude_users" name="loop[exclude_users]" value="1" type="checkbox" />
+			<span class="description"><?php _e( 'Exclude the user ids defined above instead of including them' ); ?></span>
+		</td>
+	</tr>
+	<tr valign="top">
+		<th scope="row"><label for="loop_search"><?php _e( 'Search term' ); ?></label></th>
+		<td>
+			<input type="text" id="loop_search" name="loop[search]" value="<?php echo esc_attr( $search ); ?>" class="regular-text" />
+			<span class="description"><?php _e( 'Display only the users that match the ID, username, email, website, or nicename set here.' ); ?></span>
+			<br /><span class="description"><?php _e( 'You can include * (wildcards) before and/or after the search term.' ); ?></span>
 		</td>
 	</tr>
 </table>
