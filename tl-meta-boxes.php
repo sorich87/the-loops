@@ -668,7 +668,7 @@ class TL_Meta_Boxes {
 		<th scope="row"><label for="loop_paged"><?php _e( 'Page' ); ?></label></th>
 		<td>
 			<input type="text" id="loop_paged" name="loop[paged]" value="<?php echo esc_attr( $paged ); ?>" class="small-text" />
-			<span class="description"><?php _e( 'Show the posts that would normally show up just on this page number when using a pagination' ); ?></span>
+			<span class="description"><?php _e( 'Show the items that would normally show up just on this page number when using a pagination' ); ?></span>
 		</td>
 	</tr>
 </table>
