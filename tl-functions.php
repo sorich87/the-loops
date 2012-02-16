@@ -88,7 +88,7 @@ function tl_query( $id, $query = '' ) {
 	$args['post__in'] = $args['post__not_in'] = array();
 
 	if ( ! empty( $content['posts'] ) ) {
-		$posts = _tl_csv_to_array( $content['posts'] );
+		$posts = wp_parse_id_list( $content['posts'] );
 
 		if ( empty( $content['exclude_posts'] ) )
 			$args['post__in'] = $posts;
