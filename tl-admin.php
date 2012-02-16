@@ -24,12 +24,15 @@ class TL_Admin {
 		add_action( 'add_meta_boxes', array( __CLASS__, 'add_meta_boxes' ) );
 		add_action( 'admin_enqueue_scripts', array( __CLASS__, 'enqueue_scripts' ) );
 		add_action( 'admin_menu', array( __CLASS__, 'remove_publish_meta_box' ) );
+		add_action( 'before_wp_tiny_mce', array( __CLASS__, 'loop_list_script' ) );
 		add_action( 'dbx_post_sidebar', array( __CLASS__, 'loop_save_button' ) );
 		add_action( 'save_post', array( __CLASS__, 'save_loop' ), 10, 2 );
 		add_action( 'submitpost_box', array( __CLASS__, 'loop_type_tabs' ) );
 
 		add_filter( 'bulk_actions-edit-tl_loop', array( __CLASS__, 'remove_bulk_edit' ) );
 		add_filter( 'get_user_option_closedpostboxes_tl_loop', array( __CLASS__, 'closed_meta_boxes' ) );
+		add_filter( 'mce_buttons', array( __CLASS__, 'add_editor_button' ) );
+		add_filter( 'mce_external_plugins', array( __CLASS__, 'add_editor_plugin' ) );
 		add_filter( 'post_row_actions', array( __CLASS__, 'remove_quick_edit' ), 10, 2 );
 		add_filter( 'post_updated_messages', array( __CLASS__, 'loop_updated_messages' ) );
 		add_filter( 'screen_layout_columns', array( __CLASS__, 'loop_screen_layout_columns' ), 10, 2 );
@@ -84,7 +87,7 @@ class TL_Admin {
 		wp_enqueue_script( 'the-loops', "{$the_loops->plugin_url}js/script$suffix.js", array( 'jquery-ui-datepicker', 'tl-jquery-tagsinput' ), '20120215' );
 
 		$l10n = array(
-			'addAValue' => __( 'add a value' )
+			'addAValue' => __( 'add a value' ),
 		);
 		wp_localize_script( 'the-loops', 'tlLoops', $l10n );
 
@@ -254,6 +257,61 @@ class TL_Admin {
 			unset( $actions['edit'] );
 
 		return $actions;
+	}
+
+	/**
+	 * Add button to the tinymce editor
+	 *
+	 * @package The_Loops
+	 * @since 0.3
+	 */
+	public static function add_editor_button( $buttons ) {
+		array_push( $buttons, 'separator', 'the_loops_selector' );
+		return $buttons;
+	}
+
+	/**
+	 * Add the tinymce plugin
+	 *
+	 * @package The_Loops
+	 * @since 0.3
+	 */
+	public static function add_editor_plugin( $plugins ) {
+		global $the_loops;
+
+		$suffix = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '.dev' : '';
+
+		$plugins['the_loops_selector'] = "{$the_loops->plugin_url}js/editor-plugin$suffix.js";
+
+		return $plugins;
+	}
+
+	/**
+	 * Print loops list in javascript for use in the editor
+	 *
+	 * @package The_Loops
+	 * @since 0.3
+	 */
+	public static function loop_list_script() {
+		$loops = tl_get_loops();
+		$loop_list = array();
+		foreach ( $loops as $loop ) {
+			$loop_list[] = array(
+				'id'   => $loop->ID,
+				'name' => $loop->post_title
+			);
+		}
+		$loop_list = json_encode( array(
+			'title' => __( 'Insert loop' ),
+			'loops' => $loop_list
+		) );
+?>
+<script type='text/javascript'>
+/* <![CDATA[ */
+var tlLoopList = <?php echo $loop_list; ?>;
+/* ]]> */
+</script>
+<?php
 	}
 
 }
