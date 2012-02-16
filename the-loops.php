@@ -102,26 +102,35 @@ class The_Loops {
 	 */
 	public function register_post_type() {
 		$labels = array(
-			'name' => _x( 'Loops', 'post type general name'),
-			'singular_name' => _x( 'Loop', 'post type singular name' ),
-			'add_new' => _x( 'Add New', 'loop' ),
-			'add_new_item' => __( 'Add New Loop' ),
-			'edit_item' => __( 'Edit Loop' ),
-			'new_item' => __( 'New Loop' ),
-			'all_items' => __( 'Loops' ),
-			'view_item' => __( 'View Loop' ),
-			'search_items' => __( 'Search Loops' ),
-			'not_found' =>  __( 'No loops found' ),
+			'name'               => _x( 'Loops', 'post type general name' ),
+			'singular_name'      => _x( 'Loop', 'post type singular name' ),
+			'add_new'            => _x( 'Add New', 'loop' ),
+			'add_new_item'       => __( 'Add New Loop' ),
+			'edit_item'          => __( 'Edit Loop' ),
+			'new_item'           => __( 'New Loop' ),
+			'all_items'          => __( 'Loops' ),
+			'view_item'          => __( 'View Loop' ),
+			'search_items'       => __( 'Search Loops' ),
+			'not_found'          => __( 'No loops found' ),
 			'not_found_in_trash' => __( 'No loops found in Trash' ),
-			'parent_item_colon' => '',
-			'menu_name' => __( 'Loops' )
+			'parent_item_colon'  => '',
+			'menu_name'          => __( 'Loops' )
 		);
 
 		$args = array(
-			'labels' => $labels,
-			'show_ui' => true,
-			'show_in_menu' => 'themes.php',
-			'supports' => array( 'title' )
+			'capabilities'    => array(
+				'edit_post'          => 'edit_theme_options',
+				'delete_post'        => 'edit_theme_options',
+				'read_post'          => 'read',
+				'edit_posts'         => 'edit_theme_options',
+				'edit_others_posts'  => 'edit_theme_options',
+				'publish_posts'      => 'edit_theme_options',
+				'read_private_posts' => 'edit_theme_options'
+			),
+			'labels'          => $labels,
+			'show_ui'         => true,
+			'show_in_menu'    => 'themes.php',
+			'supports'        => array( 'title' )
 		);
 
 		register_post_type( 'tl_loop', $args );
