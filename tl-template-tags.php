@@ -82,6 +82,7 @@ function tl_get_loop_context() {
  * @since 0.3
  */
 function tl_in_widget() {
+	global $the_loop_context;
 	return 'widget' == $the_loop_context;
 }
 
