@@ -18,7 +18,7 @@
 
 		<?php while( have_posts() ) : the_post(); ?>
 
-			<?php if ( 'widget' == tl_get_loop_context() ) : ?>
+			<?php if ( tl_in_widget() ) : ?>
 				<h4>
 			<?php else : ?>
 				<h2>
@@ -26,7 +26,7 @@
 
 					<a href="<?php the_permalink(); ?>" title="<?php printf( esc_attr__( 'Permalink to %s' ), the_title_attribute( 'echo=0' ) ); ?>" rel="bookmark"><?php the_title(); ?></a>
 
-			<?php if ( 'widget' == tl_get_loop_context() ) : ?>
+			<?php if ( tl_in_widget() ) : ?>
 				</h4>
 			<?php else : ?>
 				</h2>

@@ -75,3 +75,13 @@ function tl_get_loop_context() {
 	return $the_loop_context;
 }
 
+/**
+ * Check if current loop is in a widget
+ *
+ * @package The_Loops
+ * @since 0.3
+ */
+function tl_in_widget() {
+	return 'widget' == $the_loop_context;
+}
+
