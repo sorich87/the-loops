@@ -194,7 +194,7 @@ function tl_query( $id, $query = '' ) {
 		$args['posts_per_page'] = $posts_per_page;
 	}
 
-	if ( empty( $content['pagination'] ) ) {
+	if ( 'none' == $content['pagination'] ) {
 		$args['paged'] = 1;
 	} else {
 		$args['paged'] = max( 1, get_query_var( 'paged' ) );
