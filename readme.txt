@@ -1,9 +1,10 @@
 === Plugin Name ===
 Contributors: sorich87
-Tags: loop, loops, The Loop, shortcode, widget, post, posts, page, pages
+Tags: loop, loops, the loop, shortcode, widget, posts, pages, custom
+post types, users
 Requires at least: 3.3
 Tested up to: 3.4
-Stable tag: 0.3
+Stable tag: 0.4
 
 Like Drupal Views but for WordPress, The Loops allows you to query the
 database for content and display it in a page without having to write
@@ -12,9 +13,9 @@ php code.
 == Description ==
 
 The Loops plugin offers you great flexibility for displaying your site
-content. It provides a graphical user interface in your WordPress site
-admin that allows you to query the database for content without having
-to write any PHP code or SQL queries.
+content and users list. It provides a graphical user interface in your
+WordPress site admin that allows you to query the database for content
+without having to write any PHP code or SQL queries.
 
 With this plugin, you can display the queried content in a page or post
 (using shortcodes) or a widget.
@@ -26,10 +27,10 @@ plugins.](http://wordpress.org/extend/plugins/profile/sorich87)
 
 * Works with any theme without modification
 * Works with any 'custom post types' plugin
+* Display list of posts and users with all the possibilities offered by
+WordPress
 * Custom templates
-* Support all the WordPress post query possibilities
-* Display the loops anywhere with a shortcode
-* Display the loops in a widget
+* Display the loops anywhere with a shortcode or a widget
 
 = Contributors =
 [Contributors are listed
@@ -103,6 +104,9 @@ your liking!
 
 == Changelog ==
 
+= 0.4 =
+* Lists of users.
+
 = 0.3 =
 * Support all the wordpress post query possibilities.
 * Improved custom templates.
@@ -115,6 +119,9 @@ your liking!
 * First release.
 
 == Upgrade Notice ==
+
+= 0.4 =
+New feature: loops of users.
 
 = 0.3 =
 This version supports all the wordpress post query possibilities and an
