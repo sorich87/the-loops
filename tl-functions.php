@@ -444,15 +444,13 @@ function tl_display_loop( $loop_id, $template_name, $args = null, $context = '' 
 
 	$loop_templates = tl_get_loop_templates( $type );
         
-	$loop_template = isset( $loop_templates[$template_name] ) ? $loop_templates[$template_name] : '';
-
-        $template = locate_template($loop_template, false);
+	$single_loop_template = isset( $loop_templates[$template_name] ) ? $loop_templates[$template_name] : '';
 
 	tl_setup_globals( $loop_id, $args, $context );
 
 	ob_start();
 
-	load_template( $loop_template, true );
+	load_template( $single_loop_template, true );
 
 	$content = ob_get_contents();
 	ob_end_clean();
@@ -525,10 +523,11 @@ function tl_get_default_loop_templates( $objects = 'posts' ) {
 		if ( ! is_file( $the_loops->templates_dir . $template ) )
 			continue;
 
-		$template_name = tl_is_loop_template( $the_loops->templates_dir. $template, $objects );
+		$is_template = tl_is_loop_template( $the_loops->templates_dir. $template, $objects );
 
-		if ( $template_name )
-			$loop_templates[$template] = $the_loops->templates_dir.$template;
+		if (!$is_template) continue;
+		
+		$loop_templates[$template] = $the_loops->templates_dir.$template;
 	}
 
 	return $loop_templates;
@@ -561,13 +560,12 @@ function tl_get_loop_templates( $objects = 'posts' ) {
 
         foreach((array)$tl_templates_directories as $tl_templates_dir){
 
-            $files = (array) glob(trailingslashit($tl_templates_dir)."*.php",GLOB_BRACE);
+            $files = (array) glob(trailingslashit($tl_templates_dir)."*.php");
 
             foreach ( $files as $template ) {
                 
-                $filename = basename($template).PHP_EOL;
+                $filename = basename($template);
 
-                if($filename=='functions.php') continue;
                 if(in_array($template,$loop_templates)) continue; //for priority
                 
                 $template_name = tl_is_loop_template( $template, $objects );
@@ -578,6 +576,7 @@ function tl_get_loop_templates( $objects = 'posts' ) {
             }
             
         }
+		
 	return $loop_templates;
 }
 
