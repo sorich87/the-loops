@@ -499,8 +499,10 @@ function tl_is_loop_template( $file, $objects = 'posts' ) {
 	if ( empty( $template_name ) )
 		return;
 
-	if ( 'all' == $objects || ( empty( $template_objects ) && 'posts' == $objects )
-		|| ( 'posts' != $template_objects && $objects == $template_objects ) )
+	if ( 'all' == $objects 
+		|| ( empty( $template_objects ) && 'posts' == $objects )
+		|| ( 'posts' != $template_objects && $objects == $template_objects ) 
+		)
 		return $template_name;
 }
 
@@ -523,11 +525,11 @@ function tl_get_default_loop_templates( $objects = 'posts' ) {
 		if ( ! is_file( $the_loops->templates_dir . $template ) )
 			continue;
 
-		$is_template = tl_is_loop_template( $the_loops->templates_dir. $template, $objects );
+		$is_template = tl_is_loop_template( $the_loops->templates_dir . $template, $objects );
 
-		if (!$is_template) continue;
+		if ( ! $is_template ) continue;
 		
-		$loop_templates[$template] = $the_loops->templates_dir.$template;
+		$loop_templates[$template] = $the_loops->templates_dir . $template;
 	}
 
 	return $loop_templates;
@@ -549,29 +551,30 @@ function tl_get_loop_templates( $objects = 'posts' ) {
         /*templates priority : the last directory from the array have the highest priority.
          * this means that child templates will override parent templates which will override default templates.
          */
-        $tl_templates_directories[]=$the_loops->templates_dir; //default templates
-        $tl_templates_directories = apply_filters('tl_templates_directories',$tl_templates_directories); //allow plugins to add directories
-        $tl_templates_directories[]=get_template_directory(); //parent theme
-        $tl_templates_directories[]=get_stylesheet_directory(); //child theme
+         
+        $tl_templates_directories[] = $the_loops->templates_dir; //default templates
+        $tl_templates_directories = apply_filters( 'tl_templates_directories' , $tl_templates_directories ); //allow plugins to add directories
+        $tl_templates_directories[] = get_template_directory(); //parent theme
+        $tl_templates_directories[] = get_stylesheet_directory(); //child theme
         
-        $tl_templates_directories = array_unique($tl_templates_directories);
-        $tl_templates_directories = array_reverse($tl_templates_directories); //reverse to have highest priority first
+        $tl_templates_directories = array_unique( $tl_templates_directories );
+        $tl_templates_directories = array_reverse( $tl_templates_directories ); //reverse to have highest priority first
 
 
-        foreach((array)$tl_templates_directories as $tl_templates_dir){
+        foreach( (array) $tl_templates_directories as $tl_templates_dir ){
 
-            $files = (array) glob(trailingslashit($tl_templates_dir)."*.php");
+            $files = (array) glob( trailingslashit( $tl_templates_dir ) . "*.php" );
 
             foreach ( $files as $template ) {
                 
-                $filename = basename($template);
+                $filename = basename( $template );
 
-                if(in_array($template,$loop_templates)) continue; //for priority
+                if( in_array( $template , $loop_templates ) ) continue; //for priority
                 
                 $template_name = tl_is_loop_template( $template, $objects );
                 
                 if ( $template_name )
-                    $loop_templates[$template_name]=$template;
+                    $loop_templates[$template_name] = $template;
                     
             }
             
