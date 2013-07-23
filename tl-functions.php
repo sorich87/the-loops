@@ -443,13 +443,14 @@ function tl_display_loop( $loop_id, $template_name, $args = null, $context = '' 
 	$type = tl_get_loop_object_type( $loop_id );
 
 	$loop_templates = tl_get_loop_templates( $type );
-	$loop_template = isset( $loop_templates[$template_name] ) ? $loop_templates[$template_name] : '';
+        
+	$single_loop_template = isset( $loop_templates[$template_name] ) ? $loop_templates[$template_name] : '';
 
 	tl_setup_globals( $loop_id, $args, $context );
 
 	ob_start();
 
-	tl_locate_template( $loop_template, true );
+	load_template( $single_loop_template, true );
 
 	$content = ob_get_contents();
 	ob_end_clean();
@@ -498,8 +499,10 @@ function tl_is_loop_template( $file, $objects = 'posts' ) {
 	if ( empty( $template_name ) )
 		return;
 
-	if ( 'all' == $objects || ( empty( $template_objects ) && 'posts' == $objects )
-		|| ( 'posts' != $template_objects && $objects == $template_objects ) )
+	if ( 'all' == $objects 
+		|| ( empty( $template_objects ) && 'posts' == $objects )
+		|| ( 'posts' != $template_objects && $objects == $template_objects ) 
+		)
 		return $template_name;
 }
 
@@ -522,10 +525,11 @@ function tl_get_default_loop_templates( $objects = 'posts' ) {
 		if ( ! is_file( $the_loops->templates_dir . $template ) )
 			continue;
 
-		$template_name = tl_is_loop_template( $the_loops->templates_dir. $template, $objects );
+		$is_template = tl_is_loop_template( $the_loops->templates_dir . $template, $objects );
 
-		if ( $template_name )
-			$loop_templates[$template_name] = $template;
+		if ( ! $is_template ) continue;
+		
+		$loop_templates[$template] = $the_loops->templates_dir . $template;
 	}
 
 	return $loop_templates;
@@ -541,70 +545,44 @@ function tl_get_default_loop_templates( $objects = 'posts' ) {
  * @return array Loop templates
  */
 function tl_get_loop_templates( $objects = 'posts' ) {
-	$themes = get_themes();
-	$theme = get_current_theme();
-	$templates = $themes[$theme]['Template Files'];
-	$loop_templates = tl_get_default_loop_templates( $objects );
+        global $the_loops;
+        $loop_templates=$tl_templates_directories=$potential_templates=array();
+        
+        /*templates priority : the last directory from the array have the highest priority.
+         * this means that child templates will override parent templates which will override default templates.
+         */
+         
+        $tl_templates_directories[] = $the_loops->templates_dir; //default templates
+        $tl_templates_directories = apply_filters( 'tl_templates_directories' , $tl_templates_directories ); //allow plugins to add directories
+        $tl_templates_directories[] = get_template_directory(); //parent theme
+        $tl_templates_directories[] = get_stylesheet_directory(); //child theme
+        
+        $tl_templates_directories = array_unique( $tl_templates_directories );
+        $tl_templates_directories = array_reverse( $tl_templates_directories ); //reverse to have highest priority first
 
-	$base = array( trailingslashit( get_template_directory() ), trailingslashit( get_stylesheet_directory() ) );
 
-	foreach ( (array) $templates as $template ) {
-		$basename = str_replace( $base, '', $template );
+        foreach( (array) $tl_templates_directories as $tl_templates_dir ){
 
-		// don't allow template files in subdirectories
-		if ( false !== strpos( $basename, '/' ) )
-			continue;
+            $files = (array) glob( trailingslashit( $tl_templates_dir ) . "*.php" );
 
-		if ( 'functions.php' == $basename )
-			continue;
+            foreach ( $files as $template ) {
+                
+                $filename = basename( $template );
 
-		$template_name = tl_is_loop_template( $template, $objects );
-
-		if ( $template_name )
-			$loop_templates[$template_name] = $basename;
-	}
-
+                if( in_array( $template , $loop_templates ) ) continue; //for priority
+                
+                $template_name = tl_is_loop_template( $template, $objects );
+                
+                if ( $template_name )
+                    $loop_templates[$template_name] = $template;
+                    
+            }
+            
+        }
+		
 	return $loop_templates;
 }
 
-/**
- * Retrieve the name of the highest priority template file that exists.
- *
- * Searches in the plugin templates dir, then STYLESHEETPATH and TEMPLATEPATH.
- *
- * @package The_Loops
- * @since 0.2
- *
- * @param string|array $template_names Template file(s) to search for, in order.
- * @param bool $load If true the template file will be loaded if it is found.
- * @param bool $require_once Whether to require_once or require. Default true. Has no effect if $load is false.
- * @return string The template filename if one is located.
- */
-function tl_locate_template( $template_names, $load = false, $require_once = false ) {
-	global $the_loops;
-
-	$located = '';
-	foreach ( (array) $template_names as $template_name ) {
-		if ( ! $template_name )
-			continue;
-
-		if ( file_exists( STYLESHEETPATH . '/' . $template_name ) ) {
-			$located = STYLESHEETPATH . '/' . $template_name;
-			break;
-		} else if ( file_exists( TEMPLATEPATH . '/' . $template_name ) ) {
-			$located = TEMPLATEPATH . '/' . $template_name;
-			break;
-		} else if ( file_exists( $the_loops->templates_dir . $template_name ) ) {
-			$located = $the_loops->templates_dir . $template_name;
-			break;
-		}
-	}
-
-	if ( $load && '' != $located )
-		load_template( $located, $require_once );
-
-	return $located;
-}
 
 /**
  * Get loop parameters
