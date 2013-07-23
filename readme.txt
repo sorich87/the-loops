@@ -98,6 +98,27 @@ Copy a default template file from the directory 'tl-templates' in the
 plugin directory to your theme directory. Then feel free to modify it to
 your liking!
 
+Copy a default template file from the directory 'tl-templates' in the
+plugin directory to your theme directory. Then feel free to modify it to
+your liking!
+
+The template's header must contain the line:
+	 * The Loops Template: List of excerpts
+
+= How to add register custom templates directories ? =
+
+Use a function hooked on filter "tl_templates_directories" eg.
+
+	add_filter('tl_templates_directories',my_plugin_tl_templates_directory);
+
+	function my_plugin_tl_templates_directory($directories){
+		$directories[]=MYPLUGIN_ABSOLUTE_DIR; //change this to the absolute directory you want to be checked for templates
+		return $directories;
+	}
+
+The Loops will then check in MYPLUGIN_ABSOLUTE_DIR if there is valid templates which it can use; and they will be available through The Loops options.
+
+
 == Screenshots ==
 
 1. Loop edit screen
