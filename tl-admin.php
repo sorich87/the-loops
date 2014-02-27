@@ -121,7 +121,7 @@ class TL_Admin {
 		if ( 'tl_loop' != get_current_screen()->id )
 			return;
 
-		$objects = isset( $_GET['tl_objects'] ) ? $_GET['tl_objects'] : tl_get_loop_object_type( get_the_ID() );
+		$objects = isset( $_GET['tl_objects'] ) ? $_GET['tl_objects'] : tl_get_loop_object_type();
 ?>
 <h3 class="nav-tab-wrapper">
 	<span><?php _e( 'Objects:' ); ?></span>

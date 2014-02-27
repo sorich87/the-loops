@@ -22,7 +22,6 @@ if ( ! defined( 'ABSPATH' ) )
  * @return WP_Query
  */
 function tl_query( $loop_id, $query = '' ) {
-	global $the_loop_context;
 
 	$content = tl_get_loop_parameters( $loop_id );
 
@@ -195,7 +194,7 @@ function tl_query( $loop_id, $query = '' ) {
 	$args = wp_parse_args( $query, $args );
 
 	// if a shortcode is being used, don't display the post in which it was inserted
-	if ( 'shortcode' == $the_loop_context ) {
+	if ( 'shortcode' == the_loops()->the_loop_context ) {
 		if ( ! empty( $args['post__in'] ) ) {
 			$key = array_search( get_the_ID(), $args['post__in'] );
 			unset( $args['posts__in'][$key] );
@@ -224,9 +223,8 @@ function tl_query( $loop_id, $query = '' ) {
  * @since 0.3
  */
 function tl_filter_where( $where ) {
-	global $the_loop_id;
 
-	$content = tl_get_loop_parameters( $the_loop_id );
+	$content = tl_get_loop_parameters();
 
 	if ( ! in_array( $content['date_type'], array( 'dynamic', 'static' ) ) )
 		return $where;
@@ -265,7 +263,6 @@ function tl_filter_where( $where ) {
  * @return WP_User_Query
  */
 function tl_user_query( $loop_id, $query = '' ) {
-	global $the_loop_context;
 
 	$content = tl_get_loop_parameters( $loop_id );
 
@@ -389,22 +386,23 @@ function tl_get_loops( $args = array() ) {
  * @since 0.1
  */
 function tl_setup_globals( $loop_id, $args, $context ) {
-	global $wp_query, $orig_query, $the_loop_id, $the_loop_context, $tl_user_query;
+	global $wp_query;
 
-	$the_loop_id      = $loop_id;
-	$the_loop_context = $context;
+	the_loops()->the_loop_id      = $loop_id;
+	the_loops()->the_loop_context = $context;
+        
 
 	$type = tl_get_loop_object_type( $loop_id );
 
 	switch ( $type ) {
 		case 'posts' :
-			$tl_query = tl_query( $loop_id, $args );
-			$orig_query = clone $wp_query;
-			$wp_query   = clone $tl_query;
+			the_loops()->the_loop_query = tl_query( $loop_id, $args );
+			the_loops()->original_query = clone $wp_query;
+			$wp_query   = the_loops()->the_loop_query;
 			break;
 
 		case 'users' :
-			$tl_user_query = tl_user_query( $loop_id, $args );
+			the_loops()->the_loop_user_query = tl_user_query( $loop_id, $args );
 			break;
 	}
 }
@@ -416,14 +414,17 @@ function tl_setup_globals( $loop_id, $args, $context ) {
  * @since 0.3
  */
 function tl_clear_globals() {
-	global $wp_query, $orig_query, $the_loop_id, $the_loop_context, $tl_user_query;
+	global $wp_query;
 
-	if ( 'posts' == tl_get_loop_object_type( $the_loop_id ) ) {
-		$wp_query = clone $orig_query;
+	if ( 'posts' == tl_get_loop_object_type() ) {
+		$wp_query = clone the_loops()->original_query;
 		wp_reset_query();
 	}
-
-	unset( $orig_query, $the_loop_id, $the_loop_context, $tl_user_query );
+        
+        the_loops()->the_loop_id = null;
+        the_loops()->the_loop_context = null;
+        the_loops()->original_query = null;
+        the_loops()->the_loop_user_query = null;
 }
 
 /**
@@ -590,7 +591,7 @@ function tl_get_loop_templates( $objects = 'posts' ) {
  * @return array Loop parameters
  */
 function tl_get_loop_parameters( $loop_id = false ) {
-    if ( !$loop_id ) $loop_id = get_the_ID();
+    if ( !$loop_id ) $loop_id = the_loops()->the_loop_id;
     return get_post_meta( $loop_id, '_tl_loop_parameters', true );
 }
 
@@ -603,7 +604,8 @@ function tl_get_loop_parameters( $loop_id = false ) {
  * @param int $loop_id Loop ID
  * @return string Object type
  */
-function tl_get_loop_object_type( $loop_id ) {
+function tl_get_loop_object_type( $loop_id = false ) {
+        if (!$loop_id) $loop_id = the_loops()->the_loop_id;
 	$type = get_post_meta( $loop_id, '_tl_loop_object_type', true );
 
 	if ( empty( $type ) )

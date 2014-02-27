@@ -22,7 +22,7 @@ class TL_Meta_Boxes {
 	 */
 	public static function init() {
 
-		$objects = isset( $_GET['tl_objects'] ) ? $_GET['tl_objects'] : tl_get_loop_object_type( get_the_ID() );
+		$objects = isset( $_GET['tl_objects'] ) ? $_GET['tl_objects'] : tl_get_loop_object_type();
 
 		switch ( $objects ) {
 			case 'users' :

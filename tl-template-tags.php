@@ -9,8 +9,6 @@
  * @param int $tl_loop_id Loop ID.
  */
 function tl_not_found_text( $tl_loop_id = 0, $echo = true ) {
-	if ( empty( $the_loop_id ) )
-		global $the_loop_id;
 
 	$content = tl_get_loop_parameters( $the_loop_id );
 
@@ -29,10 +27,7 @@ function tl_not_found_text( $tl_loop_id = 0, $echo = true ) {
  * @param int $tl_loop_id Loop ID
  */
 function tl_pagination( $the_loop_id = 0, $echo = true ) {
-	global $wp_query, $tl_user_query;
-
-	if ( empty( $the_loop_id ) )
-		global $the_loop_id;
+	global $wp_query;
 
 	$pagination = '';
 
@@ -43,7 +38,7 @@ function tl_pagination( $the_loop_id = 0, $echo = true ) {
 		$paged = max( 1, get_query_var('paged') );
 
 		if ( 'users' == $type )
-			$total = ceil( $tl_user_query->get_total() / $content['number'] );
+			$total = ceil( the_loops()->the_loop_user_query->get_total() / $content['number'] );
 		else
 			$total = $wp_query->max_num_pages;
 
@@ -96,8 +91,7 @@ function tl_pagination( $the_loop_id = 0, $echo = true ) {
  * @since 0.3
  */
 function tl_in_widget() {
-	global $the_loop_context;
-	return 'widget' == $the_loop_context;
+	return 'widget' == the_loops()->the_loop_context;
 }
 
 /**
@@ -109,17 +103,16 @@ function tl_in_widget() {
  * @return bool True if users are available, false if end of loop.
  */
 function tl_have_users() {
-	global $tl_user_query, $tl_index, $tl_count;
 
-	if ( null === $tl_index ) {
-		$tl_index               = -1;
-		$tl_user_query->results = array_values( $tl_user_query->results );
-		$tl_count               = count( $tl_user_query->results );
+	if ( null === the_loops()->the_loop_user_index ) {
+		the_loops()->the_loop_user_index               = -1;
+		the_loops()->the_loop_user_query->results = array_values( the_loops()->the_loop_user_query->results );
+		the_loops()->the_loop_user_count               = count( the_loops()->the_loop_user_query->results );
 	}
 
-	if ( $tl_index + 1 < $tl_count )
+	if ( the_loops()->the_loop_user_index + 1 < the_loops()->the_loop_user_count )
 		return true;
-	elseif ( $tl_index + 1 == $tl_count && $tl_count > 0 )
+	elseif ( the_loops()->the_loop_user_index + 1 == the_loops()->the_loop_user_count && the_loops()->the_loop_user_count > 0 )
 		tl_rewind_users();
 
 	return false;
@@ -133,9 +126,8 @@ function tl_have_users() {
  * @since 0.4
  */
 function tl_rewind_users() {
-	global $tl_user_query, $tl_index, $tl_count;
 
-	unset( $tl_index, $tl_count );
+	unset( the_loops()->the_loop_user_index, the_loops()->the_loop_user_count );
 }
 
 /**
@@ -160,10 +152,7 @@ function tl_the_user() {
  * @return object Next user.
  */
 function tl_next_user() {
-	global $tl_user_query, $tl_index;
-
-	$tl_index++;
-
-	return $tl_user_query->results[$tl_index];
+	the_loops()->the_loop_user_index++;
+	return the_loops()->the_loop_user_query->results[the_loops()->the_loop_user_index];
 }
 
