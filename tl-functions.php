@@ -444,7 +444,13 @@ function tl_display_loop( $loop_id, $template_name, $args = null, $context = '' 
 
 	$loop_templates = tl_get_loop_templates( $type );
         
-	$single_loop_template = isset( $loop_templates[$template_name] ) ? $loop_templates[$template_name] : '';
+        if ( empty( $loop_templates ) ) return false;
+        
+        if (isset( $loop_templates[$template_name] )){
+            $single_loop_template = $loop_templates[$template_name];
+        }else{ //fallback ! TO FIX best way to select it.
+            $single_loop_template = end($loop_templates);
+        }
 
 	tl_setup_globals( $loop_id, $args, $context );
 
