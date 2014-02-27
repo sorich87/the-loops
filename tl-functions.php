@@ -22,7 +22,7 @@ if ( ! defined( 'ABSPATH' ) )
  * @return WP_Query
  */
 function tl_query( $id, $query = '' ) {
-	global $the_loop_context, $post_ID;
+	global $the_loop_context;
 
 	$content = tl_get_loop_parameters( $id );
 
@@ -265,7 +265,7 @@ function tl_filter_where( $where ) {
  * @return WP_User_Query
  */
 function tl_user_query( $id, $query = '' ) {
-	global $the_loop_context, $post_ID;
+	global $the_loop_context;
 
 	$content = tl_get_loop_parameters( $id );
 

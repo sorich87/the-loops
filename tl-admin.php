@@ -117,12 +117,11 @@ class TL_Admin {
 	 * @since 0.4
 	 */
 	public static function loop_type_tabs() {
-		global $post_ID;
 
 		if ( 'tl_loop' != get_current_screen()->id )
 			return;
 
-		$objects = isset( $_GET['tl_objects'] ) ? $_GET['tl_objects'] : tl_get_loop_object_type( $post_ID );
+		$objects = isset( $_GET['tl_objects'] ) ? $_GET['tl_objects'] : tl_get_loop_object_type( get_the_ID() );
 ?>
 <h3 class="nav-tab-wrapper">
 	<span><?php _e( 'Objects:' ); ?></span>
@@ -219,12 +218,11 @@ class TL_Admin {
 	 * @since 0.1
 	 */
 	public static function loop_updated_messages( $messages ) {
-		global $post, $post_ID;
 
 		$messages['tl_loop'] = array(
-			1 => sprintf( __( 'Loop updated.' ), esc_url( get_permalink( $post_ID ) ) ),
+			1 => sprintf( __( 'Loop updated.' ), esc_url( get_permalink() ) ),
 			4 => __( 'Loop updated.'),
-			6 => sprintf( __( 'Loop published.' ), esc_url( get_permalink( $post_ID ) ) ),
+			6 => sprintf( __( 'Loop published.' ), esc_url( get_permalink() ) ),
 			7 => __( 'Loop saved.' )
 		);
 
