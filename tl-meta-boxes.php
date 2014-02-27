@@ -51,7 +51,7 @@ class TL_Meta_Boxes {
 	 */
 	public static function meta_box_posts_general() {
 
-		$content = tl_get_loop_parameters( get_the_ID() );
+		$content = tl_get_loop_parameters();
 
 		$defaults = array(
 			'authors'        => '',
@@ -139,7 +139,7 @@ class TL_Meta_Boxes {
 	 */
 	public static function meta_box_posts_other() {
 
-		$content = tl_get_loop_parameters( get_the_ID() );
+		$content = tl_get_loop_parameters();
 
 		$defaults = array(
 			'exact'         => 0,
@@ -253,7 +253,7 @@ class TL_Meta_Boxes {
 	 */
 	public static function meta_box_posts_date() {
 
-		$content = tl_get_loop_parameters( get_the_ID() );
+		$content = tl_get_loop_parameters();
 
 		$defaults = array(
 			'date'      => array(
@@ -369,7 +369,7 @@ class TL_Meta_Boxes {
 	 */
 	public static function meta_box_taxonomy() {
 
-		$content = tl_get_loop_parameters( get_the_ID() );
+		$content = tl_get_loop_parameters();
 
 		$defaults = array(
 			'taxonomies' => array()
@@ -476,7 +476,7 @@ class TL_Meta_Boxes {
 	 */
 	public static function meta_box_custom_field() {
 
-		$content = tl_get_loop_parameters( get_the_ID() );
+		$content = tl_get_loop_parameters();
 
 		$defaults = array(
 			'custom_fields' => array()
@@ -599,7 +599,7 @@ class TL_Meta_Boxes {
 	 */
 	public static function meta_box_posts_order_pagination() {
 
-		$content = tl_get_loop_parameters( get_the_ID() );
+		$content = tl_get_loop_parameters();
 
 		$defaults = array(
 			'meta_key'       => '',
@@ -690,7 +690,7 @@ class TL_Meta_Boxes {
 	public static function meta_box_users_general() {
 		global $wp_roles;
 
-		$content = tl_get_loop_parameters( get_the_ID() );
+		$content = tl_get_loop_parameters();
 
 		$defaults = array(
 			'not_found' => '<p>' . __( 'Nothing found!' ) . '</p>',
@@ -761,7 +761,7 @@ class TL_Meta_Boxes {
 	 */
 	public static function meta_box_users_order_pagination() {
 
-		$content = tl_get_loop_parameters( get_the_ID() );
+		$content = tl_get_loop_parameters();
 
 		$defaults = array(
 			'number'         => get_option( 'posts_per_page' ),
@@ -842,7 +842,7 @@ class TL_Meta_Boxes {
 	 */
 	public static function meta_box_users_other() {
 
-		$content = tl_get_loop_parameters( get_the_ID() );
+		$content = tl_get_loop_parameters();
 
 		$defaults = array(
 			'exact'         => 1,

@@ -17,14 +17,14 @@ if ( ! defined( 'ABSPATH' ) )
  * @package The_Loops
  * @since 0.1
  *
- * @param int $id Loop ID.
+ * @param int $loop_id Loop ID.
  * @param string|array $query URL query string or array.
  * @return WP_Query
  */
-function tl_query( $id, $query = '' ) {
+function tl_query( $loop_id, $query = '' ) {
 	global $the_loop_context;
 
-	$content = tl_get_loop_parameters( $id );
+	$content = tl_get_loop_parameters( $loop_id );
 
 	$args = array();
 
@@ -260,14 +260,14 @@ function tl_filter_where( $where ) {
  * @package The_Loops
  * @since 0.4
  *
- * @param int $id Loop ID.
+ * @param int $loop_id Loop ID.
  * @param string|array $query URL query string or array.
  * @return WP_User_Query
  */
-function tl_user_query( $id, $query = '' ) {
+function tl_user_query( $loop_id, $query = '' ) {
 	global $the_loop_context;
 
-	$content = tl_get_loop_parameters( $id );
+	$content = tl_get_loop_parameters( $loop_id );
 
 	$args = array();
 
@@ -589,8 +589,9 @@ function tl_get_loop_templates( $objects = 'posts' ) {
  * @param int  $loop_id Loop ID
  * @return array Loop parameters
  */
-function tl_get_loop_parameters( $loop_id ) {
-	return get_post_meta( $loop_id, '_tl_loop_parameters', true );
+function tl_get_loop_parameters( $loop_id = false ) {
+    if ( !$loop_id ) $loop_id = get_the_ID();
+    return get_post_meta( $loop_id, '_tl_loop_parameters', true );
 }
 
 /**
