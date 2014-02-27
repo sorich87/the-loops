@@ -544,20 +544,18 @@ function tl_get_default_loop_templates( $objects = 'posts' ) {
  */
 function tl_get_loop_templates( $objects = 'posts' ) {
     
-        $loop_templates=$tl_templates_directories=$potential_templates=array();
+        $loop_templates = $tl_templates_directories = $potential_templates = array();
         
-        /*templates priority : the last directory from the array have the highest priority.
-         * this means that child templates will override parent templates which will override default templates.
-         */
+        //templates priority : the last directory from the array have the highest priority.
+        //this means that child templates will override parent templates which will override default templates.
          
-        $tl_templates_directories[] = the_loops()->templates_dir; //default templates
-        $tl_templates_directories = apply_filters( 'tl_templates_directories' , $tl_templates_directories ); //allow plugins to add directories
-        $tl_templates_directories[] = get_template_directory(); //parent theme
-        $tl_templates_directories[] = get_stylesheet_directory(); //child theme
+        $tl_templates_directories[] = the_loops()->templates_dir; //the loops templates path
+        $tl_templates_directories = apply_filters( 'tl_templates_directories' , $tl_templates_directories ); //allow plugins to add template paths
+        $tl_templates_directories[] = get_template_directory(); //parent theme path
+        $tl_templates_directories[] = get_stylesheet_directory(); //child theme path
         
         $tl_templates_directories = array_unique( $tl_templates_directories );
         $tl_templates_directories = array_reverse( $tl_templates_directories ); //reverse to have highest priority first
-
 
         foreach( (array) $tl_templates_directories as $tl_templates_dir ){
 
@@ -577,7 +575,7 @@ function tl_get_loop_templates( $objects = 'posts' ) {
             }
             
         }
-		
+
 	return $loop_templates;
 }
 
