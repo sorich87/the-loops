@@ -73,7 +73,6 @@ class TL_Admin {
 	 * @since 0.1
 	 */
 	public static function enqueue_scripts() {
-		global $the_loops;
 
 		if ( 'tl_loop' != get_current_screen()->id )
 			return;
@@ -82,9 +81,9 @@ class TL_Admin {
 
 		wp_enqueue_script( 'jquery-ui-datepicker' );
 
-		wp_enqueue_script( 'tl-jquery-tagsinput', "{$the_loops->plugin_url}js/jquery-tagsinput$suffix.js", array( 'jquery' ), '20120213' );
+		wp_enqueue_script( 'tl-jquery-tagsinput', "{the_loops()->plugin_url}js/jquery-tagsinput$suffix.js", array( 'jquery' ), '20120213' );
 
-		wp_enqueue_script( 'the-loops', "{$the_loops->plugin_url}js/script$suffix.js", array( 'jquery-ui-datepicker', 'tl-jquery-tagsinput' ), '20120215' );
+		wp_enqueue_script( 'the-loops', "{the_loops()->plugin_url}js/script$suffix.js", array( 'jquery-ui-datepicker', 'tl-jquery-tagsinput' ), '20120215' );
 
 		$l10n = array(
 			'addAValue' => __( 'add a value' ),
@@ -92,11 +91,11 @@ class TL_Admin {
 		wp_localize_script( 'the-loops', 'tlLoops', $l10n );
 
 		if ( 'classic' == get_user_option( 'admin_color') )
-			wp_enqueue_style ( 'jquery-ui-css', "{$the_loops->plugin_url}css/jquery-ui-classic$suffix.css", null, '20120211' );
+			wp_enqueue_style ( 'jquery-ui-css', "{the_loops()->plugin_url}css/jquery-ui-classic$suffix.css", null, '20120211' );
 		else
-			wp_enqueue_style ( 'jquery-ui-css', "{$the_loops->plugin_url}css/jquery-ui-fresh$suffix.css", null, '20120211' );
+			wp_enqueue_style ( 'jquery-ui-css', "{the_loops()->plugin_url}css/jquery-ui-fresh$suffix.css", null, '20120211' );
 
-		wp_enqueue_style( 'the-loops', "{$the_loops->plugin_url}css/style$suffix.css", null, '20120213' );
+		wp_enqueue_style( 'the-loops', "{the_loops()->plugin_url}css/style$suffix.css", null, '20120213' );
 	}
 
 	/**
@@ -147,9 +146,8 @@ class TL_Admin {
 	 * @since 0.1
 	 */
 	public static function add_meta_boxes() {
-		global $the_loops;
 
-		include( "{$the_loops->plugin_dir}tl-meta-boxes.php" );
+		include( "{the_loops()->plugin_dir}tl-meta-boxes.php" );
 
 		TL_Meta_Boxes::init();
 	}
@@ -277,11 +275,10 @@ class TL_Admin {
 	 * @since 0.3
 	 */
 	public static function add_editor_plugin( $plugins ) {
-		global $the_loops;
 
 		$suffix = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '.dev' : '';
 
-		$plugins['the_loops_selector'] = "{$the_loops->plugin_url}js/editor-plugin$suffix.js";
+		$plugins['the_loops_selector'] = "{the_loops()->plugin_url}js/editor-plugin$suffix.js";
 
 		return $plugins;
 	}

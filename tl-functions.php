@@ -438,7 +438,6 @@ function tl_clear_globals() {
  * @param string Context in which the loop is displayed
  */
 function tl_display_loop( $loop_id, $template_name, $args = null, $context = '' ) {
-	global $the_loops;
 
 	$type = tl_get_loop_object_type( $loop_id );
 
@@ -516,20 +515,19 @@ function tl_is_loop_template( $file, $objects = 'posts' ) {
  * @return array Default templates
  */
 function tl_get_default_loop_templates( $objects = 'posts' ) {
-	global $the_loops;
 
-	$templates_files = scandir( $the_loops->templates_dir );
+	$templates_files = scandir( the_loops()->templates_dir );
 
 	$loop_templates = array();
 	foreach ( $templates_files as $template ) {
-		if ( ! is_file( $the_loops->templates_dir . $template ) )
+		if ( ! is_file( the_loops()->templates_dir . $template ) )
 			continue;
 
-		$is_template = tl_is_loop_template( $the_loops->templates_dir . $template, $objects );
+		$is_template = tl_is_loop_template( the_loops()->templates_dir . $template, $objects );
 
 		if ( ! $is_template ) continue;
 		
-		$loop_templates[$template] = $the_loops->templates_dir . $template;
+		$loop_templates[$template] = the_loops()->templates_dir . $template;
 	}
 
 	return $loop_templates;
@@ -545,14 +543,14 @@ function tl_get_default_loop_templates( $objects = 'posts' ) {
  * @return array Loop templates
  */
 function tl_get_loop_templates( $objects = 'posts' ) {
-        global $the_loops;
+    
         $loop_templates=$tl_templates_directories=$potential_templates=array();
         
         /*templates priority : the last directory from the array have the highest priority.
          * this means that child templates will override parent templates which will override default templates.
          */
          
-        $tl_templates_directories[] = $the_loops->templates_dir; //default templates
+        $tl_templates_directories[] = the_loops()->templates_dir; //default templates
         $tl_templates_directories = apply_filters( 'tl_templates_directories' , $tl_templates_directories ); //allow plugins to add directories
         $tl_templates_directories[] = get_template_directory(); //parent theme
         $tl_templates_directories[] = get_stylesheet_directory(); //child theme
