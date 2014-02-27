@@ -121,7 +121,7 @@ class TL_Admin {
 		if ( 'tl_loop' != get_current_screen()->id )
 			return;
 
-		$objects = isset( $_GET['tl_objects'] ) ? $_GET['tl_objects'] : tl_get_loop_object_type();
+		$objects = isset( $_GET['tl_objects'] ) ? $_GET['tl_objects'] : tl_get_loop_object_type( get_the_ID() );
 ?>
 <h3 class="nav-tab-wrapper">
 	<span><?php _e( 'Objects:' ); ?></span>
@@ -145,8 +145,7 @@ class TL_Admin {
 	 * @since 0.1
 	 */
 	public static function add_meta_boxes() {
-
-		include( "{the_loops()->plugin_dir}tl-meta-boxes.php" );
+		include( the_loops()->plugin_dir . "tl-meta-boxes.php" );
 
 		TL_Meta_Boxes::init();
 	}

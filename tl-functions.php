@@ -224,7 +224,7 @@ function tl_query( $loop_id, $query = '' ) {
  */
 function tl_filter_where( $where ) {
 
-	$content = tl_get_loop_parameters();
+	$content = tl_get_loop_parameters( the_loops()->the_loop_id );
 
 	if ( ! in_array( $content['date_type'], array( 'dynamic', 'static' ) ) )
 		return $where;
@@ -597,7 +597,7 @@ function tl_get_loop_templates( $objects = 'posts' ) {
  * @return array Loop parameters
  */
 function tl_get_loop_parameters( $loop_id = false ) {
-    if ( !$loop_id ) $loop_id = the_loops()->the_loop_id;
+    if ( !$loop_id ) $loop_id = get_the_ID();
     return get_post_meta( $loop_id, '_tl_loop_parameters', true );
 }
 
