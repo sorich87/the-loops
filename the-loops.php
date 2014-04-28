@@ -8,11 +8,11 @@
  */
 /**
  * Plugin Name: The Loops
- * Plugin URI: http://pubpoet.com/plugins/
+ * Plugin URI: http://wordpress.org/plugins/the-loops/
  * Description: The Loops allows you to query the WordPress database for content and display it in a page without having to write php code.
- * Author: PubPoet
- * Author URI: http://pubpoet.com/
- * Version: 0.4
+ * Author: Ulrich Sossou
+ * Author URI: http://ulrichsossou.com/
+ * Version: 1.0.0
  * License: GPL2
  */
 /*  Copyright 2011  Ulrich Sossou  (http://github.com/sorich87)
