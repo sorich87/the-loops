@@ -12,7 +12,7 @@
  * Description: The Loops allows you to query the WordPress database for content and display it in a page without having to write php code.
  * Author: Ulrich Sossou
  * Author URI: http://ulrichsossou.com/
- * Version: 1.0.0
+ * Version: 1.0.1
  * License: GPL2
  */
 /*  Copyright 2011  Ulrich Sossou  (http://github.com/sorich87)
