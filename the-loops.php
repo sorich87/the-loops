@@ -43,36 +43,18 @@ if ( ! class_exists( 'The_Loops' ) ) :
  * @since 0.1
  */
 class The_Loops {
-    
-        var $the_loop_id = 0;
-        var $the_loop_context;
-        var $the_loop_query;
-        var $the_loop_original_query;
-        
-        var $the_loop_user_query;
-        var $the_loop_user_index;
-        var $the_loop_user_count;
 
-        /**
-        * @var The one true Instance
-        */
-        private static $instance;
-        
-        public static function instance() {
-                if ( ! isset( self::$instance ) ) {
-                        self::$instance = new The_Loops;
-                        self::$instance->setup_globals();
-                        self::$instance->includes();
-                        self::$instance->setup_hooks();
-                }
-                return self::$instance;
-        }
-    
-        /**
-         * A dummy constructor to prevent from being loaded more than once.
-         *
-         */
-        private function __construct() { /* Do nothing here */ }
+	/**
+	 * Class contructor
+	 *
+	 * @package The_Loops
+	 * @since 0.1
+	 */
+	public function __construct() {
+		$this->setup_globals();
+		$this->includes();
+		$this->setup_hooks();
+	}
 
 	/**
 	 * Global variables
@@ -154,21 +136,9 @@ class The_Loops {
 
 		register_post_type( 'tl_loop', $args );
 	}
-
 }
 
-/**
- * The main function responsible for returning the one Instance
- * to functions everywhere.
- *
- * Use this function like you would a global variable, except without needing
- * to declare the global.
- *
- */
-function the_loops() {
-        return The_Loops::instance();
-}
-the_loops();
+$GLOBALS['the_loops'] = new The_Loops();
 
 endif;
 

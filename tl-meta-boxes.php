@@ -21,8 +21,9 @@ class TL_Meta_Boxes {
 	 * @since 0.3
 	 */
 	public static function init() {
+		global $post_ID;
 
-		$objects = isset( $_GET['tl_objects'] ) ? $_GET['tl_objects'] : tl_get_loop_object_type( get_the_ID() );
+		$objects = isset( $_GET['tl_objects'] ) ? $_GET['tl_objects'] : tl_get_loop_object_type( $post_ID );
 
 		switch ( $objects ) {
 			case 'users' :
@@ -50,8 +51,9 @@ class TL_Meta_Boxes {
 	 * @since 0.3
 	 */
 	public static function meta_box_posts_general() {
+		global $post_ID;
 
-		$content = tl_get_loop_parameters();
+		$content = tl_get_loop_parameters( $post_ID );
 
 		$defaults = array(
 			'authors'        => '',
@@ -117,7 +119,7 @@ class TL_Meta_Boxes {
 	<tr valign="top">
 		<th scope="row"><?php _e( 'Shortcode' ); ?></th>
 		<td>
-			<code><?php echo '[the-loop id="' . get_the_ID() . '"]'; ?></code>
+			<code><?php echo '[the-loop id="' . $post_ID . '"]'; ?></code>
 			<span class="description"><?php _e( 'To use the shortcode, copy/paste it in the post or page where you want to display the loop' ); ?></span>
 		</td>
 	</tr>
@@ -138,8 +140,9 @@ class TL_Meta_Boxes {
 	 * @since 0.3
 	 */
 	public static function meta_box_posts_other() {
+		global $post_ID;
 
-		$content = tl_get_loop_parameters();
+		$content = tl_get_loop_parameters( $post_ID );
 
 		$defaults = array(
 			'exact'         => 0,
@@ -252,8 +255,9 @@ class TL_Meta_Boxes {
 	 * @since 0.3
 	 */
 	public static function meta_box_posts_date() {
+		global $post_ID;
 
-		$content = tl_get_loop_parameters();
+		$content = tl_get_loop_parameters( $post_ID );
 
 		$defaults = array(
 			'date'      => array(
@@ -368,8 +372,9 @@ class TL_Meta_Boxes {
 	 * @since 0.3
 	 */
 	public static function meta_box_taxonomy() {
+		global $post_ID;
 
-		$content = tl_get_loop_parameters();
+		$content = tl_get_loop_parameters( $post_ID );
 
 		$defaults = array(
 			'taxonomies' => array()
@@ -475,8 +480,9 @@ class TL_Meta_Boxes {
 	 * @since 0.3
 	 */
 	public static function meta_box_custom_field() {
+		global $post_ID;
 
-		$content = tl_get_loop_parameters();
+		$content = tl_get_loop_parameters( $post_ID );
 
 		$defaults = array(
 			'custom_fields' => array()
@@ -598,8 +604,9 @@ class TL_Meta_Boxes {
 	 * @since 0.3
 	 */
 	public static function meta_box_posts_order_pagination() {
+		global $post_ID;
 
-		$content = tl_get_loop_parameters();
+		$content = tl_get_loop_parameters( $post_ID );
 
 		$defaults = array(
 			'meta_key'       => '',
@@ -688,9 +695,9 @@ class TL_Meta_Boxes {
 	 * @since 0.4
 	 */
 	public static function meta_box_users_general() {
-		global $wp_roles;
+		global $post_ID, $wp_roles;
 
-		$content = tl_get_loop_parameters();
+		$content = tl_get_loop_parameters( $post_ID );
 
 		$defaults = array(
 			'not_found' => '<p>' . __( 'Nothing found!' ) . '</p>',
@@ -739,7 +746,7 @@ class TL_Meta_Boxes {
 	<tr valign="top">
 		<th scope="row"><?php _e( 'Shortcode' ); ?></th>
 		<td>
-			<code><?php echo '[the-loop id="' . get_the_ID() . '"]'; ?></code>
+			<code><?php echo '[the-loop id="' . $post_ID . '"]'; ?></code>
 			<span class="description"><?php _e( 'To use the shortcode, copy/paste it in the post or page where you want to display the loop' ); ?></span>
 		</td>
 	</tr>
@@ -760,8 +767,9 @@ class TL_Meta_Boxes {
 	 * @since 0.4
 	 */
 	public static function meta_box_users_order_pagination() {
+		global $post_ID;
 
-		$content = tl_get_loop_parameters();
+		$content = tl_get_loop_parameters( $post_ID );
 
 		$defaults = array(
 			'number'         => get_option( 'posts_per_page' ),
@@ -841,8 +849,9 @@ class TL_Meta_Boxes {
 	 * @since 0.4
 	 */
 	public static function meta_box_users_other() {
+		global $post_ID;
 
-		$content = tl_get_loop_parameters();
+		$content = tl_get_loop_parameters( $post_ID );
 
 		$defaults = array(
 			'exact'         => 1,
