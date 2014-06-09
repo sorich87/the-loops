@@ -1,5 +1,5 @@
 === Plugin Name ===
-Contributors: sorich87
+Contributors: sorich87, saymar90
 Tags: loop, loops, the loop, shortcode, widget, posts, pages, custom
 post types, users
 Requires at least: 3.3
