@@ -450,7 +450,7 @@ function tl_display_loop( $loop_id, $template_name, $args = null, $context = '' 
 
 	ob_start();
 
-	load_template( $single_loop_template, true );
+	load_template( $single_loop_template, false );
 
 	$content = ob_get_contents();
 	ob_end_clean();
