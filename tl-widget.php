@@ -8,7 +8,7 @@
  */
 class TL_Widget extends WP_Widget {
 	function __construct() {
-		parent::WP_Widget( 'tl_widget', __( 'The Loops' ), array( 'description' => __( 'Use this widget to add one of your loops as a widget.' ) ) );
+		parent::__construct( 'tl_widget', __( 'The Loops' ), array( 'description' => __( 'Use this widget to add one of your loops as a widget.' ) ) );
 	}
 
 	function widget( $args, $instance ) {
