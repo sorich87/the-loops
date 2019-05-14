@@ -126,13 +126,13 @@ class TL_Admin {
 		$objects = isset( $_GET['tl_objects'] ) ? $_GET['tl_objects'] : tl_get_loop_object_type( $post_ID );
 ?>
 <h3 class="nav-tab-wrapper">
-	<span><?php _e( 'Objects:' ); ?></span>
+	<span><?php _e( 'Objects:', 'the-loops' ); ?></span>
 
 	<?php $active_class = 'posts' == $objects ? ' nav-tab-active' : ''; ?>
-	<a href="<?php echo add_query_arg( 'tl_objects', 'posts' ); ?>" class="nav-tab<?php echo $active_class; ?>"><?php _e( 'Posts' ); ?></a>
+	<a href="<?php echo add_query_arg( 'tl_objects', 'posts' ); ?>" class="nav-tab<?php echo $active_class; ?>"><?php _e( 'Posts', 'the-loops' ); ?></a>
 
 	<?php $active_class = 'users' == $objects ? ' nav-tab-active' : ''; ?>
-	<a href="<?php echo add_query_arg( 'tl_objects', 'users' ); ?>" class="nav-tab<?php echo $active_class; ?>"><?php _e( 'Users' ); ?></a>
+	<a href="<?php echo add_query_arg( 'tl_objects', 'users' ); ?>" class="nav-tab<?php echo $active_class; ?>"><?php _e( 'Users', 'the-loops' ); ?></a>
 </h3>
 <input type="hidden" name="tl_objects" id="tl_objects" value="<?php echo $objects; ?>" />
 <?php
