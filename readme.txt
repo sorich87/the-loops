@@ -3,7 +3,7 @@ Contributors: sorich87, saymar90
 Tags: loop, loops, the loop, shortcode, widget, posts, pages, custom
 post types, users
 Requires at least: 3.3
-Tested up to: 3.9
+Tested up to: 5.2
 Stable tag: 1.0.2
 
 Like Drupal Views but for WordPress, The Loops allows you to query the
@@ -127,6 +127,7 @@ The Loops will then check in MYPLUGIN_ABSOLUTE_DIR if there is valid templates w
 
 = 1.0.2 =
 * Fix scripts paths.
+* Replace deprecated functions
 
 = 1.0.1 =
 * Fix scripts paths.
