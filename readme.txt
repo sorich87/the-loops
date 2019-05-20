@@ -1,5 +1,5 @@
 === Plugin Name ===
-Contributors: sorich87, saymar90
+Contributors: sorich87, saymar90, justinahinon
 Tags: loop, loops, the loop, shortcode, widget, posts, pages, custom
 post types, users
 Requires at least: 3.3
@@ -21,7 +21,7 @@ With this plugin, you can display the queried content in a page or post
 (using shortcodes) or a widget.
 
 [Check out my other free
-plugins.](http://wordpress.org/extend/plugins/profile/sorich87)
+plugins.](https://profiles.wordpress.org/sorich87/#content-plugins)
 
 = Features =
 
@@ -127,7 +127,9 @@ The Loops will then check in MYPLUGIN_ABSOLUTE_DIR if there is valid templates w
 
 = 1.0.2 =
 * Fix scripts paths.
-* Replace deprecated functions
+* Replace deprecated functions.
+* Improvement: make the plugin ready for translation.
+* Improvement: tested to WordPress 5.2.
 
 = 1.0.1 =
 * Fix scripts paths.
