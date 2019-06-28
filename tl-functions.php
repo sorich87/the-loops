@@ -615,3 +615,21 @@ function tl_get_loop_object_type( $loop_id ) {
 	return $type;
 }
 
+/**
+ * Get the list of users registered on the website with get_users()
+ * 
+ * @package The_Loops
+ * @since 1.0.2
+ * 
+ * @link https://developer.wordpress.org/reference/functions/get_users
+ */
+function tl_get_users_list () {
+	$users_list = get_users( array( 'fields' => array( 'display_name' ) ) );
+	$tl_users_list = array();
+
+	foreach( $users_list as $user ) {
+		$tl_users_list[] = $user->display_name;
+	}
+
+	return $tl_users_list;
+}

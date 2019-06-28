@@ -117,4 +117,10 @@ jQuery(function($) {
 			toggleInput($(this), ["static"], [".tl_date"], [".tl_days", ".tl_period"]);
 		}
 	});
+
+	var users = users_list;
+	$('.users-list').autocomplete({
+		source : users
+	});
+	
 });

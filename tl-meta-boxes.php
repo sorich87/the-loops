@@ -88,11 +88,17 @@ class TL_Meta_Boxes {
 			<span class="description"><?php _e( 'For media only. Comma-separated list of mime types.', 'the-loops' ); ?></span>
 		</td>
 	</tr>
+	
+	<!-- The script for returning the users array to a javascript variable -->
+	<script>
+		var users_list = <?php echo json_encode( tl_get_users_list() ); ?>
+	</script>
+	<!-- End of the script -->
+
 	<tr valign="top">
 		<th scope="row"><label for="loop_authors"><?php _e( 'Authors', 'the-loops' ); ?></label></th>
-		<td>
-			<input type="text" id="loop_authors" name="loop[authors]" value="<?php echo esc_attr( $authors ); ?>" class="regular-text" />
-			<span class="description"><?php _e( "Comma-separated list of authors usernames. Exclude an author by prefixing the username with a '-' (minus) sign." ); ?></span>
+		<td class="users-td">
+			<input type="text" id="loop_authors" name="loop[authors]" value="<?php echo esc_attr( $authors ); ?>" class="regular-text users-list" />
 		</td>
 	</tr>
 	<tr valign="top">
