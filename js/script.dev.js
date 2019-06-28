@@ -122,5 +122,4 @@ jQuery(function($) {
 	$('.users-list').autocomplete({
 		source : users
 	});
-	
 });
