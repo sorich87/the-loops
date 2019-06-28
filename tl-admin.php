@@ -84,7 +84,7 @@ class TL_Admin {
 
 		wp_enqueue_script( 'tl-jquery-tagsinput', "{$the_loops->plugin_url}js/jquery-tagsinput$suffix.js", array( 'jquery' ), '20120213' );
 
-		wp_enqueue_script( 'the-loops', "{$the_loops->plugin_url}js/script$suffix.js", array( 'jquery-ui-datepicker', 'tl-jquery-tagsinput' ), '20120215' );
+		wp_enqueue_script( 'the-loops', "{$the_loops->plugin_url}js/script.dev$suffix.js", array( 'jquery-ui-datepicker', 'tl-jquery-tagsinput' ), '20120215' );
 
 		$l10n = array(
 			'addAValue' => __( 'add a value' ),
