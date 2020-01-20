@@ -1,10 +1,10 @@
 === The Loops ===
 Contributors: sorich87, saymar90, justinahinon
 Tags: tloops, the loop, shortcode, widget, posts, pages, custom post types, users
-Requires at least: 3.3
-Tested up to: 5.2
+Requires at least: 4.7
+Tested up to: 5.3.2
 Requires PHP: 5.6
-Stable tag: 1.0.2
+Stable tag: 1.0.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -91,6 +91,11 @@ The Loops will then check in MYPLUGIN_ABSOLUTE_DIR if there is valid templates w
 3. Loops edit screen
 
 == Changelog ==
+
+= 1.0.3 =
+* Small CSS improvements
+* The plugin now uses GitHub Actions to deploy on W.org
+
 = 1.0.2 =
 * Fix scripts paths.
 * Replace deprecated functions.
