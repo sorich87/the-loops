@@ -297,11 +297,12 @@ class TL_Meta_Boxes {
 		<td>
 			<?php
 			printf(
-				__( 'from %1$s to %2$s' ),
+				__( '%1$s to %2$s' ),
 				'<input type="text" class="loop-date" id="loop-min-date" name="loop[date][min]" value="' . esc_attr( $date['min'] ) . '" class="regular-text" />',
 				'<input type="text" class="loop-date" id="loop-max-date" name="loop[date][max]" value="' . esc_attr( $date['max'] ) . '" class="regular-text" />'
 			);
 			?>
+			<br>
 			<span class="description"><?php _e( 'If these fields are left empty, infinite values will be used', 'the-loops' ); ?></span>
 		</td>
 	</tr>
